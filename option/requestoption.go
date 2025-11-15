@@ -266,10 +266,18 @@ func WithEnvironmentProduction() RequestOption {
 	return requestconfig.WithDefaultBaseURL("https://api.chunkify.dev/v1/")
 }
 
-// WithAPIKey returns a RequestOption that sets the client setting "api_key".
-func WithAPIKey(value string) RequestOption {
+// WithProjectAccessToken returns a RequestOption that sets the client setting "project_access_token".
+func WithProjectAccessToken(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.APIKey = value
-		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.APIKey)))
+		r.ProjectAccessToken = value
+		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.ProjectAccessToken)))
+	})
+}
+
+// WithTeamAccessToken returns a RequestOption that sets the client setting "team_access_token".
+func WithTeamAccessToken(value string) RequestOption {
+	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.TeamAccessToken = value
+		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.TeamAccessToken)))
 	})
 }

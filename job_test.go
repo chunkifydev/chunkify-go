@@ -24,7 +24,7 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
 		Format: chunkify.JobNewParamsFormat{
@@ -213,7 +213,7 @@ func TestJobGet(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.Get(context.TODO(), "jobId")
 	if err != nil {
@@ -236,7 +236,7 @@ func TestJobListWithOptionalParams(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.List(context.TODO(), chunkify.JobListParams{
 		ID: chunkify.String("id"),
@@ -273,7 +273,7 @@ func TestJobDelete(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.Delete(context.TODO(), "jobId")
 	if err != nil {
@@ -296,7 +296,7 @@ func TestJobCancel(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.Cancel(context.TODO(), "jobId")
 	if err != nil {
@@ -319,7 +319,7 @@ func TestJobGetFiles(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.GetFiles(context.TODO(), "jobId")
 	if err != nil {
@@ -342,7 +342,7 @@ func TestJobGetLogsWithOptionalParams(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.GetLogs(
 		context.TODO(),
@@ -372,7 +372,7 @@ func TestJobGetTranscoders(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.GetTranscoders(context.TODO(), "jobId")
 	if err != nil {

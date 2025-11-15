@@ -24,7 +24,7 @@ func TestStorageNewWithOptionalParams(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Storages.New(context.TODO(), chunkify.StorageNewParams{
 		Provider:               chunkify.StorageNewParamsProviderAws,
@@ -50,7 +50,7 @@ func TestStorageGet(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Storages.Get(context.TODO(), "storageId")
 	if err != nil {
@@ -73,7 +73,7 @@ func TestStorageList(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Storages.List(context.TODO())
 	if err != nil {
@@ -96,7 +96,7 @@ func TestStorageDelete(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Storages.Delete(context.TODO(), "storageId")
 	if err != nil {

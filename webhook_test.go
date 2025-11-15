@@ -24,7 +24,7 @@ func TestWebhookNewWithOptionalParams(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Webhooks.New(context.TODO(), chunkify.WebhookNewParams{
 		URL:     "https://example.com/webhook",
@@ -51,7 +51,7 @@ func TestWebhookGet(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Webhooks.Get(context.TODO(), "webhookId")
 	if err != nil {
@@ -74,7 +74,7 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Webhooks.Update(
 		context.TODO(),
@@ -104,7 +104,7 @@ func TestWebhookList(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Webhooks.List(context.TODO())
 	if err != nil {
@@ -127,7 +127,7 @@ func TestWebhookDelete(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Webhooks.Delete(context.TODO(), "webhookId")
 	if err != nil {

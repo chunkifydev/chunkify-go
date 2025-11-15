@@ -24,7 +24,7 @@ func TestTokenNewWithOptionalParams(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Tokens.New(context.TODO(), chunkify.TokenNewParams{
 		Scope:     chunkify.TokenNewParamsScopeProject,
@@ -51,7 +51,7 @@ func TestTokenList(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Tokens.List(context.TODO())
 	if err != nil {
@@ -74,7 +74,7 @@ func TestTokenRevoke(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Tokens.Revoke(context.TODO(), "tokenId")
 	if err != nil {

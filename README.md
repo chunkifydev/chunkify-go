@@ -41,10 +41,13 @@ import (
 	"fmt"
 
 	"github.com/stainless-sdks/chunkify-go"
+	"github.com/stainless-sdks/chunkify-go/option"
 )
 
 func main() {
-	client := chunkify.NewClient()
+	client := chunkify.NewClient(
+		option.WithProjectAccessToken("My Project Access Token"), // defaults to os.LookupEnv("CHUNKIFY_TOKEN")
+	)
 	files, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
 	if err != nil {
 		panic(err.Error())
