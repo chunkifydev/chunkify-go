@@ -24,11 +24,13 @@ func TestAutoPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	iter := client.Files.ListAutoPaging(context.TODO(), chunkify.FileListParams{})
+	iter := client.Sources.ListAutoPaging(context.TODO(), chunkify.SourceListParams{
+		Limit: chunkify.Int(30),
+	})
 	// Prism mock isn't going to give us real pagination
 	for i := 0; i < 3 && iter.Next(); i++ {
-		file := iter.Current()
-		t.Logf("%+v\n", file.ID)
+		source := iter.Current()
+		t.Logf("%+v\n", source.ID)
 	}
 	if err := iter.Err(); err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())

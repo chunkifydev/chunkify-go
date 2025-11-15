@@ -48,11 +48,26 @@ func main() {
 	client := chunkify.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"), // defaults to os.LookupEnv("CHUNKIFY_TOKEN")
 	)
-	page, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
+	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
+		Format: chunkify.JobNewParamsFormat{
+			MP4H264: chunkify.H264Param{
+				VideoCommonParam: chunkify.VideoCommonParam{
+					Width:  chunkify.Int(1920),
+					Height: chunkify.Int(1080),
+				},
+				Crf: chunkify.Int(21),
+			},
+		},
+		SourceID: "src_2G6MJiNz71bHQGNzGwKx5cJwPFS",
+		Transcoder: chunkify.JobNewParamsTranscoder{
+			Quantity: chunkify.Int(4),
+			Type:     "8vCPU",
+		},
+	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", page)
+	fmt.Printf("%+v\n", job)
 }
 
 ```
@@ -277,11 +292,13 @@ This library provides some conveniences for working with paginated list endpoint
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
 ```go
-iter := client.Files.ListAutoPaging(context.TODO(), chunkify.FileListParams{})
+iter := client.Sources.ListAutoPaging(context.TODO(), chunkify.SourceListParams{
+	Limit: chunkify.Int(30),
+})
 // Automatically fetches more pages as needed.
 for iter.Next() {
-	file := iter.Current()
-	fmt.Printf("%+v\n", file)
+	source := iter.Current()
+	fmt.Printf("%+v\n", source)
 }
 if err := iter.Err(); err != nil {
 	panic(err.Error())
@@ -292,10 +309,12 @@ Or you can use simple `.List()` methods to fetch a single page and receive a sta
 with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
-page, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
+page, err := client.Sources.List(context.TODO(), chunkify.SourceListParams{
+	Limit: chunkify.Int(30),
+})
 for page != nil {
-	for _, file := range page.Data {
-		fmt.Printf("%+v\n", file)
+	for _, source := range page.Data {
+		fmt.Printf("%+v\n", source)
 	}
 	page, err = page.GetNextPage()
 }
