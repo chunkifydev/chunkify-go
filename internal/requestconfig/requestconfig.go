@@ -208,11 +208,12 @@ type RequestConfig struct {
 	BaseURL        *url.URL
 	// DefaultBaseURL will be used if BaseURL is not explicitly overridden using
 	// WithBaseURL.
-	DefaultBaseURL *url.URL
-	CustomHTTPDoer HTTPDoer
-	HTTPClient     *http.Client
-	Middlewares    []middleware
-	APIKey         string
+	DefaultBaseURL     *url.URL
+	CustomHTTPDoer     HTTPDoer
+	HTTPClient         *http.Client
+	Middlewares        []middleware
+	ProjectAccessToken string
+	TeamAccessToken    string
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -577,14 +578,15 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		return nil
 	}
 	new := &RequestConfig{
-		MaxRetries:     cfg.MaxRetries,
-		RequestTimeout: cfg.RequestTimeout,
-		Context:        ctx,
-		Request:        req,
-		BaseURL:        cfg.BaseURL,
-		HTTPClient:     cfg.HTTPClient,
-		Middlewares:    cfg.Middlewares,
-		APIKey:         cfg.APIKey,
+		MaxRetries:         cfg.MaxRetries,
+		RequestTimeout:     cfg.RequestTimeout,
+		Context:            ctx,
+		Request:            req,
+		BaseURL:            cfg.BaseURL,
+		HTTPClient:         cfg.HTTPClient,
+		Middlewares:        cfg.Middlewares,
+		ProjectAccessToken: cfg.ProjectAccessToken,
+		TeamAccessToken:    cfg.TeamAccessToken,
 	}
 
 	return new

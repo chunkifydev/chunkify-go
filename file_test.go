@@ -24,7 +24,7 @@ func TestFileGet(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Files.Get(context.TODO(), "fileId")
 	if err != nil {
@@ -47,7 +47,7 @@ func TestFileListWithOptionalParams(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Files.List(context.TODO(), chunkify.FileListParams{
 		ID:         chunkify.String("id"),
@@ -116,7 +116,7 @@ func TestFileDelete(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Files.Delete(context.TODO(), "fileId")
 	if err != nil {

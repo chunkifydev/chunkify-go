@@ -1,4 +1,4 @@
 configured_endpoints: 40
 openapi_spec_url: https://storage.googleapis.com/stainless-sdk-openapi-specs/chunkify%2Fchunkify-ccbb1b8dbd3fa838de1bfefc273e8f459ae1ecaeac095b995a0cc6a019c36635.yml
 openapi_spec_hash: 1134b22e48a17076ced65cc540ce4269
-config_hash: cd81536b5ab01a4354468c993e830114
+config_hash: 13bfe38db8dd2950220a4710ce9ab049

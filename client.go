@@ -28,23 +28,27 @@ type Client struct {
 	Webhooks      WebhookService
 }
 
-// DefaultClientOptions read from the environment (CHUNKIFY_API_KEY,
-// CHUNKIFY_BASE_URL). This should be used to initialize new clients.
+// DefaultClientOptions read from the environment (CHUNKIFY_TOKEN,
+// CHUNKIFY_TEAM_TOKEN, CHUNKIFY_BASE_URL). This should be used to initialize new
+// clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("CHUNKIFY_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
-	if o, ok := os.LookupEnv("CHUNKIFY_API_KEY"); ok {
-		defaults = append(defaults, option.WithAPIKey(o))
+	if o, ok := os.LookupEnv("CHUNKIFY_TOKEN"); ok {
+		defaults = append(defaults, option.WithProjectAccessToken(o))
+	}
+	if o, ok := os.LookupEnv("CHUNKIFY_TEAM_TOKEN"); ok {
+		defaults = append(defaults, option.WithTeamAccessToken(o))
 	}
 	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (CHUNKIFY_API_KEY, CHUNKIFY_BASE_URL). The option passed in as
-// arguments are applied after these default arguments, and all option will be
-// passed down to the services and requests that this client makes.
+// environment (CHUNKIFY_TOKEN, CHUNKIFY_TEAM_TOKEN, CHUNKIFY_BASE_URL). The option
+// passed in as arguments are applied after these default arguments, and all option
+// will be passed down to the services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r Client) {
 	opts = append(DefaultClientOptions(), opts...)
 

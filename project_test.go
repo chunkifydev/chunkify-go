@@ -24,7 +24,7 @@ func TestProjectNew(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Projects.New(context.TODO(), chunkify.ProjectNewParams{
 		Name: "My Project",
@@ -49,7 +49,7 @@ func TestProjectGet(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Projects.Get(context.TODO(), "projectId")
 	if err != nil {
@@ -72,7 +72,7 @@ func TestProjectUpdateWithOptionalParams(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Projects.Update(
 		context.TODO(),
@@ -102,7 +102,7 @@ func TestProjectListWithOptionalParams(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Projects.List(context.TODO(), chunkify.ProjectListParams{
 		Limit:  chunkify.Int(0),
@@ -128,7 +128,7 @@ func TestProjectDelete(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Projects.Delete(context.TODO(), "projectId")
 	if err != nil {

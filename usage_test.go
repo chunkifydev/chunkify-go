@@ -22,7 +22,7 @@ func TestUsage(t *testing.T) {
 	}
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
+		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	files, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
 	if err != nil {
