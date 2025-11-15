@@ -24,12 +24,14 @@ func TestManualPagination(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	page, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
+	page, err := client.Sources.List(context.TODO(), chunkify.SourceListParams{
+		Limit: chunkify.Int(30),
+	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	for _, file := range page.Data {
-		t.Logf("%+v\n", file.ID)
+	for _, source := range page.Data {
+		t.Logf("%+v\n", source.ID)
 	}
 	// Prism mock isn't going to give us real pagination
 	page, err = page.GetNextPage()
@@ -37,8 +39,8 @@ func TestManualPagination(t *testing.T) {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
 	if page != nil {
-		for _, file := range page.Data {
-			t.Logf("%+v\n", file.ID)
+		for _, source := range page.Data {
+			t.Logf("%+v\n", source.ID)
 		}
 	}
 }

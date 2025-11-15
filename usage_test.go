@@ -24,9 +24,24 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	page, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
+	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
+		Format: chunkify.JobNewParamsFormat{
+			MP4H264: chunkify.H264Param{
+				VideoCommonParam: chunkify.VideoCommonParam{
+					Width:  chunkify.Int(1920),
+					Height: chunkify.Int(1080),
+				},
+				Crf: chunkify.Int(21),
+			},
+		},
+		SourceID: "src_2G6MJiNz71bHQGNzGwKx5cJwPFS",
+		Transcoder: chunkify.JobNewParamsTranscoder{
+			Quantity: chunkify.Int(4),
+			Type:     "8vCPU",
+		},
+	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", page)
+	t.Logf("%+v\n", job)
 }
