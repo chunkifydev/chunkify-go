@@ -14,6 +14,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
 	"github.com/stainless-sdks/chunkify-go/internal/requestconfig"
 	"github.com/stainless-sdks/chunkify-go/option"
+	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
 )
@@ -59,11 +60,26 @@ func (r *UploadService) Get(ctx context.Context, uploadID string, opts ...option
 }
 
 // Retrieve a list of all uploads with optional filtering and pagination.
-func (r *UploadService) List(ctx context.Context, query UploadListParams, opts ...option.RequestOption) (res *UploadListResponse, err error) {
+func (r *UploadService) List(ctx context.Context, query UploadListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[Upload], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "api/uploads"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of all uploads with optional filtering and pagination.
+func (r *UploadService) ListAutoPaging(ctx context.Context, query UploadListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[Upload] {
+	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete an upload.
@@ -152,24 +168,6 @@ type UploadGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r UploadGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *UploadGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated response
-type UploadListResponse struct {
-	Data []Upload `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	ResponseWithPagination
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadListResponse) RawJSON() string { return r.JSON.raw }
-func (r *UploadListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

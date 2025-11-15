@@ -48,11 +48,11 @@ func main() {
 	client := chunkify.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"), // defaults to os.LookupEnv("CHUNKIFY_TOKEN")
 	)
-	files, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
+	page, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", files)
+	fmt.Printf("%+v\n", page)
 }
 
 ```
@@ -365,7 +365,7 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-files, err := client.Files.List(
+page, err := client.Files.List(
 	context.TODO(),
 	chunkify.FileListParams{},
 	option.WithResponseInto(&response),
@@ -373,7 +373,7 @@ files, err := client.Files.List(
 if err != nil {
 	// handle error
 }
-fmt.Printf("%+v\n", files)
+fmt.Printf("%+v\n", page)
 
 fmt.Printf("Status Code: %d\n", response.StatusCode)
 fmt.Printf("Headers: %+#v\n", response.Header)

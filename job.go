@@ -14,6 +14,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
 	"github.com/stainless-sdks/chunkify-go/internal/requestconfig"
 	"github.com/stainless-sdks/chunkify-go/option"
+	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
 )
@@ -58,11 +59,26 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 }
 
 // Retrieve a list of jobs with optional filtering and pagination
-func (r *JobService) List(ctx context.Context, query JobListParams, opts ...option.RequestOption) (res *JobListResponse, err error) {
+func (r *JobService) List(ctx context.Context, query JobListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[Job], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "api/jobs"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of jobs with optional filtering and pagination
+func (r *JobService) ListAutoPaging(ctx context.Context, query JobListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[Job] {
+	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a job.
@@ -580,24 +596,6 @@ type JobGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r JobGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *JobGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated response
-type JobListResponse struct {
-	Data []Job `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	ResponseWithPagination
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobListResponse) RawJSON() string { return r.JSON.raw }
-func (r *JobListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -14,6 +14,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
 	"github.com/stainless-sdks/chunkify-go/internal/requestconfig"
 	"github.com/stainless-sdks/chunkify-go/option"
+	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
 )
@@ -62,11 +63,27 @@ func (r *SourceService) Get(ctx context.Context, sourceID string, opts ...option
 
 // Retrieve a list of all sources with optional filtering and pagination. Supports
 // filtering by various media properties like duration, dimensions, codecs, etc.
-func (r *SourceService) List(ctx context.Context, query SourceListParams, opts ...option.RequestOption) (res *SourceListResponse, err error) {
+func (r *SourceService) List(ctx context.Context, query SourceListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[Source], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "api/sources"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of all sources with optional filtering and pagination. Supports
+// filtering by various media properties like duration, dimensions, codecs, etc.
+func (r *SourceService) ListAutoPaging(ctx context.Context, query SourceListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[Source] {
+	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a source. It will fail if there are processing jobs using this source.
@@ -170,24 +187,6 @@ type SourceGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r SourceGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *SourceGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated response
-type SourceListResponse struct {
-	Data []Source `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	ResponseWithPagination
-}
-
-// Returns the unmodified JSON received from the API
-func (r SourceListResponse) RawJSON() string { return r.JSON.raw }
-func (r *SourceListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
