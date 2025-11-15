@@ -605,7 +605,7 @@ type JobCancelResponse = any
 
 // Successful response
 type JobGetFilesResponse struct {
-	Data []File `json:"data"`
+	Data []APIFile `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

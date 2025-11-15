@@ -52,7 +52,7 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 }
 
 // Retrieve a list of files with optional filtering and pagination
-func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[File], err error) {
+func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[APIFile], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -70,7 +70,7 @@ func (r *FileService) List(ctx context.Context, query FileListParams, opts ...op
 }
 
 // Retrieve a list of files with optional filtering and pagination
-func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[File] {
+func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[APIFile] {
 	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -86,7 +86,7 @@ func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.
 	return
 }
 
-type File struct {
+type APIFile struct {
 	// Unique identifier of the file
 	ID string `json:"id"`
 	// Audio bitrate in bits per second
@@ -143,8 +143,8 @@ type File struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r File) RawJSON() string { return r.JSON.raw }
-func (r *File) UnmarshalJSON(data []byte) error {
+func (r APIFile) RawJSON() string { return r.JSON.raw }
+func (r *APIFile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -171,7 +171,7 @@ func (r *ResponseOk) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type FileGetResponse struct {
-	Data File `json:"data"`
+	Data APIFile `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
