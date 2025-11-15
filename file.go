@@ -14,6 +14,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
 	"github.com/stainless-sdks/chunkify-go/internal/requestconfig"
 	"github.com/stainless-sdks/chunkify-go/option"
+	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
 )
@@ -51,11 +52,26 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 }
 
 // Retrieve a list of files with optional filtering and pagination
-func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *FileListResponse, err error) {
+func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[File], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "api/files"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of files with optional filtering and pagination
+func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[File] {
+	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a file. It will fail if there are processing jobs using this file.
@@ -153,36 +169,6 @@ func (r *ResponseOk) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Paginated response
-type ResponseWithPagination struct {
-	// Data contains the paginated items
-	Data any `json:"data"`
-	// Limit indicates the maximum number of items in the current response
-	Limit int64 `json:"limit"`
-	// Offset indicates the offset of the first item in the current response
-	Offset int64 `json:"offset"`
-	// Status indicates the response status "success"
-	Status string `json:"status"`
-	// Total indicates the total number of items
-	Total int64 `json:"total"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Limit       respjson.Field
-		Offset      respjson.Field
-		Status      respjson.Field
-		Total       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ResponseWithPagination) RawJSON() string { return r.JSON.raw }
-func (r *ResponseWithPagination) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Successful response
 type FileGetResponse struct {
 	Data File `json:"data"`
@@ -198,24 +184,6 @@ type FileGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r FileGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *FileGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated response
-type FileListResponse struct {
-	Data []File `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	ResponseWithPagination
-}
-
-// Returns the unmodified JSON received from the API
-func (r FileListResponse) RawJSON() string { return r.JSON.raw }
-func (r *FileListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

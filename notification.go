@@ -14,6 +14,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
 	"github.com/stainless-sdks/chunkify-go/internal/requestconfig"
 	"github.com/stainless-sdks/chunkify-go/option"
+	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
 )
@@ -58,11 +59,26 @@ func (r *NotificationService) Get(ctx context.Context, notificationID string, op
 }
 
 // Retrieve a list of notifications with optional filtering and pagination
-func (r *NotificationService) List(ctx context.Context, query NotificationListParams, opts ...option.RequestOption) (res *NotificationListResponse, err error) {
+func (r *NotificationService) List(ctx context.Context, query NotificationListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[Notification], err error) {
+	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "api/notifications"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
+	if err != nil {
+		return nil, err
+	}
+	err = cfg.Execute()
+	if err != nil {
+		return nil, err
+	}
+	res.SetPageConfig(cfg, raw)
+	return res, nil
+}
+
+// Retrieve a list of notifications with optional filtering and pagination
+func (r *NotificationService) ListAutoPaging(ctx context.Context, query NotificationListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[Notification] {
+	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a notification.
@@ -145,24 +161,6 @@ type NotificationGetResponse struct {
 // Returns the unmodified JSON received from the API
 func (r NotificationGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *NotificationGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Paginated response
-type NotificationListResponse struct {
-	Data []Notification `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	ResponseWithPagination
-}
-
-// Returns the unmodified JSON received from the API
-func (r NotificationListResponse) RawJSON() string { return r.JSON.raw }
-func (r *NotificationListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

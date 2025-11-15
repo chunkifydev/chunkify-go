@@ -24,9 +24,9 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	files, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
+	page, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", files)
+	t.Logf("%+v\n", page)
 }
