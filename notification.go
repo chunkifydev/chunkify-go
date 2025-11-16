@@ -82,14 +82,15 @@ func (r *NotificationService) ListAutoPaging(ctx context.Context, query Notifica
 }
 
 // Delete a notification.
-func (r *NotificationService) Delete(ctx context.Context, notificationID string, opts ...option.RequestOption) (res *NotificationDeleteResponse, err error) {
+func (r *NotificationService) Delete(ctx context.Context, notificationID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if notificationID == "" {
 		err = errors.New("missing required notificationId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/notifications/%s", notificationID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -163,8 +164,6 @@ func (r NotificationGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *NotificationGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type NotificationDeleteResponse = any
 
 type NotificationNewParams struct {
 	// Event specifies the type of event that triggered the notification. Currently

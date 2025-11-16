@@ -57,14 +57,15 @@ func (r *TokenService) List(ctx context.Context, opts ...option.RequestOption) (
 
 // Revoke an access token by its ID. This action is irreversible and will
 // immediately invalidate the token.
-func (r *TokenService) Revoke(ctx context.Context, tokenID string, opts ...option.RequestOption) (res *TokenRevokeResponse, err error) {
+func (r *TokenService) Revoke(ctx context.Context, tokenID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if tokenID == "" {
 		err = errors.New("missing required tokenId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/tokens/%s", tokenID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -135,8 +136,6 @@ func (r TokenListResponse) RawJSON() string { return r.JSON.raw }
 func (r *TokenListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type TokenRevokeResponse = any
 
 type TokenNewParams struct {
 	// Scope specifies the scope of the token, which must be either "team" or

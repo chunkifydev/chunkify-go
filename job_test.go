@@ -157,22 +157,27 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 				Profilev:   "main10",
 				X265Keyint: chunkify.Int(60),
 			},
-			WebmVp9: chunkify.VideoCommonParam{
-				AudioBitrate: chunkify.Int(32000),
-				Bufsize:      chunkify.Int(100000),
-				Channels:     1,
-				DisableAudio: chunkify.Bool(true),
-				DisableVideo: chunkify.Bool(true),
-				Duration:     chunkify.Int(1),
-				Framerate:    chunkify.Float(15),
-				Gop:          chunkify.Int(1),
-				Height:       chunkify.Int(-2),
-				Maxrate:      chunkify.Int(100000),
-				Minrate:      chunkify.Int(100000),
-				Pixfmt:       chunkify.VideoCommonPixfmtYuv410p,
-				Seek:         chunkify.Int(1),
-				VideoBitrate: chunkify.Int(100000),
-				Width:        chunkify.Int(-2),
+			WebmVp9: chunkify.Vp9Param{
+				VideoCommonParam: chunkify.VideoCommonParam{
+					AudioBitrate: chunkify.Int(32000),
+					Bufsize:      chunkify.Int(100000),
+					Channels:     1,
+					DisableAudio: chunkify.Bool(true),
+					DisableVideo: chunkify.Bool(true),
+					Duration:     chunkify.Int(1),
+					Framerate:    chunkify.Float(15),
+					Gop:          chunkify.Int(1),
+					Height:       chunkify.Int(-2),
+					Maxrate:      chunkify.Int(100000),
+					Minrate:      chunkify.Int(100000),
+					Pixfmt:       chunkify.VideoCommonPixfmtYuv410p,
+					Seek:         chunkify.Int(1),
+					VideoBitrate: chunkify.Int(100000),
+					Width:        chunkify.Int(-2),
+				},
+				CPUUsed: chunkify.String("4"),
+				Crf:     chunkify.Int(23),
+				Quality: "good",
 			},
 		},
 		SourceID:      "src_UioP9I876hjKlNBH78ILp0mo56t",
@@ -272,7 +277,7 @@ func TestJobDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Jobs.Delete(context.TODO(), "jobId")
+	err := client.Jobs.Delete(context.TODO(), "jobId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
@@ -295,7 +300,7 @@ func TestJobCancel(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Jobs.Cancel(context.TODO(), "jobId")
+	err := client.Jobs.Cancel(context.TODO(), "jobId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {

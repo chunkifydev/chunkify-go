@@ -115,7 +115,7 @@ func TestNotificationDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Notifications.Delete(context.TODO(), "notificationId")
+	err := client.Notifications.Delete(context.TODO(), "notificationId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {

@@ -59,14 +59,15 @@ func (r *WebhookService) Get(ctx context.Context, webhookID string, opts ...opti
 
 // Update the enabled status of a webhook. The webhook must belong to the current
 // project.
-func (r *WebhookService) Update(ctx context.Context, webhookID string, body WebhookUpdateParams, opts ...option.RequestOption) (res *WebhookUpdateResponse, err error) {
+func (r *WebhookService) Update(ctx context.Context, webhookID string, body WebhookUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if webhookID == "" {
 		err = errors.New("missing required webhookId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/webhooks/%s", webhookID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
 	return
 }
 
@@ -81,14 +82,15 @@ func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption)
 
 // Permanently delete a webhook configuration. The webhook must belong to the
 // current project. This action cannot be undone.
-func (r *WebhookService) Delete(ctx context.Context, webhookID string, opts ...option.RequestOption) (res *WebhookDeleteResponse, err error) {
+func (r *WebhookService) Delete(ctx context.Context, webhookID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if webhookID == "" {
 		err = errors.New("missing required webhookId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/webhooks/%s", webhookID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -157,8 +159,6 @@ func (r *WebhookGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WebhookUpdateResponse = any
-
 // Successful response
 type WebhookListResponse struct {
 	Data []Webhook `json:"data"`
@@ -176,8 +176,6 @@ func (r WebhookListResponse) RawJSON() string { return r.JSON.raw }
 func (r *WebhookListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type WebhookDeleteResponse = any
 
 type WebhookNewParams struct {
 	// Url is the endpoint that will receive webhook notifications, which must be a

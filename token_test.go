@@ -76,7 +76,7 @@ func TestTokenRevoke(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Tokens.Revoke(context.TODO(), "tokenId")
+	err := client.Tokens.Revoke(context.TODO(), "tokenId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {

@@ -74,7 +74,7 @@ func TestProjectUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Projects.Update(
+	err := client.Projects.Update(
 		context.TODO(),
 		"projectId",
 		chunkify.ProjectUpdateParams{
@@ -130,7 +130,7 @@ func TestProjectDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Projects.Delete(context.TODO(), "projectId")
+	err := client.Projects.Delete(context.TODO(), "projectId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {

@@ -118,7 +118,7 @@ func TestFileDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Files.Delete(context.TODO(), "fileId")
+	err := client.Files.Delete(context.TODO(), "fileId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {

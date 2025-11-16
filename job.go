@@ -82,26 +82,28 @@ func (r *JobService) ListAutoPaging(ctx context.Context, query JobListParams, op
 }
 
 // Delete a job.
-func (r *JobService) Delete(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobDeleteResponse, err error) {
+func (r *JobService) Delete(ctx context.Context, jobID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/jobs/%s", jobID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
 // Cancel a job.
-func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobCancelResponse, err error) {
+func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/jobs/%s/cancel", jobID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return
 }
 
@@ -563,6 +565,32 @@ const (
 	VideoCommonPixfmtYuv444p12be VideoCommonPixfmt = "yuv444p12be"
 )
 
+// FFmpeg encoding parameters specific to VP9 encoding.
+type Vp9Param struct {
+	// CpuUsed specifies the CPU usage level for VP9 encoding. Range: 0 to 8. Lower
+	// values mean better quality but slower encoding, higher values mean faster
+	// encoding but lower quality. Recommended values: 0-2 for high quality, 2-4 for
+	// good quality, 4-6 for balanced, 6-8 for speed
+	CPUUsed param.Opt[string] `json:"cpu_used,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 15 to 35. Recommended
+	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// Quality specifies the VP9 encoding quality preset. Valid values:
+	//
+	// - good: Balanced quality preset, good for most applications
+	// - best: Best quality preset, slower encoding
+	// - realtime: Fast encoding preset, suitable for live streaming
+	Quality string `json:"quality,omitzero"`
+	VideoCommonParam
+}
+
+func (r Vp9Param) MarshalJSON() (data []byte, err error) {
+	type shadow Vp9Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+
 // Successful response
 type JobNewResponse struct {
 	Data Job `json:"data"`
@@ -598,10 +626,6 @@ func (r JobGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *JobGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type JobDeleteResponse = any
-
-type JobCancelResponse = any
 
 // Successful response
 type JobGetFilesResponse struct {
@@ -805,8 +829,8 @@ type JobNewParamsFormat struct {
 	// FfmpegCommon with H.265-specific options for quality control and encoding
 	// profiles.
 	MP4H265 H265Param `json:"mp4_h265,omitzero"`
-	// FFmpeg encoding parameters common to all video formats.
-	WebmVp9 VideoCommonParam `json:"webm_vp9,omitzero"`
+	// FFmpeg encoding parameters specific to VP9 encoding.
+	WebmVp9 Vp9Param `json:"webm_vp9,omitzero"`
 	paramObj
 }
 

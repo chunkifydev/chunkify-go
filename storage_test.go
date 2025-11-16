@@ -98,7 +98,7 @@ func TestStorageDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Storages.Delete(context.TODO(), "storageId")
+	err := client.Storages.Delete(context.TODO(), "storageId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
