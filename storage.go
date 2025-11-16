@@ -66,14 +66,15 @@ func (r *StorageService) List(ctx context.Context, opts ...option.RequestOption)
 
 // Delete a storage configuration. The storage must not be currently attached to
 // the project.
-func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...option.RequestOption) (res *StorageDeleteResponse, err error) {
+func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if storageID == "" {
 		err = errors.New("missing required storageId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/storages/%s", storageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -171,8 +172,6 @@ func (r StorageListResponse) RawJSON() string { return r.JSON.raw }
 func (r *StorageListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type StorageDeleteResponse = any
 
 type StorageNewParams struct {
 	// Provider specifies the storage provider.

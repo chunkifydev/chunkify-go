@@ -75,14 +75,15 @@ func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, 
 }
 
 // Delete a file. It will fail if there are processing jobs using this file.
-func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.RequestOption) (res *FileDeleteResponse, err error) {
+func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/files/%s", fileID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -186,8 +187,6 @@ func (r FileGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *FileGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type FileDeleteResponse = any
 
 type FileListParams struct {
 	// Filter by file ID

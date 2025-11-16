@@ -83,14 +83,15 @@ func (r *UploadService) ListAutoPaging(ctx context.Context, query UploadListPara
 }
 
 // Delete an upload.
-func (r *UploadService) Delete(ctx context.Context, uploadID string, opts ...option.RequestOption) (res *UploadDeleteResponse, err error) {
+func (r *UploadService) Delete(ctx context.Context, uploadID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if uploadID == "" {
 		err = errors.New("missing required uploadId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/uploads/%s", uploadID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -170,8 +171,6 @@ func (r UploadGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *UploadGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type UploadDeleteResponse = any
 
 type UploadNewParams struct {
 	// The upload URL will be valid for the given timeout in seconds

@@ -87,14 +87,15 @@ func (r *SourceService) ListAutoPaging(ctx context.Context, query SourceListPara
 }
 
 // Delete a source. It will fail if there are processing jobs using this source.
-func (r *SourceService) Delete(ctx context.Context, sourceID string, opts ...option.RequestOption) (res *SourceDeleteResponse, err error) {
+func (r *SourceService) Delete(ctx context.Context, sourceID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if sourceID == "" {
 		err = errors.New("missing required sourceId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/sources/%s", sourceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -189,8 +190,6 @@ func (r SourceGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *SourceGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type SourceDeleteResponse = any
 
 type SourceNewParams struct {
 	// Url is the URL of the source, which must be a valid HTTP URL.

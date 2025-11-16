@@ -60,14 +60,15 @@ func (r *ProjectService) Get(ctx context.Context, projectID string, opts ...opti
 
 // Update a project's name or storage settings. Only team owners can update
 // projects.
-func (r *ProjectService) Update(ctx context.Context, projectID string, body ProjectUpdateParams, opts ...option.RequestOption) (res *ProjectUpdateResponse, err error) {
+func (r *ProjectService) Update(ctx context.Context, projectID string, body ProjectUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/projects/%s", projectID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
 	return
 }
 
@@ -81,14 +82,15 @@ func (r *ProjectService) List(ctx context.Context, query ProjectListParams, opts
 
 // Delete a project and revoke all associated access tokens. Only team owners can
 // delete projects.
-func (r *ProjectService) Delete(ctx context.Context, projectID string, opts ...option.RequestOption) (res *ProjectDeleteResponse, err error) {
+func (r *ProjectService) Delete(ctx context.Context, projectID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
 	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/projects/%s", projectID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return
 }
 
@@ -157,8 +159,6 @@ func (r *ProjectGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type ProjectUpdateResponse = any
-
 // Successful response
 type ProjectListResponse struct {
 	Data []Project `json:"data"`
@@ -176,8 +176,6 @@ func (r ProjectListResponse) RawJSON() string { return r.JSON.raw }
 func (r *ProjectListResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type ProjectDeleteResponse = any
 
 type ProjectNewParams struct {
 	// Name is the name of the project, which must be between 4 and 32 characters.

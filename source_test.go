@@ -142,7 +142,7 @@ func TestSourceDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Sources.Delete(context.TODO(), "sourceId")
+	err := client.Sources.Delete(context.TODO(), "sourceId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {

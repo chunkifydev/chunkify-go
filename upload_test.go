@@ -113,7 +113,7 @@ func TestUploadDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Uploads.Delete(context.TODO(), "uploadId")
+	err := client.Uploads.Delete(context.TODO(), "uploadId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {

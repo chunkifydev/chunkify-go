@@ -76,7 +76,7 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Webhooks.Update(
+	err := client.Webhooks.Update(
 		context.TODO(),
 		"webhookId",
 		chunkify.WebhookUpdateParams{
@@ -129,7 +129,7 @@ func TestWebhookDelete(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Webhooks.Delete(context.TODO(), "webhookId")
+	err := client.Webhooks.Delete(context.TODO(), "webhookId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
