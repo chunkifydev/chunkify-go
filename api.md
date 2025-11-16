@@ -25,7 +25,7 @@ Params Types:
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#APIError">APIError</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#ChunkifyError">ChunkifyError</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#Job">Job</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobNewResponse">JobNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobGetResponse">JobGetResponse</a>
