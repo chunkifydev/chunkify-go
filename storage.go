@@ -177,8 +177,7 @@ type StorageNewParams struct {
 	// Provider specifies the storage provider.
 	//
 	// Any of "chunkify", "aws", "cloudflare".
-	Provider               StorageNewParamsProvider `json:"provider,omitzero,required"`
-	StorageStorageProvider any                      `json:"storage.StorageProvider,omitzero"`
+	Provider StorageNewParamsProvider `json:"provider,omitzero,required"`
 	paramObj
 }
 
