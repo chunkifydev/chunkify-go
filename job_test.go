@@ -157,12 +157,10 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 				Profilev:   "main10",
 				X265Keyint: chunkify.Int(60),
 			},
-			WebmVp9: chunkify.JobNewParamsFormatWebmVp9{
+			WebmVp9: chunkify.VideoCommonParam{
 				AudioBitrate: chunkify.Int(32000),
 				Bufsize:      chunkify.Int(100000),
 				Channels:     1,
-				CPUUsed:      chunkify.String("4"),
-				Crf:          chunkify.Int(23),
 				DisableAudio: chunkify.Bool(true),
 				DisableVideo: chunkify.Bool(true),
 				Duration:     chunkify.Int(1),
@@ -171,8 +169,7 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 				Height:       chunkify.Int(-2),
 				Maxrate:      chunkify.Int(100000),
 				Minrate:      chunkify.Int(100000),
-				Pixfmt:       "yuv410p",
-				Quality:      "good",
+				Pixfmt:       chunkify.VideoCommonPixfmtYuv410p,
 				Seek:         chunkify.Int(1),
 				VideoBitrate: chunkify.Int(100000),
 				Width:        chunkify.Int(-2),
