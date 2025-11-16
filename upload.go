@@ -198,7 +198,7 @@ func (r *UploadGetResponse) UnmarshalJSON(data []byte) error {
 
 type UploadNewParams struct {
 	// The upload URL will be valid for the given timeout in seconds
-	Timeout param.Opt[int64] `json:"timeout,omitzero"`
+	ValidityTimeout param.Opt[int64] `json:"validity_timeout,omitzero"`
 	// Metadata allows for additional information to be attached to the upload, with a
 	// maximum size of 1024 bytes.
 	Metadata map[string]string `json:"metadata,omitzero"`
