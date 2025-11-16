@@ -152,7 +152,7 @@ func (r *APIFile) UnmarshalJSON(data []byte) error {
 // Successful response
 type ResponseOk struct {
 	// Data contains the response object
-	Data map[string]any `json:"data"`
+	Data any `json:"data"`
 	// Status indicates the response status "success"
 	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
