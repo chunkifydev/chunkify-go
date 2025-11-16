@@ -59,7 +59,7 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 }
 
 // Retrieve a list of jobs with optional filtering and pagination
-func (r *JobService) List(ctx context.Context, query JobListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[Job], err error) {
+func (r *JobService) List(ctx context.Context, query JobListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Job], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -77,8 +77,8 @@ func (r *JobService) List(ctx context.Context, query JobListParams, opts ...opti
 }
 
 // Retrieve a list of jobs with optional filtering and pagination
-func (r *JobService) ListAutoPaging(ctx context.Context, query JobListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[Job] {
-	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
+func (r *JobService) ListAutoPaging(ctx context.Context, query JobListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Job] {
+	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a job.

@@ -19,7 +19,7 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
-type MyOffsetPage[T any] struct {
+type PaginatedResults[T any] struct {
 	Data   []T   `json:"data"`
 	Total  int64 `json:"total"`
 	Offset int64 `json:"offset"`
@@ -36,15 +36,15 @@ type MyOffsetPage[T any] struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r MyOffsetPage[T]) RawJSON() string { return r.JSON.raw }
-func (r *MyOffsetPage[T]) UnmarshalJSON(data []byte) error {
+func (r PaginatedResults[T]) RawJSON() string { return r.JSON.raw }
+func (r *PaginatedResults[T]) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // GetNextPage returns the next page as defined by this pagination style. When
 // there is no next page, this function will return a 'nil' for the page value, but
 // will not return an error
-func (r *MyOffsetPage[T]) GetNextPage() (res *MyOffsetPage[T], err error) {
+func (r *PaginatedResults[T]) GetNextPage() (res *PaginatedResults[T], err error) {
 	if len(r.Data) == 0 {
 		return nil, nil
 	}
@@ -71,16 +71,16 @@ func (r *MyOffsetPage[T]) GetNextPage() (res *MyOffsetPage[T], err error) {
 	return res, nil
 }
 
-func (r *MyOffsetPage[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
+func (r *PaginatedResults[T]) SetPageConfig(cfg *requestconfig.RequestConfig, res *http.Response) {
 	if r == nil {
-		r = &MyOffsetPage[T]{}
+		r = &PaginatedResults[T]{}
 	}
 	r.cfg = cfg
 	r.res = res
 }
 
-type MyOffsetPageAutoPager[T any] struct {
-	page *MyOffsetPage[T]
+type PaginatedResultsAutoPager[T any] struct {
+	page *PaginatedResults[T]
 	cur  T
 	idx  int
 	run  int
@@ -88,14 +88,14 @@ type MyOffsetPageAutoPager[T any] struct {
 	paramObj
 }
 
-func NewMyOffsetPageAutoPager[T any](page *MyOffsetPage[T], err error) *MyOffsetPageAutoPager[T] {
-	return &MyOffsetPageAutoPager[T]{
+func NewPaginatedResultsAutoPager[T any](page *PaginatedResults[T], err error) *PaginatedResultsAutoPager[T] {
+	return &PaginatedResultsAutoPager[T]{
 		page: page,
 		err:  err,
 	}
 }
 
-func (r *MyOffsetPageAutoPager[T]) Next() bool {
+func (r *PaginatedResultsAutoPager[T]) Next() bool {
 	if r.page == nil || len(r.page.Data) == 0 {
 		return false
 	}
@@ -112,14 +112,14 @@ func (r *MyOffsetPageAutoPager[T]) Next() bool {
 	return true
 }
 
-func (r *MyOffsetPageAutoPager[T]) Current() T {
+func (r *PaginatedResultsAutoPager[T]) Current() T {
 	return r.cur
 }
 
-func (r *MyOffsetPageAutoPager[T]) Err() error {
+func (r *PaginatedResultsAutoPager[T]) Err() error {
 	return r.err
 }
 
-func (r *MyOffsetPageAutoPager[T]) Index() int {
+func (r *PaginatedResultsAutoPager[T]) Index() int {
 	return r.run
 }

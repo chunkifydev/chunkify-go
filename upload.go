@@ -60,7 +60,7 @@ func (r *UploadService) Get(ctx context.Context, uploadID string, opts ...option
 }
 
 // Retrieve a list of all uploads with optional filtering and pagination.
-func (r *UploadService) List(ctx context.Context, query UploadListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[Upload], err error) {
+func (r *UploadService) List(ctx context.Context, query UploadListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Upload], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -78,8 +78,8 @@ func (r *UploadService) List(ctx context.Context, query UploadListParams, opts .
 }
 
 // Retrieve a list of all uploads with optional filtering and pagination.
-func (r *UploadService) ListAutoPaging(ctx context.Context, query UploadListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[Upload] {
-	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
+func (r *UploadService) ListAutoPaging(ctx context.Context, query UploadListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Upload] {
+	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete an upload.
