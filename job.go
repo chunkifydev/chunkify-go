@@ -145,6 +145,9 @@ func (r *JobService) GetTranscoders(ctx context.Context, jobID string, opts ...o
 
 // FFmpeg encoding parameters specific to AV1 encoding.
 type Av1Param struct {
+	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
+	// 32Kbps and 512Kbps.
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
 	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
 	// values mean better quality but larger file size. Range: 16 to 63. Recommended
 	// values: 16-35 for high quality, 35-45 for good quality, 45-63 for acceptable
@@ -172,6 +175,9 @@ type Av1Param struct {
 	// - main10: Main 10-bit profile, supports 10-bit color
 	// - mainstillpicture: Still picture profile, optimized for single images
 	Profilev string `json:"profilev,omitzero"`
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	VideoCommonParam
 }
 
@@ -182,6 +188,9 @@ func (r Av1Param) MarshalJSON() (data []byte, err error) {
 
 // FFmpeg encoding parameters specific to H.264/AVC encoding.
 type H264Param struct {
+	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
+	// 32Kbps and 512Kbps.
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
 	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
 	// values mean better quality but larger file size. Range: 16 to 35. Recommended
 	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
@@ -211,6 +220,9 @@ type H264Param struct {
 	// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
 	// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
 	Profilev string `json:"profilev,omitzero"`
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
 	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
 	// seeking.
@@ -227,6 +239,9 @@ func (r H264Param) MarshalJSON() (data []byte, err error) {
 // FfmpegCommon with H.265-specific options for quality control and encoding
 // profiles.
 type H265Param struct {
+	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
+	// 32Kbps and 512Kbps.
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
 	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
 	// values mean better quality but larger file size. Range: 16 to 35. Recommended
 	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
@@ -253,6 +268,9 @@ type H265Param struct {
 	// - main10: Main 10-bit profile, supports 10-bit color
 	// - mainstillpicture: Still picture profile, optimized for single images
 	Profilev string `json:"profilev,omitzero"`
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// X265KeyInt specifies the maximum number of frames between keyframes for H.265
 	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
 	// seeking.
@@ -265,8 +283,6 @@ func (r H265Param) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// FFmpeg encoding parameters specific to HLS packaging.
-//
 // The properties AudioBitrate, VideoBitrate are required.
 type HlsParam struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
@@ -469,9 +485,6 @@ func (r *JobTranscoder) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters common to all video formats.
 type VideoCommonParam struct {
-	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
-	// 32Kbps and 512Kbps.
-	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
 	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
 	// 50Mbps.
 	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
@@ -497,9 +510,6 @@ type VideoCommonParam struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
 	Width param.Opt[int64] `json:"width,omitzero"`
