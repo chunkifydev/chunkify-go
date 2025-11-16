@@ -17,6 +17,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/stainless-sdks/chunkify-go/shared"
 )
 
 // JobService contains methods and other services that help with interacting with
@@ -26,7 +27,10 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewJobService] method instead.
 type JobService struct {
-	Options []option.RequestOption
+	Options     []option.RequestOption
+	Files       JobFileService
+	Logs        JobLogService
+	Transcoders JobTranscoderService
 }
 
 // NewJobService generates a new service that applies the given options to each
@@ -35,6 +39,9 @@ type JobService struct {
 func NewJobService(opts ...option.RequestOption) (r JobService) {
 	r = JobService{}
 	r.Options = opts
+	r.Files = NewJobFileService(opts...)
+	r.Logs = NewJobLogService(opts...)
+	r.Transcoders = NewJobTranscoderService(opts...)
 	return
 }
 
@@ -104,42 +111,6 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 	}
 	path := fmt.Sprintf("api/jobs/%s/cancel", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
-}
-
-// Retrieve all files associated with a specific job
-func (r *JobService) GetFiles(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobGetFilesResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if jobID == "" {
-		err = errors.New("missing required jobId parameter")
-		return
-	}
-	path := fmt.Sprintf("api/jobs/%s/files", jobID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
-}
-
-// Retrieve logs for a specific job, either from the transcoder or manager service
-func (r *JobService) GetLogs(ctx context.Context, jobID string, query JobGetLogsParams, opts ...option.RequestOption) (res *JobGetLogsResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if jobID == "" {
-		err = errors.New("missing required jobId parameter")
-		return
-	}
-	path := fmt.Sprintf("api/jobs/%s/logs", jobID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
-}
-
-// Retrieve all the transcoders statuses for a specific job
-func (r *JobService) GetTranscoders(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobGetTranscodersResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
-	if jobID == "" {
-		err = errors.New("missing required jobId parameter")
-		return
-	}
-	path := fmt.Sprintf("api/jobs/%s/transcoders", jobID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -772,7 +743,7 @@ type Job struct {
 	// Creation timestamp
 	CreatedAt string `json:"created_at"`
 	// Error message for the job
-	Error JobError `json:"error"`
+	Error shared.ChunkifyError `json:"error"`
 	// A template defines the transcoding parameters and settings for a job
 	Format JobFormat `json:"format"`
 	// HLS manifest ID
@@ -818,30 +789,6 @@ type Job struct {
 // Returns the unmodified JSON received from the API
 func (r Job) RawJSON() string { return r.JSON.raw }
 func (r *Job) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Error message for the job
-type JobError struct {
-	// Additional error details or output
-	Detail string `json:"detail"`
-	// Main error message
-	Message string `json:"message"`
-	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Detail      respjson.Field
-		Message     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobError) RawJSON() string { return r.JSON.raw }
-func (r *JobError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1602,7 +1549,7 @@ type JobNewResponse struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
+	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -1620,187 +1567,12 @@ type JobGetResponse struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
+	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
 func (r JobGetResponse) RawJSON() string { return r.JSON.raw }
 func (r *JobGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Successful response
-type JobGetFilesResponse struct {
-	Data []File `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	ResponseOk
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobGetFilesResponse) RawJSON() string { return r.JSON.raw }
-func (r *JobGetFilesResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Successful response
-type JobGetLogsResponse struct {
-	Data []JobGetLogsResponseData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	ResponseOk
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobGetLogsResponse) RawJSON() string { return r.JSON.raw }
-func (r *JobGetLogsResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type JobGetLogsResponseData struct {
-	// Additional structured data attached to the log
-	Attributes any `json:"attributes"`
-	// Optional ID of the job this log is associated with
-	JobID string `json:"job_id"`
-	// Log level (e.g. "info", "error", "debug")
-	Level string `json:"level"`
-	// The log message content
-	Msg string `json:"msg"`
-	// Name of the service that generated the log
-	Service string `json:"service"`
-	// Timestamp when the log was created
-	Time string `json:"time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Attributes  respjson.Field
-		JobID       respjson.Field
-		Level       respjson.Field
-		Msg         respjson.Field
-		Service     respjson.Field
-		Time        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobGetLogsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *JobGetLogsResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Successful response
-type JobGetTranscodersResponse struct {
-	Data []JobGetTranscodersResponseData `json:"data"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-	ResponseOk
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobGetTranscodersResponse) RawJSON() string { return r.JSON.raw }
-func (r *JobGetTranscodersResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type JobGetTranscodersResponseData struct {
-	// Unique identifier of the transcoder
-	ID string `json:"id"`
-	// Billable time in seconds
-	BillableTime int64 `json:"billable_time"`
-	// End time of the current chunk in seconds
-	ChunkEndTime float64 `json:"chunk_end_time"`
-	// Number of the chunk being processed
-	ChunkNumber int64 `json:"chunk_number"`
-	// Start time of the current chunk in seconds
-	ChunkStartTime float64 `json:"chunk_start_time"`
-	// CPU time used for transcoding in seconds
-	CPUTime float64 `json:"cpu_time"`
-	// Timestamp when the status was created
-	CreatedAt string `json:"created_at"`
-	// Error message if the transcoding failed
-	Error JobGetTranscodersResponseDataError `json:"error"`
-	// Current frames per second being processed
-	Fps float64 `json:"fps"`
-	// Current frame number being processed
-	Frame int64 `json:"frame"`
-	// Unique identifier of the job
-	JobID string `json:"job_id"`
-	// Current output time in seconds
-	OutTime int64 `json:"out_time"`
-	// Progress percentage of the transcoding operation (0-100)
-	Progress float64 `json:"progress"`
-	// Current processing speed multiplier
-	Speed float64 `json:"speed"`
-	// Current status of the transcoder (starting, transcoding, finished, error)
-	Status string `json:"status"`
-	// Unique identifier of the transcoder instance (generated by the transcoder)
-	TranscoderInstanceID string `json:"transcoder_instance_id"`
-	// Timestamp when the status was last updated
-	UpdatedAt string `json:"updated_at"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		BillableTime         respjson.Field
-		ChunkEndTime         respjson.Field
-		ChunkNumber          respjson.Field
-		ChunkStartTime       respjson.Field
-		CPUTime              respjson.Field
-		CreatedAt            respjson.Field
-		Error                respjson.Field
-		Fps                  respjson.Field
-		Frame                respjson.Field
-		JobID                respjson.Field
-		OutTime              respjson.Field
-		Progress             respjson.Field
-		Speed                respjson.Field
-		Status               respjson.Field
-		TranscoderInstanceID respjson.Field
-		UpdatedAt            respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobGetTranscodersResponseData) RawJSON() string { return r.JSON.raw }
-func (r *JobGetTranscodersResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Error message if the transcoding failed
-type JobGetTranscodersResponseDataError struct {
-	// Additional error details or output
-	Detail string `json:"detail"`
-	// Main error message
-	Message string `json:"message"`
-	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Detail      respjson.Field
-		Message     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobGetTranscodersResponseDataError) RawJSON() string { return r.JSON.raw }
-func (r *JobGetTranscodersResponseDataError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1963,29 +1735,3 @@ func (r JobListParamsCreated) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-type JobGetLogsParams struct {
-	// Service type (transcoder or manager)
-	//
-	// Any of "transcoder", "manager".
-	Service JobGetLogsParamsService `query:"service,omitzero,required" json:"-"`
-	// Transcoder ID (required if service is transcoder)
-	TranscoderID param.Opt[int64] `query:"transcoder_id,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [JobGetLogsParams]'s query parameters as `url.Values`.
-func (r JobGetLogsParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
-}
-
-// Service type (transcoder or manager)
-type JobGetLogsParamsService string
-
-const (
-	JobGetLogsParamsServiceTranscoder JobGetLogsParamsService = "transcoder"
-	JobGetLogsParamsServiceManager    JobGetLogsParamsService = "manager"
-)
