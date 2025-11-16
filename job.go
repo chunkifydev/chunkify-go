@@ -143,327 +143,6 @@ func (r *JobService) GetTranscoders(ctx context.Context, jobID string, opts ...o
 	return
 }
 
-// FFmpeg encoding parameters specific to AV1 encoding.
-type Av1Param struct {
-	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
-	// values mean better quality but larger file size. Range: 16 to 63. Recommended
-	// values: 16-35 for high quality, 35-45 for good quality, 45-63 for acceptable
-	// quality.
-	Crf      param.Opt[int64]  `json:"crf,omitzero"`
-	Movflags param.Opt[string] `json:"movflags,omitzero"`
-	// Level specifies the AV1 profile level. Valid values: 30-31 (main), 41 (main10).
-	// Higher levels support higher resolutions and bitrates but require more
-	// processing power.
-	//
-	// Any of 30, 31, 41.
-	Level int64 `json:"level,omitzero"`
-	// Preset controls the encoding efficiency and processing intensity. Lower presets
-	// use more optimization features, creating smaller files with better quality but
-	// requiring more compute time. Higher presets encode faster but produce larger
-	// files.
-	//
-	// Preset ranges:
-	//
-	// - 6-7: Fast encoding for real-time applications (smaller files)
-	// - 8-10: Balanced efficiency and speed for general use
-	// - 11-13: Fastest encoding for real-time applications (larger files)
-	//
-	// Any of "6", "7", "8", "9", "10", "11", "12", "13".
-	Preset Av1Preset `json:"preset,omitzero"`
-	// Profilev specifies the AV1 profile. Valid values:
-	//
-	// - main: Main profile, good for most applications
-	// - main10: Main 10-bit profile, supports 10-bit color
-	// - mainstillpicture: Still picture profile, optimized for single images
-	//
-	// Any of "main", "main10", "mainstillpicture".
-	Profilev Av1Profilev `json:"profilev,omitzero"`
-	paramObj
-}
-
-func (r Av1Param) MarshalJSON() (data []byte, err error) {
-	type shadow Av1Param
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *Av1Param) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[Av1Param](
-		"level", 30, 31, 41,
-	)
-}
-
-// Preset controls the encoding efficiency and processing intensity. Lower presets
-// use more optimization features, creating smaller files with better quality but
-// requiring more compute time. Higher presets encode faster but produce larger
-// files.
-//
-// Preset ranges:
-//
-// - 6-7: Fast encoding for real-time applications (smaller files)
-// - 8-10: Balanced efficiency and speed for general use
-// - 11-13: Fastest encoding for real-time applications (larger files)
-type Av1Preset string
-
-const (
-	Av1Preset6  Av1Preset = "6"
-	Av1Preset7  Av1Preset = "7"
-	Av1Preset8  Av1Preset = "8"
-	Av1Preset9  Av1Preset = "9"
-	Av1Preset10 Av1Preset = "10"
-	Av1Preset11 Av1Preset = "11"
-	Av1Preset12 Av1Preset = "12"
-	Av1Preset13 Av1Preset = "13"
-)
-
-// Profilev specifies the AV1 profile. Valid values:
-//
-// - main: Main profile, good for most applications
-// - main10: Main 10-bit profile, supports 10-bit color
-// - mainstillpicture: Still picture profile, optimized for single images
-type Av1Profilev string
-
-const (
-	Av1ProfilevMain             Av1Profilev = "main"
-	Av1ProfilevMain10           Av1Profilev = "main10"
-	Av1ProfilevMainstillpicture Av1Profilev = "mainstillpicture"
-)
-
-// FFmpeg encoding parameters specific to H.264/AVC encoding.
-type H264Param struct {
-	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
-	// values mean better quality but larger file size. Range: 16 to 35. Recommended
-	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
-	// quality.
-	Crf      param.Opt[int64]  `json:"crf,omitzero"`
-	Movflags param.Opt[string] `json:"movflags,omitzero"`
-	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
-	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
-	// seeking.
-	X264Keyint param.Opt[int64] `json:"x264_keyint,omitzero"`
-	// Level specifies the H.264 profile level. Valid values: 10-13 (baseline), 20-22
-	// (main), 30-32 (high), 40-42 (high), 50-51 (high). Higher levels support higher
-	// resolutions and bitrates but require more processing power.
-	//
-	// Any of 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51.
-	Level int64 `json:"level,omitzero"`
-	// Preset specifies the encoding speed preset. Valid values (from fastest to
-	// slowest):
-	//
-	// - ultrafast: Fastest encoding, lowest quality
-	// - superfast: Very fast encoding, lower quality
-	// - veryfast: Fast encoding, moderate quality
-	// - faster: Faster encoding, good quality
-	// - fast: Fast encoding, better quality
-	// - medium: Balanced preset, best quality
-	//
-	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
-	Preset H264Preset `json:"preset,omitzero"`
-	// Profilev specifies the H.264 profile. Valid values:
-	//
-	// - baseline: Basic profile, good for mobile devices
-	// - main: Main profile, good for most applications
-	// - high: High profile, best quality but requires more processing
-	// - high10: High 10-bit profile, supports 10-bit color
-	// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
-	// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
-	//
-	// Any of "baseline", "main", "high", "high10", "high422", "high444".
-	Profilev H264Profilev `json:"profilev,omitzero"`
-	paramObj
-}
-
-func (r H264Param) MarshalJSON() (data []byte, err error) {
-	type shadow H264Param
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *H264Param) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[H264Param](
-		"level", 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51,
-	)
-}
-
-// Preset specifies the encoding speed preset. Valid values (from fastest to
-// slowest):
-//
-// - ultrafast: Fastest encoding, lowest quality
-// - superfast: Very fast encoding, lower quality
-// - veryfast: Fast encoding, moderate quality
-// - faster: Faster encoding, good quality
-// - fast: Fast encoding, better quality
-// - medium: Balanced preset, best quality
-type H264Preset string
-
-const (
-	H264PresetUltrafast H264Preset = "ultrafast"
-	H264PresetSuperfast H264Preset = "superfast"
-	H264PresetVeryfast  H264Preset = "veryfast"
-	H264PresetFaster    H264Preset = "faster"
-	H264PresetFast      H264Preset = "fast"
-	H264PresetMedium    H264Preset = "medium"
-)
-
-// Profilev specifies the H.264 profile. Valid values:
-//
-// - baseline: Basic profile, good for mobile devices
-// - main: Main profile, good for most applications
-// - high: High profile, best quality but requires more processing
-// - high10: High 10-bit profile, supports 10-bit color
-// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
-// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
-type H264Profilev string
-
-const (
-	H264ProfilevBaseline H264Profilev = "baseline"
-	H264ProfilevMain     H264Profilev = "main"
-	H264ProfilevHigh     H264Profilev = "high"
-	H264ProfilevHigh10   H264Profilev = "high10"
-	H264ProfilevHigh422  H264Profilev = "high422"
-	H264ProfilevHigh444  H264Profilev = "high444"
-)
-
-// FFmpeg encoding parameters specific to H.265/HEVC encoding. It extends
-// FfmpegCommon with H.265-specific options for quality control and encoding
-// profiles.
-type H265Param struct {
-	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
-	// values mean better quality but larger file size. Range: 16 to 35. Recommended
-	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
-	// quality.
-	Crf      param.Opt[int64]  `json:"crf,omitzero"`
-	Movflags param.Opt[string] `json:"movflags,omitzero"`
-	// X265KeyInt specifies the maximum number of frames between keyframes for H.265
-	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
-	// seeking.
-	X265Keyint param.Opt[int64] `json:"x265_keyint,omitzero"`
-	// Level specifies the H.265 profile level. Valid values: 30-31 (main), 41
-	// (main10). Higher levels support higher resolutions and bitrates but require more
-	// processing power.
-	//
-	// Any of 30, 31, 41.
-	Level int64 `json:"level,omitzero"`
-	// Preset specifies the encoding speed preset. Valid values (from fastest to
-	// slowest):
-	//
-	// - ultrafast: Fastest encoding, lowest quality
-	// - superfast: Very fast encoding, lower quality
-	// - veryfast: Fast encoding, moderate quality
-	// - faster: Faster encoding, good quality
-	// - fast: Fast encoding, better quality
-	// - medium: Balanced preset, best quality
-	//
-	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
-	Preset H265Preset `json:"preset,omitzero"`
-	// Profilev specifies the H.265 profile. Valid values:
-	//
-	// - main: Main profile, good for most applications
-	// - main10: Main 10-bit profile, supports 10-bit color
-	// - mainstillpicture: Still picture profile, optimized for single images
-	//
-	// Any of "main", "main10", "mainstillpicture".
-	Profilev H265Profilev `json:"profilev,omitzero"`
-	paramObj
-}
-
-func (r H265Param) MarshalJSON() (data []byte, err error) {
-	type shadow H265Param
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *H265Param) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[H265Param](
-		"level", 30, 31, 41,
-	)
-}
-
-// Preset specifies the encoding speed preset. Valid values (from fastest to
-// slowest):
-//
-// - ultrafast: Fastest encoding, lowest quality
-// - superfast: Very fast encoding, lower quality
-// - veryfast: Fast encoding, moderate quality
-// - faster: Faster encoding, good quality
-// - fast: Fast encoding, better quality
-// - medium: Balanced preset, best quality
-type H265Preset string
-
-const (
-	H265PresetUltrafast H265Preset = "ultrafast"
-	H265PresetSuperfast H265Preset = "superfast"
-	H265PresetVeryfast  H265Preset = "veryfast"
-	H265PresetFaster    H265Preset = "faster"
-	H265PresetFast      H265Preset = "fast"
-	H265PresetMedium    H265Preset = "medium"
-)
-
-// Profilev specifies the H.265 profile. Valid values:
-//
-// - main: Main profile, good for most applications
-// - main10: Main 10-bit profile, supports 10-bit color
-// - mainstillpicture: Still picture profile, optimized for single images
-type H265Profilev string
-
-const (
-	H265ProfilevMain             H265Profilev = "main"
-	H265ProfilevMain10           H265Profilev = "main10"
-	H265ProfilevMainstillpicture H265Profilev = "mainstillpicture"
-)
-
-// FFmpeg encoding parameters specific to HLS packaging.
-type HlsParam struct {
-	// HlsEnc enables encryption for HLS segments when set to true.
-	HlsEnc param.Opt[bool] `json:"hls_enc,omitzero"`
-	// HlsEncIv specifies the initialization vector for encryption. Maximum length: 64
-	// characters. Required when HlsEnc is true.
-	HlsEncIv param.Opt[string] `json:"hls_enc_iv,omitzero"`
-	// HlsEncKey specifies the encryption key for HLS segments. Maximum length: 64
-	// characters. Required when HlsEnc is true.
-	HlsEncKey param.Opt[string] `json:"hls_enc_key,omitzero"`
-	// HlsEncKeyUrl specifies the URL where clients can fetch the encryption key.
-	// Required when HlsEnc is true.
-	HlsEncKeyURL param.Opt[string] `json:"hls_enc_key_url,omitzero"`
-	// HlsTime specifies the duration of each HLS segment in seconds. Range: 1 to 10.
-	// Shorter segments provide faster startup but more overhead, longer segments are
-	// more efficient.
-	HlsTime param.Opt[int64] `json:"hls_time,omitzero"`
-	// HlsSegmentType specifies the type of HLS segments. Valid values:
-	//
-	// - mpegts: Traditional MPEG-TS segments, better compatibility
-	// - fmp4: Fragmented MP4 segments, better efficiency
-	//
-	// Any of "mpegts", "fmp4".
-	HlsSegmentType HlsHlsSegmentType `json:"hls_segment_type,omitzero"`
-	paramObj
-}
-
-func (r HlsParam) MarshalJSON() (data []byte, err error) {
-	type shadow HlsParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *HlsParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// HlsSegmentType specifies the type of HLS segments. Valid values:
-//
-// - mpegts: Traditional MPEG-TS segments, better compatibility
-// - fmp4: Fragmented MP4 segments, better efficiency
-type HlsHlsSegmentType string
-
-const (
-	HlsHlsSegmentTypeMpegts HlsHlsSegmentType = "mpegts"
-	HlsHlsSegmentTypeFmp4   HlsHlsSegmentType = "fmp4"
-)
-
 type Job struct {
 	// Unique identifier for the job
 	ID string `json:"id"`
@@ -611,143 +290,6 @@ func (r JobTranscoder) RawJSON() string { return r.JSON.raw }
 func (r *JobTranscoder) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// FFmpeg encoding parameters common to all video formats.
-type VideoCommonParam struct {
-	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
-	// 50Mbps.
-	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
-	// DisableAudio indicates whether to disable audio processing.
-	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
-	// DisableVideo indicates whether to disable video processing.
-	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
-	// Duration specifies the duration to process in seconds. Must be a positive value.
-	Duration param.Opt[int64] `json:"duration,omitzero"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
-	Framerate param.Opt[float64] `json:"framerate,omitzero"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
-	Gop param.Opt[int64] `json:"gop,omitzero"`
-	// Height specifies the output video height in pixels. Must be between -2 and 7680.
-	// Use -2 for automatic calculation while maintaining aspect ratio.
-	Height param.Opt[int64] `json:"height,omitzero"`
-	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
-	// Minrate specifies the minimum video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	Minrate param.Opt[int64] `json:"minrate,omitzero"`
-	// Seek specifies the timestamp to start processing from (in seconds). Must be a
-	// positive value.
-	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// Width specifies the output video width in pixels. Must be between -2 and 7680.
-	// Use -2 for automatic calculation while maintaining aspect ratio.
-	Width param.Opt[int64] `json:"width,omitzero"`
-	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
-	// (stereo), 5 (5.1), 7 (7.1)
-	//
-	// Any of 1, 2, 5, 7.
-	Channels int64 `json:"channels,omitzero"`
-	// PixFmt specifies the pixel format. Valid value: yuv420p
-	//
-	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
-	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
-	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
-	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
-	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
-	Pixfmt VideoCommonPixfmt `json:"pixfmt,omitzero"`
-	paramObj
-}
-
-func (r VideoCommonParam) MarshalJSON() (data []byte, err error) {
-	type shadow VideoCommonParam
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *VideoCommonParam) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[VideoCommonParam](
-		"channels", 1, 2, 5, 7,
-	)
-}
-
-// PixFmt specifies the pixel format. Valid value: yuv420p
-type VideoCommonPixfmt string
-
-const (
-	VideoCommonPixfmtYuv410p     VideoCommonPixfmt = "yuv410p"
-	VideoCommonPixfmtYuv411p     VideoCommonPixfmt = "yuv411p"
-	VideoCommonPixfmtYuv420p     VideoCommonPixfmt = "yuv420p"
-	VideoCommonPixfmtYuv422p     VideoCommonPixfmt = "yuv422p"
-	VideoCommonPixfmtYuv440p     VideoCommonPixfmt = "yuv440p"
-	VideoCommonPixfmtYuv444p     VideoCommonPixfmt = "yuv444p"
-	VideoCommonPixfmtYuvJ411p    VideoCommonPixfmt = "yuvJ411p"
-	VideoCommonPixfmtYuvJ420p    VideoCommonPixfmt = "yuvJ420p"
-	VideoCommonPixfmtYuvJ422p    VideoCommonPixfmt = "yuvJ422p"
-	VideoCommonPixfmtYuvJ440p    VideoCommonPixfmt = "yuvJ440p"
-	VideoCommonPixfmtYuvJ444p    VideoCommonPixfmt = "yuvJ444p"
-	VideoCommonPixfmtYuv420p10le VideoCommonPixfmt = "yuv420p10le"
-	VideoCommonPixfmtYuv422p10le VideoCommonPixfmt = "yuv422p10le"
-	VideoCommonPixfmtYuv440p10le VideoCommonPixfmt = "yuv440p10le"
-	VideoCommonPixfmtYuv444p10le VideoCommonPixfmt = "yuv444p10le"
-	VideoCommonPixfmtYuv420p12le VideoCommonPixfmt = "yuv420p12le"
-	VideoCommonPixfmtYuv422p12le VideoCommonPixfmt = "yuv422p12le"
-	VideoCommonPixfmtYuv440p12le VideoCommonPixfmt = "yuv440p12le"
-	VideoCommonPixfmtYuv444p12le VideoCommonPixfmt = "yuv444p12le"
-	VideoCommonPixfmtYuv420p10be VideoCommonPixfmt = "yuv420p10be"
-	VideoCommonPixfmtYuv422p10be VideoCommonPixfmt = "yuv422p10be"
-	VideoCommonPixfmtYuv440p10be VideoCommonPixfmt = "yuv440p10be"
-	VideoCommonPixfmtYuv444p10be VideoCommonPixfmt = "yuv444p10be"
-	VideoCommonPixfmtYuv420p12be VideoCommonPixfmt = "yuv420p12be"
-	VideoCommonPixfmtYuv422p12be VideoCommonPixfmt = "yuv422p12be"
-	VideoCommonPixfmtYuv440p12be VideoCommonPixfmt = "yuv440p12be"
-	VideoCommonPixfmtYuv444p12be VideoCommonPixfmt = "yuv444p12be"
-)
-
-// FFmpeg encoding parameters specific to VP9 encoding.
-type Vp9Param struct {
-	// CpuUsed specifies the CPU usage level for VP9 encoding. Range: 0 to 8. Lower
-	// values mean better quality but slower encoding, higher values mean faster
-	// encoding but lower quality. Recommended values: 0-2 for high quality, 2-4 for
-	// good quality, 4-6 for balanced, 6-8 for speed
-	CPUUsed param.Opt[string] `json:"cpu_used,omitzero"`
-	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
-	// values mean better quality but larger file size. Range: 15 to 35. Recommended
-	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
-	// quality.
-	Crf param.Opt[int64] `json:"crf,omitzero"`
-	// Quality specifies the VP9 encoding quality preset. Valid values:
-	//
-	// - good: Balanced quality preset, good for most applications
-	// - best: Best quality preset, slower encoding
-	// - realtime: Fast encoding preset, suitable for live streaming
-	//
-	// Any of "good", "best", "realtime".
-	Quality Vp9Quality `json:"quality,omitzero"`
-	paramObj
-}
-
-func (r Vp9Param) MarshalJSON() (data []byte, err error) {
-	type shadow Vp9Param
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *Vp9Param) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Quality specifies the VP9 encoding quality preset. Valid values:
-//
-// - good: Balanced quality preset, good for most applications
-// - best: Best quality preset, slower encoding
-// - realtime: Fast encoding preset, suitable for live streaming
-type Vp9Quality string
-
-const (
-	Vp9QualityGood     Vp9Quality = "good"
-	Vp9QualityBest     Vp9Quality = "best"
-	Vp9QualityRealtime Vp9Quality = "realtime"
-)
 
 // Successful response
 type JobNewResponse struct {
@@ -1027,12 +569,105 @@ type JobNewParamsFormatHlsAv1 struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
+	// 50Mbps.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 16 to 63. Recommended
+	// values: 16-35 for high quality, 35-45 for good quality, 45-63 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio indicates whether to disable audio processing.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo indicates whether to disable video processing.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the duration to process in seconds. Must be a positive value.
+	Duration param.Opt[int64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output video height in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// HlsEnc enables encryption for HLS segments when set to true.
+	HlsEnc param.Opt[bool] `json:"hls_enc,omitzero"`
+	// HlsEncIv specifies the initialization vector for encryption. Maximum length: 64
+	// characters. Required when HlsEnc is true.
+	HlsEncIv param.Opt[string] `json:"hls_enc_iv,omitzero"`
+	// HlsEncKey specifies the encryption key for HLS segments. Maximum length: 64
+	// characters. Required when HlsEnc is true.
+	HlsEncKey param.Opt[string] `json:"hls_enc_key,omitzero"`
+	// HlsEncKeyUrl specifies the URL where clients can fetch the encryption key.
+	// Required when HlsEnc is true.
+	HlsEncKeyURL param.Opt[string] `json:"hls_enc_key_url,omitzero"`
+	// HlsTime specifies the duration of each HLS segment in seconds. Range: 1 to 10.
+	// Shorter segments provide faster startup but more overhead, longer segments are
+	// more efficient.
+	HlsTime param.Opt[int64] `json:"hls_time,omitzero"`
+	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// Minrate specifies the minimum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
+	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Seek specifies the timestamp to start processing from (in seconds). Must be a
+	// positive value.
+	Seek param.Opt[int64] `json:"seek,omitzero"`
 	// VideoBitrate specifies the video bitrate in bits per second. Must be between
 	// 100Kbps and 50Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
-	HlsParam
-	Av1Param
-	VideoCommonParam
+	// Width specifies the output video width in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
+	// (stereo), 5 (5.1), 7 (7.1)
+	//
+	// Any of 1, 2, 5, 7.
+	Channels int64 `json:"channels,omitzero"`
+	// HlsSegmentType specifies the type of HLS segments. Valid values:
+	//
+	// - mpegts: Traditional MPEG-TS segments, better compatibility
+	// - fmp4: Fragmented MP4 segments, better efficiency
+	//
+	// Any of "mpegts", "fmp4".
+	HlsSegmentType string `json:"hls_segment_type,omitzero"`
+	// Level specifies the AV1 profile level. Valid values: 30-31 (main), 41 (main10).
+	// Higher levels support higher resolutions and bitrates but require more
+	// processing power.
+	//
+	// Any of 30, 31, 41.
+	Level int64 `json:"level,omitzero"`
+	// PixFmt specifies the pixel format. Valid value: yuv420p
+	//
+	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
+	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
+	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
+	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
+	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
+	Pixfmt string `json:"pixfmt,omitzero"`
+	// Preset controls the encoding efficiency and processing intensity. Lower presets
+	// use more optimization features, creating smaller files with better quality but
+	// requiring more compute time. Higher presets encode faster but produce larger
+	// files.
+	//
+	// Preset ranges:
+	//
+	// - 6-7: Fast encoding for real-time applications (smaller files)
+	// - 8-10: Balanced efficiency and speed for general use
+	// - 11-13: Fastest encoding for real-time applications (larger files)
+	//
+	// Any of "6", "7", "8", "9", "10", "11", "12", "13".
+	Preset string `json:"preset,omitzero"`
+	// Profilev specifies the AV1 profile. Valid values:
+	//
+	// - main: Main profile, good for most applications
+	// - main10: Main 10-bit profile, supports 10-bit color
+	// - mainstillpicture: Still picture profile, optimized for single images
+	//
+	// Any of "main", "main10", "mainstillpicture".
+	Profilev string `json:"profilev,omitzero"`
 	paramObj
 }
 
@@ -1040,18 +675,141 @@ func (r JobNewParamsFormatHlsAv1) MarshalJSON() (data []byte, err error) {
 	type shadow JobNewParamsFormatHlsAv1
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *JobNewParamsFormatHlsAv1) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsAv1](
+		"channels", 1, 2, 5, 7,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsAv1](
+		"hls_segment_type", "mpegts", "fmp4",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsAv1](
+		"level", 30, 31, 41,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsAv1](
+		"pixfmt", "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le", "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be", "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsAv1](
+		"preset", "6", "7", "8", "9", "10", "11", "12", "13",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsAv1](
+		"profilev", "main", "main10", "mainstillpicture",
+	)
+}
 
 // HLS H264 configuration
 type JobNewParamsFormatHlsH264 struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
+	// 50Mbps.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 16 to 35. Recommended
+	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio indicates whether to disable audio processing.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo indicates whether to disable video processing.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the duration to process in seconds. Must be a positive value.
+	Duration param.Opt[int64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output video height in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// HlsEnc enables encryption for HLS segments when set to true.
+	HlsEnc param.Opt[bool] `json:"hls_enc,omitzero"`
+	// HlsEncIv specifies the initialization vector for encryption. Maximum length: 64
+	// characters. Required when HlsEnc is true.
+	HlsEncIv param.Opt[string] `json:"hls_enc_iv,omitzero"`
+	// HlsEncKey specifies the encryption key for HLS segments. Maximum length: 64
+	// characters. Required when HlsEnc is true.
+	HlsEncKey param.Opt[string] `json:"hls_enc_key,omitzero"`
+	// HlsEncKeyUrl specifies the URL where clients can fetch the encryption key.
+	// Required when HlsEnc is true.
+	HlsEncKeyURL param.Opt[string] `json:"hls_enc_key_url,omitzero"`
+	// HlsTime specifies the duration of each HLS segment in seconds. Range: 1 to 10.
+	// Shorter segments provide faster startup but more overhead, longer segments are
+	// more efficient.
+	HlsTime param.Opt[int64] `json:"hls_time,omitzero"`
+	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// Minrate specifies the minimum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
+	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Seek specifies the timestamp to start processing from (in seconds). Must be a
+	// positive value.
+	Seek param.Opt[int64] `json:"seek,omitzero"`
 	// VideoBitrate specifies the video bitrate in bits per second. Must be between
 	// 100Kbps and 50Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
-	HlsParam
-	H264Param
-	VideoCommonParam
+	// Width specifies the output video width in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
+	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
+	// seeking.
+	X264Keyint param.Opt[int64] `json:"x264_keyint,omitzero"`
+	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
+	// (stereo), 5 (5.1), 7 (7.1)
+	//
+	// Any of 1, 2, 5, 7.
+	Channels int64 `json:"channels,omitzero"`
+	// HlsSegmentType specifies the type of HLS segments. Valid values:
+	//
+	// - mpegts: Traditional MPEG-TS segments, better compatibility
+	// - fmp4: Fragmented MP4 segments, better efficiency
+	//
+	// Any of "mpegts", "fmp4".
+	HlsSegmentType string `json:"hls_segment_type,omitzero"`
+	// Level specifies the H.264 profile level. Valid values: 10-13 (baseline), 20-22
+	// (main), 30-32 (high), 40-42 (high), 50-51 (high). Higher levels support higher
+	// resolutions and bitrates but require more processing power.
+	//
+	// Any of 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51.
+	Level int64 `json:"level,omitzero"`
+	// PixFmt specifies the pixel format. Valid value: yuv420p
+	//
+	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
+	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
+	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
+	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
+	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
+	Pixfmt string `json:"pixfmt,omitzero"`
+	// Preset specifies the encoding speed preset. Valid values (from fastest to
+	// slowest):
+	//
+	// - ultrafast: Fastest encoding, lowest quality
+	// - superfast: Very fast encoding, lower quality
+	// - veryfast: Fast encoding, moderate quality
+	// - faster: Faster encoding, good quality
+	// - fast: Fast encoding, better quality
+	// - medium: Balanced preset, best quality
+	//
+	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
+	Preset string `json:"preset,omitzero"`
+	// Profilev specifies the H.264 profile. Valid values:
+	//
+	// - baseline: Basic profile, good for mobile devices
+	// - main: Main profile, good for most applications
+	// - high: High profile, best quality but requires more processing
+	// - high10: High 10-bit profile, supports 10-bit color
+	// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
+	// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
+	//
+	// Any of "baseline", "main", "high", "high10", "high422", "high444".
+	Profilev string `json:"profilev,omitzero"`
 	paramObj
 }
 
@@ -1059,24 +817,168 @@ func (r JobNewParamsFormatHlsH264) MarshalJSON() (data []byte, err error) {
 	type shadow JobNewParamsFormatHlsH264
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *JobNewParamsFormatHlsH264) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH264](
+		"channels", 1, 2, 5, 7,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH264](
+		"hls_segment_type", "mpegts", "fmp4",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH264](
+		"level", 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH264](
+		"pixfmt", "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le", "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be", "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH264](
+		"preset", "ultrafast", "superfast", "veryfast", "faster", "fast", "medium",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH264](
+		"profilev", "baseline", "main", "high", "high10", "high422", "high444",
+	)
+}
 
 // HLS H265 configuration
 type JobNewParamsFormatHlsH265 struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
+	// 50Mbps.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 16 to 35. Recommended
+	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio indicates whether to disable audio processing.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo indicates whether to disable video processing.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the duration to process in seconds. Must be a positive value.
+	Duration param.Opt[int64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output video height in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// HlsEnc enables encryption for HLS segments when set to true.
+	HlsEnc param.Opt[bool] `json:"hls_enc,omitzero"`
+	// HlsEncIv specifies the initialization vector for encryption. Maximum length: 64
+	// characters. Required when HlsEnc is true.
+	HlsEncIv param.Opt[string] `json:"hls_enc_iv,omitzero"`
+	// HlsEncKey specifies the encryption key for HLS segments. Maximum length: 64
+	// characters. Required when HlsEnc is true.
+	HlsEncKey param.Opt[string] `json:"hls_enc_key,omitzero"`
+	// HlsEncKeyUrl specifies the URL where clients can fetch the encryption key.
+	// Required when HlsEnc is true.
+	HlsEncKeyURL param.Opt[string] `json:"hls_enc_key_url,omitzero"`
+	// HlsTime specifies the duration of each HLS segment in seconds. Range: 1 to 10.
+	// Shorter segments provide faster startup but more overhead, longer segments are
+	// more efficient.
+	HlsTime param.Opt[int64] `json:"hls_time,omitzero"`
+	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// Minrate specifies the minimum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
+	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Seek specifies the timestamp to start processing from (in seconds). Must be a
+	// positive value.
+	Seek param.Opt[int64] `json:"seek,omitzero"`
 	// VideoBitrate specifies the video bitrate in bits per second. Must be between
 	// 100Kbps and 50Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
-	HlsParam
-	H265Param
-	VideoCommonParam
+	// Width specifies the output video width in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// X265KeyInt specifies the maximum number of frames between keyframes for H.265
+	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
+	// seeking.
+	X265Keyint param.Opt[int64] `json:"x265_keyint,omitzero"`
+	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
+	// (stereo), 5 (5.1), 7 (7.1)
+	//
+	// Any of 1, 2, 5, 7.
+	Channels int64 `json:"channels,omitzero"`
+	// HlsSegmentType specifies the type of HLS segments. Valid values:
+	//
+	// - mpegts: Traditional MPEG-TS segments, better compatibility
+	// - fmp4: Fragmented MP4 segments, better efficiency
+	//
+	// Any of "mpegts", "fmp4".
+	HlsSegmentType string `json:"hls_segment_type,omitzero"`
+	// Level specifies the H.265 profile level. Valid values: 30-31 (main), 41
+	// (main10). Higher levels support higher resolutions and bitrates but require more
+	// processing power.
+	//
+	// Any of 30, 31, 41.
+	Level int64 `json:"level,omitzero"`
+	// PixFmt specifies the pixel format. Valid value: yuv420p
+	//
+	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
+	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
+	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
+	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
+	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
+	Pixfmt string `json:"pixfmt,omitzero"`
+	// Preset specifies the encoding speed preset. Valid values (from fastest to
+	// slowest):
+	//
+	// - ultrafast: Fastest encoding, lowest quality
+	// - superfast: Very fast encoding, lower quality
+	// - veryfast: Fast encoding, moderate quality
+	// - faster: Faster encoding, good quality
+	// - fast: Fast encoding, better quality
+	// - medium: Balanced preset, best quality
+	//
+	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
+	Preset string `json:"preset,omitzero"`
+	// Profilev specifies the H.265 profile. Valid values:
+	//
+	// - main: Main profile, good for most applications
+	// - main10: Main 10-bit profile, supports 10-bit color
+	// - mainstillpicture: Still picture profile, optimized for single images
+	//
+	// Any of "main", "main10", "mainstillpicture".
+	Profilev string `json:"profilev,omitzero"`
 	paramObj
 }
 
 func (r JobNewParamsFormatHlsH265) MarshalJSON() (data []byte, err error) {
 	type shadow JobNewParamsFormatHlsH265
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *JobNewParamsFormatHlsH265) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH265](
+		"channels", 1, 2, 5, 7,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH265](
+		"hls_segment_type", "mpegts", "fmp4",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH265](
+		"level", 30, 31, 41,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH265](
+		"pixfmt", "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le", "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be", "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH265](
+		"preset", "ultrafast", "superfast", "veryfast", "faster", "fast", "medium",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatHlsH265](
+		"profilev", "main", "main10", "mainstillpicture",
+	)
 }
 
 // FFmpeg encoding parameters specific to JPEG image extraction.
@@ -1113,11 +1015,83 @@ type JobNewParamsFormatMP4Av1 struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
+	// 50Mbps.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 16 to 63. Recommended
+	// values: 16-35 for high quality, 35-45 for good quality, 45-63 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio indicates whether to disable audio processing.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo indicates whether to disable video processing.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the duration to process in seconds. Must be a positive value.
+	Duration param.Opt[int64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output video height in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// Minrate specifies the minimum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
+	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Seek specifies the timestamp to start processing from (in seconds). Must be a
+	// positive value.
+	Seek param.Opt[int64] `json:"seek,omitzero"`
 	// VideoBitrate specifies the video bitrate in bits per second. Must be between
 	// 100Kbps and 50Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
-	Av1Param
-	VideoCommonParam
+	// Width specifies the output video width in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
+	// (stereo), 5 (5.1), 7 (7.1)
+	//
+	// Any of 1, 2, 5, 7.
+	Channels int64 `json:"channels,omitzero"`
+	// Level specifies the AV1 profile level. Valid values: 30-31 (main), 41 (main10).
+	// Higher levels support higher resolutions and bitrates but require more
+	// processing power.
+	//
+	// Any of 30, 31, 41.
+	Level int64 `json:"level,omitzero"`
+	// PixFmt specifies the pixel format. Valid value: yuv420p
+	//
+	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
+	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
+	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
+	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
+	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
+	Pixfmt string `json:"pixfmt,omitzero"`
+	// Preset controls the encoding efficiency and processing intensity. Lower presets
+	// use more optimization features, creating smaller files with better quality but
+	// requiring more compute time. Higher presets encode faster but produce larger
+	// files.
+	//
+	// Preset ranges:
+	//
+	// - 6-7: Fast encoding for real-time applications (smaller files)
+	// - 8-10: Balanced efficiency and speed for general use
+	// - 11-13: Fastest encoding for real-time applications (larger files)
+	//
+	// Any of "6", "7", "8", "9", "10", "11", "12", "13".
+	Preset string `json:"preset,omitzero"`
+	// Profilev specifies the AV1 profile. Valid values:
+	//
+	// - main: Main profile, good for most applications
+	// - main10: Main 10-bit profile, supports 10-bit color
+	// - mainstillpicture: Still picture profile, optimized for single images
+	//
+	// Any of "main", "main10", "mainstillpicture".
+	Profilev string `json:"profilev,omitzero"`
 	paramObj
 }
 
@@ -1125,17 +1099,116 @@ func (r JobNewParamsFormatMP4Av1) MarshalJSON() (data []byte, err error) {
 	type shadow JobNewParamsFormatMP4Av1
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *JobNewParamsFormatMP4Av1) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4Av1](
+		"channels", 1, 2, 5, 7,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4Av1](
+		"level", 30, 31, 41,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4Av1](
+		"pixfmt", "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le", "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be", "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4Av1](
+		"preset", "6", "7", "8", "9", "10", "11", "12", "13",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4Av1](
+		"profilev", "main", "main10", "mainstillpicture",
+	)
+}
 
 // H264 configuration
 type JobNewParamsFormatMP4H264 struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
+	// 50Mbps.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 16 to 35. Recommended
+	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio indicates whether to disable audio processing.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo indicates whether to disable video processing.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the duration to process in seconds. Must be a positive value.
+	Duration param.Opt[int64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output video height in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// Minrate specifies the minimum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
+	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Seek specifies the timestamp to start processing from (in seconds). Must be a
+	// positive value.
+	Seek param.Opt[int64] `json:"seek,omitzero"`
 	// VideoBitrate specifies the video bitrate in bits per second. Must be between
 	// 100Kbps and 50Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
-	H264Param
-	VideoCommonParam
+	// Width specifies the output video width in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
+	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
+	// seeking.
+	X264Keyint param.Opt[int64] `json:"x264_keyint,omitzero"`
+	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
+	// (stereo), 5 (5.1), 7 (7.1)
+	//
+	// Any of 1, 2, 5, 7.
+	Channels int64 `json:"channels,omitzero"`
+	// Level specifies the H.264 profile level. Valid values: 10-13 (baseline), 20-22
+	// (main), 30-32 (high), 40-42 (high), 50-51 (high). Higher levels support higher
+	// resolutions and bitrates but require more processing power.
+	//
+	// Any of 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51.
+	Level int64 `json:"level,omitzero"`
+	// PixFmt specifies the pixel format. Valid value: yuv420p
+	//
+	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
+	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
+	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
+	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
+	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
+	Pixfmt string `json:"pixfmt,omitzero"`
+	// Preset specifies the encoding speed preset. Valid values (from fastest to
+	// slowest):
+	//
+	// - ultrafast: Fastest encoding, lowest quality
+	// - superfast: Very fast encoding, lower quality
+	// - veryfast: Fast encoding, moderate quality
+	// - faster: Faster encoding, good quality
+	// - fast: Fast encoding, better quality
+	// - medium: Balanced preset, best quality
+	//
+	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
+	Preset string `json:"preset,omitzero"`
+	// Profilev specifies the H.264 profile. Valid values:
+	//
+	// - baseline: Basic profile, good for mobile devices
+	// - main: Main profile, good for most applications
+	// - high: High profile, best quality but requires more processing
+	// - high10: High 10-bit profile, supports 10-bit color
+	// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
+	// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
+	//
+	// Any of "baseline", "main", "high", "high10", "high422", "high444".
+	Profilev string `json:"profilev,omitzero"`
 	paramObj
 }
 
@@ -1143,17 +1216,113 @@ func (r JobNewParamsFormatMP4H264) MarshalJSON() (data []byte, err error) {
 	type shadow JobNewParamsFormatMP4H264
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *JobNewParamsFormatMP4H264) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H264](
+		"channels", 1, 2, 5, 7,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H264](
+		"level", 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H264](
+		"pixfmt", "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le", "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be", "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H264](
+		"preset", "ultrafast", "superfast", "veryfast", "faster", "fast", "medium",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H264](
+		"profilev", "baseline", "main", "high", "high10", "high422", "high444",
+	)
+}
 
 // H265 configuration
 type JobNewParamsFormatMP4H265 struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
+	// 50Mbps.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 16 to 35. Recommended
+	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio indicates whether to disable audio processing.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo indicates whether to disable video processing.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the duration to process in seconds. Must be a positive value.
+	Duration param.Opt[int64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output video height in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// Minrate specifies the minimum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
+	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Seek specifies the timestamp to start processing from (in seconds). Must be a
+	// positive value.
+	Seek param.Opt[int64] `json:"seek,omitzero"`
 	// VideoBitrate specifies the video bitrate in bits per second. Must be between
 	// 100Kbps and 50Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
-	H265Param
-	VideoCommonParam
+	// Width specifies the output video width in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// X265KeyInt specifies the maximum number of frames between keyframes for H.265
+	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
+	// seeking.
+	X265Keyint param.Opt[int64] `json:"x265_keyint,omitzero"`
+	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
+	// (stereo), 5 (5.1), 7 (7.1)
+	//
+	// Any of 1, 2, 5, 7.
+	Channels int64 `json:"channels,omitzero"`
+	// Level specifies the H.265 profile level. Valid values: 30-31 (main), 41
+	// (main10). Higher levels support higher resolutions and bitrates but require more
+	// processing power.
+	//
+	// Any of 30, 31, 41.
+	Level int64 `json:"level,omitzero"`
+	// PixFmt specifies the pixel format. Valid value: yuv420p
+	//
+	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
+	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
+	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
+	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
+	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
+	Pixfmt string `json:"pixfmt,omitzero"`
+	// Preset specifies the encoding speed preset. Valid values (from fastest to
+	// slowest):
+	//
+	// - ultrafast: Fastest encoding, lowest quality
+	// - superfast: Very fast encoding, lower quality
+	// - veryfast: Fast encoding, moderate quality
+	// - faster: Faster encoding, good quality
+	// - fast: Fast encoding, better quality
+	// - medium: Balanced preset, best quality
+	//
+	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
+	Preset string `json:"preset,omitzero"`
+	// Profilev specifies the H.265 profile. Valid values:
+	//
+	// - main: Main profile, good for most applications
+	// - main10: Main 10-bit profile, supports 10-bit color
+	// - mainstillpicture: Still picture profile, optimized for single images
+	//
+	// Any of "main", "main10", "mainstillpicture".
+	Profilev string `json:"profilev,omitzero"`
 	paramObj
 }
 
@@ -1161,23 +1330,116 @@ func (r JobNewParamsFormatMP4H265) MarshalJSON() (data []byte, err error) {
 	type shadow JobNewParamsFormatMP4H265
 	return param.MarshalObject(r, (*shadow)(&r))
 }
+func (r *JobNewParamsFormatMP4H265) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H265](
+		"channels", 1, 2, 5, 7,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H265](
+		"level", 30, 31, 41,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H265](
+		"pixfmt", "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le", "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be", "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H265](
+		"preset", "ultrafast", "superfast", "veryfast", "faster", "fast", "medium",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H265](
+		"profilev", "main", "main10", "mainstillpicture",
+	)
+}
 
 // VP9 configuration
 type JobNewParamsFormatWebmVp9 struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
+	// 50Mbps.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// CpuUsed specifies the CPU usage level for VP9 encoding. Range: 0 to 8. Lower
+	// values mean better quality but slower encoding, higher values mean faster
+	// encoding but lower quality. Recommended values: 0-2 for high quality, 2-4 for
+	// good quality, 4-6 for balanced, 6-8 for speed
+	CPUUsed param.Opt[string] `json:"cpu_used,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 15 to 35. Recommended
+	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio indicates whether to disable audio processing.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo indicates whether to disable video processing.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the duration to process in seconds. Must be a positive value.
+	Duration param.Opt[int64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output video height in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// Minrate specifies the minimum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Minrate param.Opt[int64] `json:"minrate,omitzero"`
+	// Seek specifies the timestamp to start processing from (in seconds). Must be a
+	// positive value.
+	Seek param.Opt[int64] `json:"seek,omitzero"`
 	// VideoBitrate specifies the video bitrate in bits per second. Must be between
 	// 100Kbps and 50Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
-	Vp9Param
-	VideoCommonParam
+	// Width specifies the output video width in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
+	// (stereo), 5 (5.1), 7 (7.1)
+	//
+	// Any of 1, 2, 5, 7.
+	Channels int64 `json:"channels,omitzero"`
+	// PixFmt specifies the pixel format. Valid value: yuv420p
+	//
+	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
+	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
+	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
+	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
+	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
+	Pixfmt string `json:"pixfmt,omitzero"`
+	// Quality specifies the VP9 encoding quality preset. Valid values:
+	//
+	// - good: Balanced quality preset, good for most applications
+	// - best: Best quality preset, slower encoding
+	// - realtime: Fast encoding preset, suitable for live streaming
+	//
+	// Any of "good", "best", "realtime".
+	Quality string `json:"quality,omitzero"`
 	paramObj
 }
 
 func (r JobNewParamsFormatWebmVp9) MarshalJSON() (data []byte, err error) {
 	type shadow JobNewParamsFormatWebmVp9
 	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *JobNewParamsFormatWebmVp9) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[JobNewParamsFormatWebmVp9](
+		"channels", 1, 2, 5, 7,
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatWebmVp9](
+		"pixfmt", "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le", "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be", "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be",
+	)
+	apijson.RegisterFieldValidator[JobNewParamsFormatWebmVp9](
+		"quality", "good", "best", "realtime",
+	)
 }
 
 // Optional storage configuration
