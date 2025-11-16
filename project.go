@@ -123,17 +123,16 @@ func (r *Project) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Successful response
 type ProjectNewResponse struct {
 	Data Project `json:"data"`
-	// Status indicates the response status "success"
-	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
-		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -142,17 +141,16 @@ func (r *ProjectNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Successful response
 type ProjectGetResponse struct {
 	Data Project `json:"data"`
-	// Status indicates the response status "success"
-	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
-		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -161,17 +159,16 @@ func (r *ProjectGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Successful response
 type ProjectListResponse struct {
-	Data any `json:"data"`
-	// Status indicates the response status "success"
-	Status string `json:"status"`
+	Data []Project `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
-		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
+	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API

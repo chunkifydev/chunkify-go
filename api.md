@@ -3,6 +3,7 @@
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#File">File</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#ResponseOk">ResponseOk</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileGetResponse">FileGetResponse</a>
 
 Methods:
@@ -15,7 +16,14 @@ Methods:
 
 Params Types:
 
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#HlsAv1Param">HlsAv1Param</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#HlsH264Param">HlsH264Param</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#HlsH265Param">HlsH265Param</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JpgParam">JpgParam</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#MP4Av1Param">MP4Av1Param</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#MP4H264Param">MP4H264Param</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#MP4H265Param">MP4H265Param</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#WebmVp9Param">WebmVp9Param</a>
 
 Response Types:
 
