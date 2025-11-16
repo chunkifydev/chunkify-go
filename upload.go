@@ -17,6 +17,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/stainless-sdks/chunkify-go/shared"
 )
 
 // UploadService contains methods and other services that help with interacting
@@ -101,7 +102,7 @@ type Upload struct {
 	// Timestamp when the upload was created
 	CreatedAt string `json:"created_at"`
 	// Error message of the upload
-	Error UploadError `json:"error"`
+	Error shared.ChunkifyError `json:"error"`
 	// Timestamp when the upload will expire
 	ExpiresAt string `json:"expires_at"`
 	// Additional metadata for the upload
@@ -136,30 +137,6 @@ func (r *Upload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Error message of the upload
-type UploadError struct {
-	// Additional error details or output
-	Detail string `json:"detail"`
-	// Main error message
-	Message string `json:"message"`
-	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Detail      respjson.Field
-		Message     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadError) RawJSON() string { return r.JSON.raw }
-func (r *UploadError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Successful response
 type UploadNewResponse struct {
 	Data Upload `json:"data"`
@@ -169,7 +146,7 @@ type UploadNewResponse struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
+	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -187,7 +164,7 @@ type UploadGetResponse struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
+	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API

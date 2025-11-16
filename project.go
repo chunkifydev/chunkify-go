@@ -16,6 +16,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/option"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/stainless-sdks/chunkify-go/shared"
 )
 
 // ProjectService contains methods and other services that help with interacting
@@ -132,7 +133,7 @@ type ProjectNewResponse struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
+	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -150,7 +151,7 @@ type ProjectGetResponse struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
+	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -168,7 +169,7 @@ type ProjectListResponse struct {
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
+	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API

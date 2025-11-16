@@ -1,15 +1,19 @@
+# Shared Response Types
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/shared#ChunkifyError">ChunkifyError</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/shared#ResponseOk">ResponseOk</a>
+
 # Files
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#File">File</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#ResponseOk">ResponseOk</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#APIFile">APIFile</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileGetResponse">FileGetResponse</a>
 
 Methods:
 
 - <code title="get /api/files/{fileId}">client.Files.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, fileID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileGetResponse">FileGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /api/files">client.Files.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileListParams">FileListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/packages/pagination#PaginatedResults">PaginatedResults</a>[<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#File">File</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /api/files">client.Files.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileListParams">FileListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/packages/pagination#PaginatedResults">PaginatedResults</a>[<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#APIFile">APIFile</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /api/files/{fileId}">client.Files.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, fileID <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
 # Jobs
@@ -30,9 +34,6 @@ Response Types:
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#Job">Job</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobNewResponse">JobNewResponse</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobGetResponse">JobGetResponse</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobGetFilesResponse">JobGetFilesResponse</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobGetLogsResponse">JobGetLogsResponse</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobGetTranscodersResponse">JobGetTranscodersResponse</a>
 
 Methods:
 
@@ -41,9 +42,36 @@ Methods:
 - <code title="get /api/jobs">client.Jobs.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobListParams">JobListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/packages/pagination#PaginatedResults">PaginatedResults</a>[<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#Job">Job</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /api/jobs/{jobId}">client.Jobs.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 - <code title="post /api/jobs/{jobId}/cancel">client.Jobs.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobService.Cancel">Cancel</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
-- <code title="get /api/jobs/{jobId}/files">client.Jobs.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobService.GetFiles">GetFiles</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobGetFilesResponse">JobGetFilesResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /api/jobs/{jobId}/logs">client.Jobs.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobService.GetLogs">GetLogs</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobGetLogsParams">JobGetLogsParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobGetLogsResponse">JobGetLogsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /api/jobs/{jobId}/transcoders">client.Jobs.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobService.GetTranscoders">GetTranscoders</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobGetTranscodersResponse">JobGetTranscodersResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## Files
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobFileListResponse">JobFileListResponse</a>
+
+Methods:
+
+- <code title="get /api/jobs/{jobId}/files">client.Jobs.Files.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobFileService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobFileListResponse">JobFileListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## Logs
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobLogListResponse">JobLogListResponse</a>
+
+Methods:
+
+- <code title="get /api/jobs/{jobId}/logs">client.Jobs.Logs.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobLogService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobLogListParams">JobLogListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobLogListResponse">JobLogListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
+## Transcoders
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobTranscoderListResponse">JobTranscoderListResponse</a>
+
+Methods:
+
+- <code title="get /api/jobs/{jobId}/transcoders">client.Jobs.Transcoders.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobTranscoderService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, jobID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#JobTranscoderListResponse">JobTranscoderListResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 # Notifications
 

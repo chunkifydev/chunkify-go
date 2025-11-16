@@ -17,6 +17,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/stainless-sdks/chunkify-go/shared"
 )
 
 // FileService contains methods and other services that help with interacting with
@@ -52,7 +53,7 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 }
 
 // Retrieve a list of files with optional filtering and pagination
-func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[File], err error) {
+func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[APIFile], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -70,7 +71,7 @@ func (r *FileService) List(ctx context.Context, query FileListParams, opts ...op
 }
 
 // Retrieve a list of files with optional filtering and pagination
-func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[File] {
+func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[APIFile] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -87,7 +88,7 @@ func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.
 	return
 }
 
-type File struct {
+type APIFile struct {
 	// Unique identifier of the file
 	ID string `json:"id"`
 	// Audio bitrate in bits per second
@@ -144,42 +145,21 @@ type File struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r File) RawJSON() string { return r.JSON.raw }
-func (r *File) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Successful response
-type ResponseOk struct {
-	// Data contains the response object
-	Data any `json:"data"`
-	// Status indicates the response status "success"
-	Status string `json:"status"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ResponseOk) RawJSON() string { return r.JSON.raw }
-func (r *ResponseOk) UnmarshalJSON(data []byte) error {
+func (r APIFile) RawJSON() string { return r.JSON.raw }
+func (r *APIFile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Successful response
 type FileGetResponse struct {
-	Data File `json:"data"`
+	Data APIFile `json:"data"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
+	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
