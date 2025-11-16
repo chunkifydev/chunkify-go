@@ -2,17 +2,20 @@
 
 Response Types:
 
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#APIFile">APIFile</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#ResponseOk">ResponseOk</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#File">File</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileGetResponse">FileGetResponse</a>
 
 Methods:
 
 - <code title="get /api/files/{fileId}">client.Files.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, fileID <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileGetResponse">FileGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
-- <code title="get /api/files">client.Files.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileListParams">FileListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/packages/pagination#PaginatedResults">PaginatedResults</a>[<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#APIFile">APIFile</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /api/files">client.Files.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileService.List">List</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, query <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileListParams">FileListParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/packages/pagination">pagination</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/packages/pagination#PaginatedResults">PaginatedResults</a>[<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#File">File</a>], <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="delete /api/files/{fileId}">client.Files.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#FileService.Delete">Delete</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, fileID <a href="https://pkg.go.dev/builtin#string">string</a>) <a href="https://pkg.go.dev/builtin#error">error</a></code>
 
 # Jobs
+
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#MP4H264Param">MP4H264Param</a>
 
 Response Types:
 

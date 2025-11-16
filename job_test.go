@@ -146,7 +146,7 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 				VideoBitrate: chunkify.Int(100000),
 				Width:        chunkify.Int(-2),
 			},
-			MP4H264: chunkify.JobNewParamsFormatMP4H264{
+			MP4H264: chunkify.MP4H264Param{
 				AudioBitrate: chunkify.Int(32000),
 				Bufsize:      chunkify.Int(100000),
 				Channels:     1,
@@ -161,9 +161,9 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 				Maxrate:      chunkify.Int(100000),
 				Minrate:      chunkify.Int(100000),
 				Movflags:     chunkify.String("movflags"),
-				Pixfmt:       "yuv410p",
-				Preset:       "medium",
-				Profilev:     "high",
+				Pixfmt:       chunkify.MP4H264PixfmtYuv410p,
+				Preset:       chunkify.MP4H264PresetMedium,
+				Profilev:     chunkify.MP4H264ProfilevHigh,
 				Seek:         chunkify.Int(1),
 				VideoBitrate: chunkify.Int(100000),
 				Width:        chunkify.Int(-2),

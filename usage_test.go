@@ -26,7 +26,7 @@ func TestUsage(t *testing.T) {
 	)
 	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
 		Format: chunkify.JobNewParamsFormat{
-			MP4H264: chunkify.JobNewParamsFormatMP4H264{
+			MP4H264: chunkify.MP4H264Param{
 				Width:  chunkify.Int(1920),
 				Height: chunkify.Int(1080),
 				Crf:    chunkify.Int(21),
@@ -41,5 +41,5 @@ func TestUsage(t *testing.T) {
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", job)
+	t.Logf("%+v\n", job.Data)
 }

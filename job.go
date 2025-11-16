@@ -291,16 +291,197 @@ func (r *JobTranscoder) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
+// FFmpeg encoding parameters specific to MP4 with H.264 encoding.
+type MP4H264Param struct {
+	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
+	// 32Kbps and 512Kbps.
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
+	// 50Mbps.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 16 to 35. Recommended
+	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio indicates whether to disable audio processing.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo indicates whether to disable video processing.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the duration to process in seconds. Must be a positive value.
+	Duration param.Opt[int64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output video height in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// Minrate specifies the minimum video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
+	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Seek specifies the timestamp to start processing from (in seconds). Must be a
+	// positive value.
+	Seek param.Opt[int64] `json:"seek,omitzero"`
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
+	// Width specifies the output video width in pixels. Must be between -2 and 7680.
+	// Use -2 for automatic calculation while maintaining aspect ratio.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
+	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
+	// seeking.
+	X264Keyint param.Opt[int64] `json:"x264_keyint,omitzero"`
+	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
+	// (stereo), 5 (5.1), 7 (7.1)
+	//
+	// Any of 1, 2, 5, 7.
+	Channels int64 `json:"channels,omitzero"`
+	// Level specifies the H.264 profile level. Valid values: 10-13 (baseline), 20-22
+	// (main), 30-32 (high), 40-42 (high), 50-51 (high). Higher levels support higher
+	// resolutions and bitrates but require more processing power.
+	//
+	// Any of 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51.
+	Level int64 `json:"level,omitzero"`
+	// PixFmt specifies the pixel format. Valid value: yuv420p
+	//
+	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
+	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
+	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
+	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
+	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
+	Pixfmt MP4H264Pixfmt `json:"pixfmt,omitzero"`
+	// Preset specifies the encoding speed preset. Valid values (from fastest to
+	// slowest):
+	//
+	// - ultrafast: Fastest encoding, lowest quality
+	// - superfast: Very fast encoding, lower quality
+	// - veryfast: Fast encoding, moderate quality
+	// - faster: Faster encoding, good quality
+	// - fast: Fast encoding, better quality
+	// - medium: Balanced preset, best quality
+	//
+	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
+	Preset MP4H264Preset `json:"preset,omitzero"`
+	// Profilev specifies the H.264 profile. Valid values:
+	//
+	// - baseline: Basic profile, good for mobile devices
+	// - main: Main profile, good for most applications
+	// - high: High profile, best quality but requires more processing
+	// - high10: High 10-bit profile, supports 10-bit color
+	// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
+	// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
+	//
+	// Any of "baseline", "main", "high", "high10", "high422", "high444".
+	Profilev MP4H264Profilev `json:"profilev,omitzero"`
+	paramObj
+}
+
+func (r MP4H264Param) MarshalJSON() (data []byte, err error) {
+	type shadow MP4H264Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *MP4H264Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[MP4H264Param](
+		"channels", 1, 2, 5, 7,
+	)
+	apijson.RegisterFieldValidator[MP4H264Param](
+		"level", 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51,
+	)
+}
+
+// PixFmt specifies the pixel format. Valid value: yuv420p
+type MP4H264Pixfmt string
+
+const (
+	MP4H264PixfmtYuv410p     MP4H264Pixfmt = "yuv410p"
+	MP4H264PixfmtYuv411p     MP4H264Pixfmt = "yuv411p"
+	MP4H264PixfmtYuv420p     MP4H264Pixfmt = "yuv420p"
+	MP4H264PixfmtYuv422p     MP4H264Pixfmt = "yuv422p"
+	MP4H264PixfmtYuv440p     MP4H264Pixfmt = "yuv440p"
+	MP4H264PixfmtYuv444p     MP4H264Pixfmt = "yuv444p"
+	MP4H264PixfmtYuvJ411p    MP4H264Pixfmt = "yuvJ411p"
+	MP4H264PixfmtYuvJ420p    MP4H264Pixfmt = "yuvJ420p"
+	MP4H264PixfmtYuvJ422p    MP4H264Pixfmt = "yuvJ422p"
+	MP4H264PixfmtYuvJ440p    MP4H264Pixfmt = "yuvJ440p"
+	MP4H264PixfmtYuvJ444p    MP4H264Pixfmt = "yuvJ444p"
+	MP4H264PixfmtYuv420p10le MP4H264Pixfmt = "yuv420p10le"
+	MP4H264PixfmtYuv422p10le MP4H264Pixfmt = "yuv422p10le"
+	MP4H264PixfmtYuv440p10le MP4H264Pixfmt = "yuv440p10le"
+	MP4H264PixfmtYuv444p10le MP4H264Pixfmt = "yuv444p10le"
+	MP4H264PixfmtYuv420p12le MP4H264Pixfmt = "yuv420p12le"
+	MP4H264PixfmtYuv422p12le MP4H264Pixfmt = "yuv422p12le"
+	MP4H264PixfmtYuv440p12le MP4H264Pixfmt = "yuv440p12le"
+	MP4H264PixfmtYuv444p12le MP4H264Pixfmt = "yuv444p12le"
+	MP4H264PixfmtYuv420p10be MP4H264Pixfmt = "yuv420p10be"
+	MP4H264PixfmtYuv422p10be MP4H264Pixfmt = "yuv422p10be"
+	MP4H264PixfmtYuv440p10be MP4H264Pixfmt = "yuv440p10be"
+	MP4H264PixfmtYuv444p10be MP4H264Pixfmt = "yuv444p10be"
+	MP4H264PixfmtYuv420p12be MP4H264Pixfmt = "yuv420p12be"
+	MP4H264PixfmtYuv422p12be MP4H264Pixfmt = "yuv422p12be"
+	MP4H264PixfmtYuv440p12be MP4H264Pixfmt = "yuv440p12be"
+	MP4H264PixfmtYuv444p12be MP4H264Pixfmt = "yuv444p12be"
+)
+
+// Preset specifies the encoding speed preset. Valid values (from fastest to
+// slowest):
+//
+// - ultrafast: Fastest encoding, lowest quality
+// - superfast: Very fast encoding, lower quality
+// - veryfast: Fast encoding, moderate quality
+// - faster: Faster encoding, good quality
+// - fast: Fast encoding, better quality
+// - medium: Balanced preset, best quality
+type MP4H264Preset string
+
+const (
+	MP4H264PresetUltrafast MP4H264Preset = "ultrafast"
+	MP4H264PresetSuperfast MP4H264Preset = "superfast"
+	MP4H264PresetVeryfast  MP4H264Preset = "veryfast"
+	MP4H264PresetFaster    MP4H264Preset = "faster"
+	MP4H264PresetFast      MP4H264Preset = "fast"
+	MP4H264PresetMedium    MP4H264Preset = "medium"
+)
+
+// Profilev specifies the H.264 profile. Valid values:
+//
+// - baseline: Basic profile, good for mobile devices
+// - main: Main profile, good for most applications
+// - high: High profile, best quality but requires more processing
+// - high10: High 10-bit profile, supports 10-bit color
+// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
+// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
+type MP4H264Profilev string
+
+const (
+	MP4H264ProfilevBaseline MP4H264Profilev = "baseline"
+	MP4H264ProfilevMain     MP4H264Profilev = "main"
+	MP4H264ProfilevHigh     MP4H264Profilev = "high"
+	MP4H264ProfilevHigh10   MP4H264Profilev = "high10"
+	MP4H264ProfilevHigh422  MP4H264Profilev = "high422"
+	MP4H264ProfilevHigh444  MP4H264Profilev = "high444"
+)
+
 type JobNewResponse struct {
 	Data Job `json:"data"`
+	// Status indicates the response status "success"
+	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -309,16 +490,17 @@ func (r *JobNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
 type JobGetResponse struct {
 	Data Job `json:"data"`
+	// Status indicates the response status "success"
+	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -327,16 +509,17 @@ func (r *JobGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
 type JobGetFilesResponse struct {
-	Data []APIFile `json:"data"`
+	Data any `json:"data"`
+	// Status indicates the response status "success"
+	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -345,16 +528,17 @@ func (r *JobGetFilesResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
 type JobGetLogsResponse struct {
-	Data []JobGetLogsResponseData `json:"data"`
+	Data any `json:"data"`
+	// Status indicates the response status "success"
+	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -363,142 +547,22 @@ func (r *JobGetLogsResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type JobGetLogsResponseData struct {
-	// Additional structured data attached to the log
-	Attributes any `json:"attributes"`
-	// Optional ID of the job this log is associated with
-	JobID string `json:"job_id"`
-	// Log level (e.g. "info", "error", "debug")
-	Level string `json:"level"`
-	// The log message content
-	Msg string `json:"msg"`
-	// Name of the service that generated the log
-	Service string `json:"service"`
-	// Timestamp when the log was created
-	Time string `json:"time"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Attributes  respjson.Field
-		JobID       respjson.Field
-		Level       respjson.Field
-		Msg         respjson.Field
-		Service     respjson.Field
-		Time        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobGetLogsResponseData) RawJSON() string { return r.JSON.raw }
-func (r *JobGetLogsResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Successful response
 type JobGetTranscodersResponse struct {
-	Data []JobGetTranscodersResponseData `json:"data"`
+	Data any `json:"data"`
+	// Status indicates the response status "success"
+	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
 func (r JobGetTranscodersResponse) RawJSON() string { return r.JSON.raw }
 func (r *JobGetTranscodersResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type JobGetTranscodersResponseData struct {
-	// Unique identifier of the transcoder
-	ID string `json:"id"`
-	// Billable time in seconds
-	BillableTime int64 `json:"billable_time"`
-	// End time of the current chunk in seconds
-	ChunkEndTime float64 `json:"chunk_end_time"`
-	// Number of the chunk being processed
-	ChunkNumber int64 `json:"chunk_number"`
-	// Start time of the current chunk in seconds
-	ChunkStartTime float64 `json:"chunk_start_time"`
-	// CPU time used for transcoding in seconds
-	CPUTime float64 `json:"cpu_time"`
-	// Timestamp when the status was created
-	CreatedAt string `json:"created_at"`
-	// Error message if the transcoding failed
-	Error JobGetTranscodersResponseDataError `json:"error"`
-	// Current frames per second being processed
-	Fps float64 `json:"fps"`
-	// Current frame number being processed
-	Frame int64 `json:"frame"`
-	// Unique identifier of the job
-	JobID string `json:"job_id"`
-	// Current output time in seconds
-	OutTime int64 `json:"out_time"`
-	// Progress percentage of the transcoding operation (0-100)
-	Progress float64 `json:"progress"`
-	// Current processing speed multiplier
-	Speed float64 `json:"speed"`
-	// Current status of the transcoder (starting, transcoding, finished, error)
-	Status string `json:"status"`
-	// Unique identifier of the transcoder instance (generated by the transcoder)
-	TranscoderInstanceID string `json:"transcoder_instance_id"`
-	// Timestamp when the status was last updated
-	UpdatedAt string `json:"updated_at"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                   respjson.Field
-		BillableTime         respjson.Field
-		ChunkEndTime         respjson.Field
-		ChunkNumber          respjson.Field
-		ChunkStartTime       respjson.Field
-		CPUTime              respjson.Field
-		CreatedAt            respjson.Field
-		Error                respjson.Field
-		Fps                  respjson.Field
-		Frame                respjson.Field
-		JobID                respjson.Field
-		OutTime              respjson.Field
-		Progress             respjson.Field
-		Speed                respjson.Field
-		Status               respjson.Field
-		TranscoderInstanceID respjson.Field
-		UpdatedAt            respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobGetTranscodersResponseData) RawJSON() string { return r.JSON.raw }
-func (r *JobGetTranscodersResponseData) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Error message if the transcoding failed
-type JobGetTranscodersResponseDataError struct {
-	// Additional error details or output
-	Detail string `json:"detail"`
-	// Main error message
-	Message string `json:"message"`
-	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Detail      respjson.Field
-		Message     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobGetTranscodersResponseDataError) RawJSON() string { return r.JSON.raw }
-func (r *JobGetTranscodersResponseDataError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -547,8 +611,8 @@ type JobNewParamsFormat struct {
 	Jpg JobNewParamsFormatJpg `json:"jpg,omitzero"`
 	// AV1 configuration
 	MP4Av1 JobNewParamsFormatMP4Av1 `json:"mp4_av1,omitzero"`
-	// H264 configuration
-	MP4H264 JobNewParamsFormatMP4H264 `json:"mp4_h264,omitzero"`
+	// FFmpeg encoding parameters specific to MP4 with H.264 encoding.
+	MP4H264 MP4H264Param `json:"mp4_h264,omitzero"`
 	// H265 configuration
 	MP4H265 JobNewParamsFormatMP4H265 `json:"mp4_h265,omitzero"`
 	// VP9 configuration
@@ -1118,123 +1182,6 @@ func init() {
 	)
 	apijson.RegisterFieldValidator[JobNewParamsFormatMP4Av1](
 		"profilev", "main", "main10", "mainstillpicture",
-	)
-}
-
-// H264 configuration
-type JobNewParamsFormatMP4H264 struct {
-	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
-	// 32Kbps and 512Kbps.
-	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
-	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
-	// 50Mbps.
-	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
-	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
-	// values mean better quality but larger file size. Range: 16 to 35. Recommended
-	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
-	// quality.
-	Crf param.Opt[int64] `json:"crf,omitzero"`
-	// DisableAudio indicates whether to disable audio processing.
-	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
-	// DisableVideo indicates whether to disable video processing.
-	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
-	// Duration specifies the duration to process in seconds. Must be a positive value.
-	Duration param.Opt[int64] `json:"duration,omitzero"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
-	Framerate param.Opt[float64] `json:"framerate,omitzero"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
-	Gop param.Opt[int64] `json:"gop,omitzero"`
-	// Height specifies the output video height in pixels. Must be between -2 and 7680.
-	// Use -2 for automatic calculation while maintaining aspect ratio.
-	Height param.Opt[int64] `json:"height,omitzero"`
-	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
-	// Minrate specifies the minimum video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
-	Movflags param.Opt[string] `json:"movflags,omitzero"`
-	// Seek specifies the timestamp to start processing from (in seconds). Must be a
-	// positive value.
-	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
-	// Width specifies the output video width in pixels. Must be between -2 and 7680.
-	// Use -2 for automatic calculation while maintaining aspect ratio.
-	Width param.Opt[int64] `json:"width,omitzero"`
-	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
-	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
-	// seeking.
-	X264Keyint param.Opt[int64] `json:"x264_keyint,omitzero"`
-	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
-	// (stereo), 5 (5.1), 7 (7.1)
-	//
-	// Any of 1, 2, 5, 7.
-	Channels int64 `json:"channels,omitzero"`
-	// Level specifies the H.264 profile level. Valid values: 10-13 (baseline), 20-22
-	// (main), 30-32 (high), 40-42 (high), 50-51 (high). Higher levels support higher
-	// resolutions and bitrates but require more processing power.
-	//
-	// Any of 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51.
-	Level int64 `json:"level,omitzero"`
-	// PixFmt specifies the pixel format. Valid value: yuv420p
-	//
-	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
-	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
-	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
-	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
-	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
-	Pixfmt string `json:"pixfmt,omitzero"`
-	// Preset specifies the encoding speed preset. Valid values (from fastest to
-	// slowest):
-	//
-	// - ultrafast: Fastest encoding, lowest quality
-	// - superfast: Very fast encoding, lower quality
-	// - veryfast: Fast encoding, moderate quality
-	// - faster: Faster encoding, good quality
-	// - fast: Fast encoding, better quality
-	// - medium: Balanced preset, best quality
-	//
-	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
-	Preset string `json:"preset,omitzero"`
-	// Profilev specifies the H.264 profile. Valid values:
-	//
-	// - baseline: Basic profile, good for mobile devices
-	// - main: Main profile, good for most applications
-	// - high: High profile, best quality but requires more processing
-	// - high10: High 10-bit profile, supports 10-bit color
-	// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
-	// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
-	//
-	// Any of "baseline", "main", "high", "high10", "high422", "high444".
-	Profilev string `json:"profilev,omitzero"`
-	paramObj
-}
-
-func (r JobNewParamsFormatMP4H264) MarshalJSON() (data []byte, err error) {
-	type shadow JobNewParamsFormatMP4H264
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *JobNewParamsFormatMP4H264) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H264](
-		"channels", 1, 2, 5, 7,
-	)
-	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H264](
-		"level", 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51,
-	)
-	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H264](
-		"pixfmt", "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le", "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be", "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be",
-	)
-	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H264](
-		"preset", "ultrafast", "superfast", "veryfast", "faster", "fast", "medium",
-	)
-	apijson.RegisterFieldValidator[JobNewParamsFormatMP4H264](
-		"profilev", "baseline", "main", "high", "high10", "high422", "high444",
 	)
 }
 
