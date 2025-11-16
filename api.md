@@ -14,15 +14,6 @@ Methods:
 
 # Jobs
 
-Params Types:
-
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#Av1Param">Av1Param</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#H264Param">H264Param</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#H265Param">H265Param</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#HlsParam">HlsParam</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#VideoCommonParam">VideoCommonParam</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#Vp9Param">Vp9Param</a>
-
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#Job">Job</a>
