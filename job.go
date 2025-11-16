@@ -180,29 +180,6 @@ func (r Av1Param) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-type ChunkifyError struct {
-	// Additional error details or output
-	Detail string `json:"detail"`
-	// Main error message
-	Message string `json:"message"`
-	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Detail      respjson.Field
-		Message     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ChunkifyError) RawJSON() string { return r.JSON.raw }
-func (r *ChunkifyError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // FFmpeg encoding parameters specific to H.264/AVC encoding.
 type H264Param struct {
 	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
@@ -350,7 +327,7 @@ type Job struct {
 	// Creation timestamp
 	CreatedAt string `json:"created_at"`
 	// Error message for the job
-	Error ChunkifyError `json:"error"`
+	Error JobError `json:"error"`
 	// A template defines the transcoding parameters and settings for a job
 	Format JobFormat `json:"format"`
 	// HLS manifest ID
@@ -396,6 +373,30 @@ type Job struct {
 // Returns the unmodified JSON received from the API
 func (r Job) RawJSON() string { return r.JSON.raw }
 func (r *Job) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Error message for the job
+type JobError struct {
+	// Additional error details or output
+	Detail string `json:"detail"`
+	// Main error message
+	Message string `json:"message"`
+	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Detail      respjson.Field
+		Message     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JobError) RawJSON() string { return r.JSON.raw }
+func (r *JobError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -729,7 +730,7 @@ type JobGetTranscodersResponseData struct {
 	// Timestamp when the status was created
 	CreatedAt string `json:"created_at"`
 	// Error message if the transcoding failed
-	Error ChunkifyError `json:"error"`
+	Error JobGetTranscodersResponseDataError `json:"error"`
 	// Current frames per second being processed
 	Fps float64 `json:"fps"`
 	// Current frame number being processed
@@ -775,6 +776,30 @@ type JobGetTranscodersResponseData struct {
 // Returns the unmodified JSON received from the API
 func (r JobGetTranscodersResponseData) RawJSON() string { return r.JSON.raw }
 func (r *JobGetTranscodersResponseData) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Error message if the transcoding failed
+type JobGetTranscodersResponseDataError struct {
+	// Additional error details or output
+	Detail string `json:"detail"`
+	// Main error message
+	Message string `json:"message"`
+	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Detail      respjson.Field
+		Message     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JobGetTranscodersResponseDataError) RawJSON() string { return r.JSON.raw }
+func (r *JobGetTranscodersResponseDataError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

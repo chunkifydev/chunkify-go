@@ -101,7 +101,7 @@ type Upload struct {
 	// Timestamp when the upload was created
 	CreatedAt string `json:"created_at"`
 	// Error message of the upload
-	Error ChunkifyError `json:"error"`
+	Error UploadError `json:"error"`
 	// Timestamp when the upload will expire
 	ExpiresAt string `json:"expires_at"`
 	// Additional metadata for the upload
@@ -133,6 +133,30 @@ type Upload struct {
 // Returns the unmodified JSON received from the API
 func (r Upload) RawJSON() string { return r.JSON.raw }
 func (r *Upload) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Error message of the upload
+type UploadError struct {
+	// Additional error details or output
+	Detail string `json:"detail"`
+	// Main error message
+	Message string `json:"message"`
+	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Detail      respjson.Field
+		Message     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadError) RawJSON() string { return r.JSON.raw }
+func (r *UploadError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
