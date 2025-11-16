@@ -31,7 +31,7 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 			"key":  "value",
 			"key2": "value2",
 		},
-		Timeout: chunkify.Int(3600),
+		ValidityTimeout: chunkify.Int(3600),
 	})
 	if err != nil {
 		var apierr *chunkify.Error
