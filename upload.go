@@ -101,7 +101,7 @@ type Upload struct {
 	// Timestamp when the upload was created
 	CreatedAt string `json:"created_at"`
 	// Error message of the upload
-	Error ChunkifyError `json:"error"`
+	Error APIError `json:"error"`
 	// Timestamp when the upload will expire
 	ExpiresAt string `json:"expires_at"`
 	// Additional metadata for the upload

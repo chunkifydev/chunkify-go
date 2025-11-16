@@ -143,6 +143,29 @@ func (r *JobService) GetTranscoders(ctx context.Context, jobID string, opts ...o
 	return
 }
 
+type APIError struct {
+	// Additional error details or output
+	Detail string `json:"detail"`
+	// Main error message
+	Message string `json:"message"`
+	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
+	Type string `json:"type"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Detail      respjson.Field
+		Message     respjson.Field
+		Type        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r APIError) RawJSON() string { return r.JSON.raw }
+func (r *APIError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // FFmpeg encoding parameters specific to AV1 encoding.
 type Av1Param struct {
 	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
@@ -178,29 +201,6 @@ type Av1Param struct {
 func (r Av1Param) MarshalJSON() (data []byte, err error) {
 	type shadow Av1Param
 	return param.MarshalObject(r, (*shadow)(&r))
-}
-
-type ChunkifyError struct {
-	// Additional error details or output
-	Detail string `json:"detail"`
-	// Main error message
-	Message string `json:"message"`
-	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
-	Type string `json:"type"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Detail      respjson.Field
-		Message     respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ChunkifyError) RawJSON() string { return r.JSON.raw }
-func (r *ChunkifyError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
 }
 
 // FFmpeg encoding parameters specific to H.264/AVC encoding.
@@ -350,7 +350,7 @@ type Job struct {
 	// Creation timestamp
 	CreatedAt string `json:"created_at"`
 	// Error message for the job
-	Error ChunkifyError `json:"error"`
+	Error APIError `json:"error"`
 	// A template defines the transcoding parameters and settings for a job
 	Format JobFormat `json:"format"`
 	// HLS manifest ID
@@ -729,7 +729,7 @@ type JobGetTranscodersResponseData struct {
 	// Timestamp when the status was created
 	CreatedAt string `json:"created_at"`
 	// Error message if the transcoding failed
-	Error ChunkifyError `json:"error"`
+	Error APIError `json:"error"`
 	// Current frames per second being processed
 	Fps float64 `json:"fps"`
 	// Current frame number being processed
