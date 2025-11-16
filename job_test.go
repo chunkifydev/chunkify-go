@@ -30,8 +30,6 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 		Format: chunkify.JobNewParamsFormat{
 			HlsAv1: chunkify.JobNewParamsFormatHlsAv1{
 				HlsParam: chunkify.HlsParam{
-					AudioBitrate:   32000,
-					VideoBitrate:   100000,
 					HlsEnc:         chunkify.Bool(false),
 					HlsEncIv:       chunkify.String("0123456789abcdef"),
 					HlsEncKey:      chunkify.String("0123456789abcdef"),
@@ -45,8 +43,6 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 			},
 			HlsH264: chunkify.JobNewParamsFormatHlsH264{
 				HlsParam: chunkify.HlsParam{
-					AudioBitrate:   32000,
-					VideoBitrate:   100000,
 					HlsEnc:         chunkify.Bool(false),
 					HlsEncIv:       chunkify.String("0123456789abcdef"),
 					HlsEncKey:      chunkify.String("0123456789abcdef"),
@@ -60,8 +56,6 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 			},
 			HlsH265: chunkify.JobNewParamsFormatHlsH265{
 				HlsParam: chunkify.HlsParam{
-					AudioBitrate:   32000,
-					VideoBitrate:   100000,
 					HlsEnc:         chunkify.Bool(false),
 					HlsEncIv:       chunkify.String("0123456789abcdef"),
 					HlsEncKey:      chunkify.String("0123456789abcdef"),
