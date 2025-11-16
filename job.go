@@ -805,8 +805,8 @@ type JobNewParamsFormat struct {
 	// FfmpegCommon with H.265-specific options for quality control and encoding
 	// profiles.
 	MP4H265 H265Param `json:"mp4_h265,omitzero"`
-	// FFmpeg encoding parameters specific to VP9 encoding.
-	WebmVp9 JobNewParamsFormatWebmVp9 `json:"webm_vp9,omitzero"`
+	// FFmpeg encoding parameters common to all video formats.
+	WebmVp9 VideoCommonParam `json:"webm_vp9,omitzero"`
 	paramObj
 }
 
@@ -881,96 +881,6 @@ func (r JobNewParamsFormatJpg) MarshalJSON() (data []byte, err error) {
 }
 func (r *JobNewParamsFormatJpg) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// FFmpeg encoding parameters specific to VP9 encoding.
-type JobNewParamsFormatWebmVp9 struct {
-	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
-	// 32Kbps and 512Kbps.
-	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
-	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
-	// 50Mbps.
-	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
-	// CpuUsed specifies the CPU usage level for VP9 encoding. Range: 0 to 8. Lower
-	// values mean better quality but slower encoding, higher values mean faster
-	// encoding but lower quality. Recommended values: 0-2 for high quality, 2-4 for
-	// good quality, 4-6 for balanced, 6-8 for speed
-	CPUUsed param.Opt[string] `json:"cpu_used,omitzero"`
-	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
-	// values mean better quality but larger file size. Range: 15 to 35. Recommended
-	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
-	// quality.
-	Crf param.Opt[int64] `json:"crf,omitzero"`
-	// DisableAudio indicates whether to disable audio processing.
-	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
-	// DisableVideo indicates whether to disable video processing.
-	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
-	// Duration specifies the duration to process in seconds. Must be a positive value.
-	Duration param.Opt[int64] `json:"duration,omitzero"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
-	Framerate param.Opt[float64] `json:"framerate,omitzero"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
-	Gop param.Opt[int64] `json:"gop,omitzero"`
-	// Height specifies the output video height in pixels. Must be between -2 and 7680.
-	// Use -2 for automatic calculation while maintaining aspect ratio.
-	Height param.Opt[int64] `json:"height,omitzero"`
-	// Maxrate specifies the maximum video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
-	// Minrate specifies the minimum video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	Minrate param.Opt[int64] `json:"minrate,omitzero"`
-	// Seek specifies the timestamp to start processing from (in seconds). Must be a
-	// positive value.
-	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
-	// Width specifies the output video width in pixels. Must be between -2 and 7680.
-	// Use -2 for automatic calculation while maintaining aspect ratio.
-	Width param.Opt[int64] `json:"width,omitzero"`
-	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
-	// (stereo), 5 (5.1), 7 (7.1)
-	//
-	// Any of 1, 2, 5, 7.
-	Channels int64 `json:"channels,omitzero"`
-	// PixFmt specifies the pixel format. Valid value: yuv420p
-	//
-	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
-	// "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le",
-	// "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le",
-	// "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be",
-	// "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be".
-	Pixfmt string `json:"pixfmt,omitzero"`
-	// Quality specifies the VP9 encoding quality preset. Valid values:
-	//
-	// - good: Balanced quality preset, good for most applications
-	// - best: Best quality preset, slower encoding
-	// - realtime: Fast encoding preset, suitable for live streaming
-	//
-	// Any of "good", "best", "realtime".
-	Quality string `json:"quality,omitzero"`
-	paramObj
-}
-
-func (r JobNewParamsFormatWebmVp9) MarshalJSON() (data []byte, err error) {
-	type shadow JobNewParamsFormatWebmVp9
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *JobNewParamsFormatWebmVp9) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[JobNewParamsFormatWebmVp9](
-		"channels", 1, 2, 5, 7,
-	)
-	apijson.RegisterFieldValidator[JobNewParamsFormatWebmVp9](
-		"pixfmt", "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuvJ411p", "yuvJ420p", "yuvJ422p", "yuvJ440p", "yuvJ444p", "yuv420p10le", "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le", "yuv444p12le", "yuv420p10be", "yuv422p10be", "yuv440p10be", "yuv444p10be", "yuv420p12be", "yuv422p12be", "yuv440p12be", "yuv444p12be",
-	)
-	apijson.RegisterFieldValidator[JobNewParamsFormatWebmVp9](
-		"quality", "good", "best", "realtime",
-	)
 }
 
 // Optional storage configuration
