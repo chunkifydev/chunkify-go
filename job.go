@@ -283,14 +283,8 @@ func (r H265Param) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 
-// The properties AudioBitrate, VideoBitrate are required.
+// FFmpeg encoding parameters specific to HLS packaging.
 type HlsParam struct {
-	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
-	// 32Kbps and 512Kbps.
-	AudioBitrate int64 `json:"audio_bitrate,required"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	VideoBitrate int64 `json:"video_bitrate,required"`
 	// HlsEnc enables encryption for HLS segments when set to true.
 	HlsEnc param.Opt[bool] `json:"hls_enc,omitzero"`
 	// HlsEncIv specifies the initialization vector for encryption. Maximum length: 64
