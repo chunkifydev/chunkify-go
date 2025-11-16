@@ -50,7 +50,7 @@ func main() {
 	)
 	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
 		Format: chunkify.JobNewParamsFormat{
-			MP4H264: chunkify.JobNewParamsFormatMP4H264{
+			MP4H264: chunkify.MP4H264Param{
 				Width:  chunkify.Int(1920),
 				Height: chunkify.Int(1080),
 				Crf:    chunkify.Int(21),
@@ -65,7 +65,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", job)
+	fmt.Printf("%+v\n", job.Data)
 }
 
 ```
@@ -374,7 +374,7 @@ The file name and content-type can be customized by implementing `Name() string`
 string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
 file returned by `os.Open` will be sent with the file name on disk.
 
-We also provide a helper `chunkify.File(reader io.Reader, filename string, contentType string)`
+We also provide a helper `chunkify.NewFile(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
 ### Retries

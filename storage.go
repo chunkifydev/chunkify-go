@@ -119,16 +119,17 @@ func (r *Storage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
 type StorageNewResponse struct {
 	Data Storage `json:"data"`
+	// Status indicates the response status "success"
+	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -137,16 +138,17 @@ func (r *StorageNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
 type StorageGetResponse struct {
 	Data Storage `json:"data"`
+	// Status indicates the response status "success"
+	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -155,16 +157,17 @@ func (r *StorageGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
 type StorageListResponse struct {
-	Data []Storage `json:"data"`
+	Data any `json:"data"`
+	// Status indicates the response status "success"
+	Status string `json:"status"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
