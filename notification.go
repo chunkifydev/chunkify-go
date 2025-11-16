@@ -59,7 +59,7 @@ func (r *NotificationService) Get(ctx context.Context, notificationID string, op
 }
 
 // Retrieve a list of notifications with optional filtering and pagination
-func (r *NotificationService) List(ctx context.Context, query NotificationListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[Notification], err error) {
+func (r *NotificationService) List(ctx context.Context, query NotificationListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Notification], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -77,8 +77,8 @@ func (r *NotificationService) List(ctx context.Context, query NotificationListPa
 }
 
 // Retrieve a list of notifications with optional filtering and pagination
-func (r *NotificationService) ListAutoPaging(ctx context.Context, query NotificationListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[Notification] {
-	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
+func (r *NotificationService) ListAutoPaging(ctx context.Context, query NotificationListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Notification] {
+	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a notification.

@@ -63,7 +63,7 @@ func (r *SourceService) Get(ctx context.Context, sourceID string, opts ...option
 
 // Retrieve a list of all sources with optional filtering and pagination. Supports
 // filtering by various media properties like duration, dimensions, codecs, etc.
-func (r *SourceService) List(ctx context.Context, query SourceListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[Source], err error) {
+func (r *SourceService) List(ctx context.Context, query SourceListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Source], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -82,8 +82,8 @@ func (r *SourceService) List(ctx context.Context, query SourceListParams, opts .
 
 // Retrieve a list of all sources with optional filtering and pagination. Supports
 // filtering by various media properties like duration, dimensions, codecs, etc.
-func (r *SourceService) ListAutoPaging(ctx context.Context, query SourceListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[Source] {
-	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
+func (r *SourceService) ListAutoPaging(ctx context.Context, query SourceListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Source] {
+	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a source. It will fail if there are processing jobs using this source.

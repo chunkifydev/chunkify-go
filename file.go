@@ -52,7 +52,7 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 }
 
 // Retrieve a list of files with optional filtering and pagination
-func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.MyOffsetPage[APIFile], err error) {
+func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[APIFile], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -70,8 +70,8 @@ func (r *FileService) List(ctx context.Context, query FileListParams, opts ...op
 }
 
 // Retrieve a list of files with optional filtering and pagination
-func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, opts ...option.RequestOption) *pagination.MyOffsetPageAutoPager[APIFile] {
-	return pagination.NewMyOffsetPageAutoPager(r.List(ctx, query, opts...))
+func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[APIFile] {
+	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a file. It will fail if there are processing jobs using this file.
