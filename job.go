@@ -1070,6 +1070,7 @@ const (
 	MP4Av1ProfilevMainstillpicture MP4Av1Profilev = "mainstillpicture"
 )
 
+// The property Name is required.
 type MP4H264Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
@@ -1126,8 +1127,6 @@ type MP4H264Param struct {
 	//
 	// Any of 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51.
 	Level int64 `json:"level,omitzero"`
-	// Any of "mp4_h264".
-	Name MP4H264Name `json:"name,omitzero"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
 	//
 	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
@@ -1159,6 +1158,8 @@ type MP4H264Param struct {
 	//
 	// Any of "baseline", "main", "high", "high10", "high422", "high444".
 	Profilev MP4H264Profilev `json:"profilev,omitzero"`
+	// This field can be elided, and will marshal its zero value as "mp4_h264".
+	Name constant.MP4H264 `json:"name,required"`
 	paramObj
 }
 
@@ -1178,12 +1179,6 @@ func init() {
 		"level", 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51,
 	)
 }
-
-type MP4H264Name string
-
-const (
-	MP4H264NameMP4H264 MP4H264Name = "mp4_h264"
-)
 
 // PixFmt specifies the pixel format. Valid value: yuv420p
 type MP4H264Pixfmt string
@@ -1257,6 +1252,7 @@ const (
 	MP4H264ProfilevHigh444  MP4H264Profilev = "high444"
 )
 
+// The property Name is required.
 type MP4H265Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
@@ -1313,8 +1309,6 @@ type MP4H265Param struct {
 	//
 	// Any of 30, 31, 41.
 	Level int64 `json:"level,omitzero"`
-	// Any of "mp4_h265".
-	Name MP4H265Name `json:"name,omitzero"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
 	//
 	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
@@ -1343,6 +1337,8 @@ type MP4H265Param struct {
 	//
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev MP4H265Profilev `json:"profilev,omitzero"`
+	// This field can be elided, and will marshal its zero value as "mp4_h265".
+	Name constant.MP4H265 `json:"name,required"`
 	paramObj
 }
 
@@ -1362,12 +1358,6 @@ func init() {
 		"level", 30, 31, 41,
 	)
 }
-
-type MP4H265Name string
-
-const (
-	MP4H265NameMP4H265 MP4H265Name = "mp4_h265"
-)
 
 // PixFmt specifies the pixel format. Valid value: yuv420p
 type MP4H265Pixfmt string
