@@ -49,12 +49,8 @@ func main() {
 		option.WithProjectAccessToken("My Project Access Token"), // defaults to os.LookupEnv("CHUNKIFY_TOKEN")
 	)
 	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
-		Format: chunkify.JobNewParamsFormat{
-			MP4H264: chunkify.MP4H264Param{
-				Width:  chunkify.Int(1920),
-				Height: chunkify.Int(1080),
-				Crf:    chunkify.Int(21),
-			},
+		Format: chunkify.JobNewParamsFormatUnion{
+			OfHlsAv1: &chunkify.HlsAv1Param{},
 		},
 		SourceID: "src_2G6MJiNz71bHQGNzGwKx5cJwPFS",
 		Transcoder: chunkify.JobNewParamsTranscoder{
