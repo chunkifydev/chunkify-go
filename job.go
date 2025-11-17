@@ -1577,9 +1577,7 @@ func (r *JobGetResponse) UnmarshalJSON(data []byte) error {
 }
 
 type JobNewParams struct {
-	// Required format configuration, one and only one valid format configuration must
-	// be provided. If you want to use a format without specifying any configuration,
-	// use an empty object in the corresponding field.
+	// Required format configuration...
 	Format JobNewParamsFormatUnion `json:"format,omitzero,required"`
 	// The ID of the source file to transcode
 	SourceID string `json:"source_id,required"`
@@ -1657,9 +1655,10 @@ func (u *JobNewParamsFormatUnion) asAny() any {
 	return nil
 }
 
+// The property HlsAv1 is required.
 type JobNewParamsFormatHlsAv1 struct {
-	// HLS AV1 configuration
-	HlsAv1 HlsAv1Param `json:"hls_av1,omitzero"`
+	// FFmpeg encoding parameters specific to HLS with AV1 encoding.
+	HlsAv1 HlsAv1Param `json:"hls_av1,omitzero,required"`
 	paramObj
 }
 
@@ -1671,9 +1670,10 @@ func (r *JobNewParamsFormatHlsAv1) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property HlsH264 is required.
 type JobNewParamsFormatHlsH264 struct {
-	// HLS H264 configuration
-	HlsH264 HlsH264Param `json:"hls_h264,omitzero"`
+	// FFmpeg encoding parameters specific to HLS with H.264 encoding.
+	HlsH264 HlsH264Param `json:"hls_h264,omitzero,required"`
 	paramObj
 }
 
@@ -1685,9 +1685,10 @@ func (r *JobNewParamsFormatHlsH264) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property HlsH265 is required.
 type JobNewParamsFormatHlsH265 struct {
-	// HLS H265 configuration
-	HlsH265 HlsH265Param `json:"hls_h265,omitzero"`
+	// FFmpeg encoding parameters specific to HLS with H.265 encoding.
+	HlsH265 HlsH265Param `json:"hls_h265,omitzero,required"`
 	paramObj
 }
 
@@ -1699,9 +1700,10 @@ func (r *JobNewParamsFormatHlsH265) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property Jpg is required.
 type JobNewParamsFormatJpg struct {
-	// JPEG configuration
-	Jpg JpgParam `json:"jpg,omitzero"`
+	// FFmpeg encoding parameters specific to JPEG image extraction.
+	Jpg JpgParam `json:"jpg,omitzero,required"`
 	paramObj
 }
 
@@ -1713,9 +1715,10 @@ func (r *JobNewParamsFormatJpg) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property MP4Av1 is required.
 type JobNewParamsFormatMP4Av1 struct {
-	// AV1 configuration
-	MP4Av1 MP4Av1Param `json:"mp4_av1,omitzero"`
+	// FFmpeg encoding parameters specific to MP4 with AV1 encoding.
+	MP4Av1 MP4Av1Param `json:"mp4_av1,omitzero,required"`
 	paramObj
 }
 
@@ -1727,9 +1730,10 @@ func (r *JobNewParamsFormatMP4Av1) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property MP4H264 is required.
 type JobNewParamsFormatMP4H264 struct {
-	// H264 configuration
-	MP4H264 MP4H264Param `json:"mp4_h264,omitzero"`
+	// FFmpeg encoding parameters specific to MP4 with H.264 encoding.
+	MP4H264 MP4H264Param `json:"mp4_h264,omitzero,required"`
 	paramObj
 }
 
@@ -1741,9 +1745,10 @@ func (r *JobNewParamsFormatMP4H264) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property MP4H265 is required.
 type JobNewParamsFormatMP4H265 struct {
-	// H265 configuration
-	MP4H265 MP4H265Param `json:"mp4_h265,omitzero"`
+	// FFmpeg encoding parameters specific to MP4 with H.265 encoding.
+	MP4H265 MP4H265Param `json:"mp4_h265,omitzero,required"`
 	paramObj
 }
 
@@ -1755,9 +1760,10 @@ func (r *JobNewParamsFormatMP4H265) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// The property WebmVp9 is required.
 type JobNewParamsFormatWebmVp9 struct {
-	// VP9 configuration
-	WebmVp9 WebmVp9Param `json:"webm_vp9,omitzero"`
+	// FFmpeg encoding parameters specific to WebM with VP9 encoding.
+	WebmVp9 WebmVp9Param `json:"webm_vp9,omitzero,required"`
 	paramObj
 }
 
