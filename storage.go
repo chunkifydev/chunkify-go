@@ -81,23 +81,23 @@ func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...o
 
 type Storage struct {
 	// Unique identifier of the storage configuration
-	ID string `json:"id"`
+	ID string `json:"id,required"`
 	// Name of the storage bucket
-	Bucket string `json:"bucket"`
+	Bucket string `json:"bucket,required"`
 	// Created at timestamp
-	CreatedAt string `json:"created_at"`
+	CreatedAt string `json:"created_at,required"`
 	// Endpoint of the storage provider
-	Endpoint string `json:"endpoint"`
+	Endpoint string `json:"endpoint,required"`
 	// Continent location of the storage (eg. US, EU, ASIA)
-	Location string `json:"location"`
+	Location string `json:"location,required"`
 	// Name of the storage provider (e.g. AWS, GCP)
-	Provider string `json:"provider"`
+	Provider string `json:"provider,required"`
 	// Whether the storage bucket is publicly accessible
-	Public bool `json:"public"`
+	Public bool `json:"public,required"`
 	// Geographic region where the storage is located
-	Region string `json:"region"`
+	Region string `json:"region,required"`
 	// Unique identifier of the storage configuration
-	Slug string `json:"slug"`
+	Slug string `json:"slug,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -140,7 +140,7 @@ func (r *StorageNewResponse) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type StorageGetResponse struct {
-	Data Storage `json:"data"`
+	Data Storage `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

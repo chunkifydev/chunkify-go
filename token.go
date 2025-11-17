@@ -72,25 +72,25 @@ func (r *TokenService) Revoke(ctx context.Context, tokenID string, opts ...optio
 
 type Token struct {
 	// Unique identifier of the token
-	ID string `json:"id"`
+	ID string `json:"id,required"`
 	// The actual token value (only returned on creation)
-	Token string `json:"token"`
+	Token string `json:"token,required"`
+	// Name given to the token
+	Name string `json:"name,required"`
+	// ID of the project this token belongs to
+	ProjectID string `json:"project_id,required"`
+	// Access scope of the token (e.g.project, team)
+	Scope string `json:"scope,required"`
 	// Timestamp when the token was created
 	CreatedAt string `json:"created_at"`
-	// Name given to the token
-	Name string `json:"name"`
-	// ID of the project this token belongs to
-	ProjectID string `json:"project_id"`
-	// Access scope of the token (e.g.project, team)
-	Scope string `json:"scope"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Token       respjson.Field
-		CreatedAt   respjson.Field
 		Name        respjson.Field
 		ProjectID   respjson.Field
 		Scope       respjson.Field
+		CreatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

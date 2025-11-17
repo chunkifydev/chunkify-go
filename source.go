@@ -102,33 +102,33 @@ func (r *SourceService) Delete(ctx context.Context, sourceID string, opts ...opt
 
 type Source struct {
 	// Unique identifier of the source
-	ID string `json:"id"`
+	ID string `json:"id,required"`
 	// Audio bitrate in bits per second
-	AudioBitrate int64 `json:"audio_bitrate"`
+	AudioBitrate int64 `json:"audio_bitrate,required"`
 	// Audio codec used (e.g. aac, mp3)
-	AudioCodec string `json:"audio_codec"`
+	AudioCodec string `json:"audio_codec,required"`
 	// Timestamp when the source was created
-	CreatedAt string `json:"created_at"`
+	CreatedAt string `json:"created_at,required"`
 	// Device used to record the video
-	Device string `json:"device"`
+	Device string `json:"device,required"`
 	// Duration of the video in seconds
-	Duration int64 `json:"duration"`
+	Duration int64 `json:"duration,required"`
 	// Height of the video in pixels
-	Height int64 `json:"height"`
+	Height int64 `json:"height,required"`
 	// Additional metadata for the source
-	Metadata map[string]string `json:"metadata"`
+	Metadata map[string]string `json:"metadata,required"`
 	// Size of the source file in bytes
-	Size int64 `json:"size"`
+	Size int64 `json:"size,required"`
 	// URL where the source video can be accessed
-	URL string `json:"url"`
+	URL string `json:"url,required"`
 	// Video bitrate in bits per second
-	VideoBitrate int64 `json:"video_bitrate"`
+	VideoBitrate int64 `json:"video_bitrate,required"`
 	// Video codec used (e.g. h264, h265)
-	VideoCodec string `json:"video_codec"`
+	VideoCodec string `json:"video_codec,required"`
 	// Video framerate in frames per second
-	VideoFramerate float64 `json:"video_framerate"`
+	VideoFramerate float64 `json:"video_framerate,required"`
 	// Width of the video in pixels
-	Width int64 `json:"width"`
+	Width int64 `json:"width,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -176,7 +176,7 @@ func (r *SourceNewResponse) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type SourceGetResponse struct {
-	Data Source `json:"data"`
+	Data Source `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

@@ -90,37 +90,37 @@ func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.
 
 type APIFile struct {
 	// Unique identifier of the file
-	ID string `json:"id"`
+	ID string `json:"id,required"`
 	// Audio bitrate in bits per second
-	AudioBitrate int64 `json:"audio_bitrate"`
+	AudioBitrate int64 `json:"audio_bitrate,required"`
 	// Audio codec used (e.g. aac, mp3)
-	AudioCodec string `json:"audio_codec"`
+	AudioCodec string `json:"audio_codec,required"`
 	// Timestamp when the file was created
-	CreatedAt string `json:"created_at"`
+	CreatedAt string `json:"created_at,required"`
 	// Duration of the video in seconds
-	Duration int64 `json:"duration"`
+	Duration int64 `json:"duration,required"`
 	// Height of the video in pixels
-	Height int64 `json:"height"`
+	Height int64 `json:"height,required"`
 	// ID of the job that created this file
-	JobID string `json:"job_id"`
+	JobID string `json:"job_id,required"`
 	// MIME type of the file
-	MimeType string `json:"mime_type"`
+	MimeType string `json:"mime_type,required"`
 	// Path to the file in storage
-	Path string `json:"path"`
+	Path string `json:"path,required"`
 	// Size of the file in bytes
-	Size int64 `json:"size"`
+	Size int64 `json:"size,required"`
 	// StorageId identifier where the file is stored
-	StorageID string `json:"storage_id"`
+	StorageID string `json:"storage_id,required"`
 	// Pre-signed URL to directly access the file (only included when available)
-	URL string `json:"url"`
+	URL string `json:"url,required"`
 	// Video bitrate in bits per second
-	VideoBitrate int64 `json:"video_bitrate"`
+	VideoBitrate int64 `json:"video_bitrate,required"`
 	// Video codec used (e.g. h264, h265)
-	VideoCodec string `json:"video_codec"`
+	VideoCodec string `json:"video_codec,required"`
 	// Video framerate in frames per second
-	VideoFramerate float64 `json:"video_framerate"`
+	VideoFramerate float64 `json:"video_framerate,required"`
 	// Width of the video in pixels
-	Width int64 `json:"width"`
+	Width int64 `json:"width,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -152,7 +152,7 @@ func (r *APIFile) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type FileGetResponse struct {
-	Data APIFile `json:"data"`
+	Data APIFile `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

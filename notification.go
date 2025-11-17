@@ -97,19 +97,19 @@ func (r *NotificationService) Delete(ctx context.Context, notificationID string,
 
 type Notification struct {
 	// Unique identifier of the notification
-	ID string `json:"id"`
+	ID string `json:"id,required"`
 	// Timestamp when the notification was created
-	CreatedAt string `json:"created_at"`
+	CreatedAt string `json:"created_at,required"`
 	// Type of event that triggered this notification
-	Event string `json:"event"`
+	Event string `json:"event,required"`
 	// ID of the object that triggered this notification
-	ObjectID string `json:"object_id"`
+	ObjectID string `json:"object_id,required"`
 	// JSON payload that was sent to the webhook endpoint
-	Payload string `json:"payload"`
+	Payload string `json:"payload,required"`
 	// HTTP status code received from the webhook endpoint
-	ResponseStatusCode int64 `json:"response_status_code"`
+	ResponseStatusCode int64 `json:"response_status_code,required"`
 	// Webhook endpoint configuration that received this notification
-	Webhook Webhook `json:"webhook"`
+	Webhook Webhook `json:"webhook,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -150,7 +150,7 @@ func (r *NotificationNewResponse) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type NotificationGetResponse struct {
-	Data Notification `json:"data"`
+	Data Notification `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
