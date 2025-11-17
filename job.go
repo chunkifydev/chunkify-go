@@ -737,50 +737,50 @@ const (
 
 type Job struct {
 	// Unique identifier for the job
-	ID string `json:"id"`
+	ID string `json:"id,required"`
 	// Billable time in seconds
-	BillableTime int64 `json:"billable_time"`
+	BillableTime int64 `json:"billable_time,required"`
 	// Creation timestamp
-	CreatedAt string `json:"created_at"`
+	CreatedAt string `json:"created_at,required"`
+	// A template defines the transcoding parameters and settings for a job
+	Format JobFormat `json:"format,required"`
+	// Progress percentage of the job (0-100)
+	Progress float64 `json:"progress,required"`
+	// ID of the source video being transcoded
+	SourceID string `json:"source_id,required"`
+	// Current status of the job (e.g., "queued", "ingesting","transcoding",
+	// "downloading", "merging", "uploading", "failed", "completed")
+	Status string `json:"status,required"`
+	// Storage settings for where the job output will be saved
+	Storage JobStorage `json:"storage,required"`
+	// The transcoder configuration for a job
+	Transcoder JobTranscoder `json:"transcoder,required"`
+	// Last update timestamp
+	UpdatedAt string `json:"updated_at,required"`
 	// Error message for the job
 	Error shared.ChunkifyError `json:"error"`
-	// A template defines the transcoding parameters and settings for a job
-	Format JobFormat `json:"format"`
 	// HLS manifest ID
 	HlsManifestID string `json:"hls_manifest_id"`
 	// Additional metadata for the job
 	Metadata map[string]string `json:"metadata"`
-	// Progress percentage of the job (0-100)
-	Progress float64 `json:"progress"`
-	// ID of the source video being transcoded
-	SourceID string `json:"source_id"`
 	// When the job started processing
 	StartedAt string `json:"started_at"`
-	// Current status of the job (e.g., "queued", "ingesting","transcoding",
-	// "downloading", "merging", "uploading", "failed", "completed")
-	Status string `json:"status"`
-	// Storage settings for where the job output will be saved
-	Storage JobStorage `json:"storage"`
-	// The transcoder configuration for a job
-	Transcoder JobTranscoder `json:"transcoder"`
-	// Last update timestamp
-	UpdatedAt string `json:"updated_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
 		BillableTime  respjson.Field
 		CreatedAt     respjson.Field
-		Error         respjson.Field
 		Format        respjson.Field
-		HlsManifestID respjson.Field
-		Metadata      respjson.Field
 		Progress      respjson.Field
 		SourceID      respjson.Field
-		StartedAt     respjson.Field
 		Status        respjson.Field
 		Storage       respjson.Field
 		Transcoder    respjson.Field
 		UpdatedAt     respjson.Field
+		Error         respjson.Field
+		HlsManifestID respjson.Field
+		Metadata      respjson.Field
+		StartedAt     respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -1542,7 +1542,7 @@ const (
 
 // Successful response
 type JobNewResponse struct {
-	Data Job `json:"data"`
+	Data Job `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -1560,7 +1560,7 @@ func (r *JobNewResponse) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type JobGetResponse struct {
-	Data Job `json:"data"`
+	Data Job `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

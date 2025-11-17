@@ -97,15 +97,15 @@ func (r *WebhookService) Delete(ctx context.Context, webhookID string, opts ...o
 
 type Webhook struct {
 	// Unique identifier of the webhook
-	ID string `json:"id"`
+	ID string `json:"id,required"`
 	// Whether the webhook is currently enabled
-	Enabled bool `json:"enabled"`
+	Enabled bool `json:"enabled,required"`
 	// Array of event types this webhook subscribes to
-	Events []string `json:"events"`
+	Events []string `json:"events,required"`
 	// ID of the project this webhook belongs to
-	ProjectID string `json:"project_id"`
+	ProjectID string `json:"project_id,required"`
 	// URL where webhook events will be sent
-	URL string `json:"url"`
+	URL string `json:"url,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -144,7 +144,7 @@ func (r *WebhookNewResponse) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type WebhookGetResponse struct {
-	Data Webhook `json:"data"`
+	Data Webhook `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

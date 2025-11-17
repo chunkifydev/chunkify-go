@@ -52,7 +52,7 @@ func (r *JobLogService) List(ctx context.Context, jobID string, query JobLogList
 
 // Successful response
 type JobLogListResponse struct {
-	Data []JobLogListResponseData `json:"data"`
+	Data []JobLogListResponseData `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -70,25 +70,25 @@ func (r *JobLogListResponse) UnmarshalJSON(data []byte) error {
 
 type JobLogListResponseData struct {
 	// Additional structured data attached to the log
-	Attributes any `json:"attributes"`
+	Attributes any `json:"attributes,required"`
+	// Log level (e.g. "info", "error", "debug")
+	Level string `json:"level,required"`
+	// The log message content
+	Msg string `json:"msg,required"`
+	// Name of the service that generated the log
+	Service string `json:"service,required"`
+	// Timestamp when the log was created
+	Time string `json:"time,required"`
 	// Optional ID of the job this log is associated with
 	JobID string `json:"job_id"`
-	// Log level (e.g. "info", "error", "debug")
-	Level string `json:"level"`
-	// The log message content
-	Msg string `json:"msg"`
-	// Name of the service that generated the log
-	Service string `json:"service"`
-	// Timestamp when the log was created
-	Time string `json:"time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Attributes  respjson.Field
-		JobID       respjson.Field
 		Level       respjson.Field
 		Msg         respjson.Field
 		Service     respjson.Field
 		Time        respjson.Field
+		JobID       respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`

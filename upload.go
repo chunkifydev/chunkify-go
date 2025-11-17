@@ -98,34 +98,34 @@ func (r *UploadService) Delete(ctx context.Context, uploadID string, opts ...opt
 
 type Upload struct {
 	// Unique identifier of the upload
-	ID string `json:"id"`
+	ID string `json:"id,required"`
 	// Timestamp when the upload was created
-	CreatedAt string `json:"created_at"`
+	CreatedAt string `json:"created_at,required"`
 	// Error message of the upload
-	Error shared.ChunkifyError `json:"error"`
+	Error shared.ChunkifyError `json:"error,required"`
 	// Timestamp when the upload will expire
-	ExpiresAt string `json:"expires_at"`
+	ExpiresAt string `json:"expires_at,required"`
+	// SourceId is the id of the source that was created from the upload
+	SourceID string `json:"source_id,required"`
+	// Current status of the upload (waiting, completed, failed, expired)
+	Status string `json:"status,required"`
+	// Timestamp when the upload was updated
+	UpdatedAt string `json:"updated_at,required"`
+	// Pre-signed URL where the file should be uploaded to
+	UploadURL string `json:"upload_url,required"`
 	// Additional metadata for the upload
 	Metadata map[string]string `json:"metadata"`
-	// SourceId is the id of the source that was created from the upload
-	SourceID string `json:"source_id"`
-	// Current status of the upload (waiting, completed, failed, expired)
-	Status string `json:"status"`
-	// Timestamp when the upload was updated
-	UpdatedAt string `json:"updated_at"`
-	// Pre-signed URL where the file should be uploaded to
-	UploadURL string `json:"upload_url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		CreatedAt   respjson.Field
 		Error       respjson.Field
 		ExpiresAt   respjson.Field
-		Metadata    respjson.Field
 		SourceID    respjson.Field
 		Status      respjson.Field
 		UpdatedAt   respjson.Field
 		UploadURL   respjson.Field
+		Metadata    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -157,7 +157,7 @@ func (r *UploadNewResponse) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type UploadGetResponse struct {
-	Data Upload `json:"data"`
+	Data Upload `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

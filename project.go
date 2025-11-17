@@ -97,22 +97,22 @@ func (r *ProjectService) Delete(ctx context.Context, projectID string, opts ...o
 
 type Project struct {
 	// Id is the unique identifier for the project.
-	ID string `json:"id"`
+	ID string `json:"id,required"`
+	// Name of the project
+	Name string `json:"name,required"`
+	// Slug is the slug for the project.
+	Slug string `json:"slug,required"`
+	// StorageId identifier where project files are stored
+	StorageID string `json:"storage_id,required"`
 	// Timestamp when the project was created
 	CreatedAt string `json:"created_at"`
-	// Name of the project
-	Name string `json:"name"`
-	// Slug is the slug for the project.
-	Slug string `json:"slug"`
-	// StorageId identifier where project files are stored
-	StorageID string `json:"storage_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		CreatedAt   respjson.Field
 		Name        respjson.Field
 		Slug        respjson.Field
 		StorageID   respjson.Field
+		CreatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -144,7 +144,7 @@ func (r *ProjectNewResponse) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type ProjectGetResponse struct {
-	Data Project `json:"data"`
+	Data Project `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -162,7 +162,7 @@ func (r *ProjectGetResponse) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type ProjectListResponse struct {
-	Data []Project `json:"data"`
+	Data []Project `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

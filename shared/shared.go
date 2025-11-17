@@ -39,13 +39,10 @@ func (r *ChunkifyError) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type ResponseOk struct {
-	// Data contains the response object
-	Data any `json:"data"`
 	// Status indicates the response status "success"
-	Status string `json:"status"`
+	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		Data        respjson.Field
 		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
