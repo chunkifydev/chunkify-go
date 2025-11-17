@@ -29,7 +29,8 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 	_, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
 		Format: chunkify.JobNewParamsFormatUnion{
 			OfHlsAv1: &chunkify.HlsAv1Param{
-				AudioBitrate:   chunkify.Int(32000),
+				AudioBitrate:   32000,
+				VideoBitrate:   100000,
 				Bufsize:        chunkify.Int(100000),
 				Channels:       1,
 				Crf:            chunkify.Int(35),
@@ -53,7 +54,6 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 				Preset:         chunkify.HlsAv1Preset10,
 				Profilev:       chunkify.HlsAv1ProfilevMain10,
 				Seek:           chunkify.Int(1),
-				VideoBitrate:   chunkify.Int(100000),
 				Width:          chunkify.Int(-2),
 			},
 		},
