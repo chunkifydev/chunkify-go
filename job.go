@@ -115,14 +115,11 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 	return
 }
 
-// The properties AudioBitrate, Name, VideoBitrate are required.
+// The property Name is required.
 type HlsAv1Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
-	AudioBitrate int64 `json:"audio_bitrate,required"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	VideoBitrate int64 `json:"video_bitrate,required"`
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
 	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
 	// 50Mbps.
 	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
@@ -169,6 +166,9 @@ type HlsAv1Param struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
 	Width param.Opt[int64] `json:"width,omitzero"`
@@ -323,14 +323,11 @@ const (
 	HlsAv1ProfilevMainstillpicture HlsAv1Profilev = "mainstillpicture"
 )
 
-// The properties AudioBitrate, Name, VideoBitrate are required.
+// The property Name is required.
 type HlsH264Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
-	AudioBitrate int64 `json:"audio_bitrate,required"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	VideoBitrate int64 `json:"video_bitrate,required"`
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
 	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
 	// 50Mbps.
 	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
@@ -377,6 +374,9 @@ type HlsH264Param struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
 	Width param.Opt[int64] `json:"width,omitzero"`
@@ -540,14 +540,11 @@ const (
 	HlsH264ProfilevHigh444  HlsH264Profilev = "high444"
 )
 
-// The properties AudioBitrate, Name, VideoBitrate are required.
+// The property Name is required.
 type HlsH265Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
-	AudioBitrate int64 `json:"audio_bitrate,required"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
-	VideoBitrate int64 `json:"video_bitrate,required"`
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
 	// Bufsize specifies the video buffer size in bits. Must be between 100Kbps and
 	// 50Mbps.
 	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
@@ -594,6 +591,9 @@ type HlsH265Param struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between
+	// 100Kbps and 50Mbps.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
 	Width param.Opt[int64] `json:"width,omitzero"`
@@ -1751,26 +1751,6 @@ func (u JobNewParamsFormatUnion) GetQuality() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetAudioBitrate() *int64 {
-	if vt := u.OfHlsAv1; vt != nil {
-		return (*int64)(&vt.AudioBitrate)
-	} else if vt := u.OfHlsH264; vt != nil {
-		return (*int64)(&vt.AudioBitrate)
-	} else if vt := u.OfHlsH265; vt != nil {
-		return (*int64)(&vt.AudioBitrate)
-	} else if vt := u.OfMP4Av1; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
 func (u JobNewParamsFormatUnion) GetName() *string {
 	if vt := u.OfHlsAv1; vt != nil {
 		return (*string)(&vt.Name)
@@ -1793,21 +1773,21 @@ func (u JobNewParamsFormatUnion) GetName() *string {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetVideoBitrate() *int64 {
-	if vt := u.OfHlsAv1; vt != nil {
-		return (*int64)(&vt.VideoBitrate)
-	} else if vt := u.OfHlsH264; vt != nil {
-		return (*int64)(&vt.VideoBitrate)
-	} else if vt := u.OfHlsH265; vt != nil {
-		return (*int64)(&vt.VideoBitrate)
-	} else if vt := u.OfMP4Av1; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
+func (u JobNewParamsFormatUnion) GetAudioBitrate() *int64 {
+	if vt := u.OfHlsAv1; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
 	}
 	return nil
 }
@@ -2218,6 +2198,26 @@ func (u JobNewParamsFormatUnion) GetSeek() *int64 {
 		return &vt.Seek.Value
 	} else if vt := u.OfWebmVp9; vt != nil && vt.Seek.Valid() {
 		return &vt.Seek.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobNewParamsFormatUnion) GetVideoBitrate() *int64 {
+	if vt := u.OfHlsAv1; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
 	}
 	return nil
 }
