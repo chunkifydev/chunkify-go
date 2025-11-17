@@ -123,7 +123,7 @@ func (r *Storage) UnmarshalJSON(data []byte) error {
 
 // Successful response
 type StorageNewResponse struct {
-	Data Storage `json:"data"`
+	Data Storage `json:"data,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
