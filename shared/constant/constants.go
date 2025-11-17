@@ -18,6 +18,18 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
+type Aws string        // Always "aws"
+type Chunkify string   // Always "chunkify"
+type Cloudflare string // Always "cloudflare"
+
+func (c Aws) Default() Aws               { return "aws" }
+func (c Chunkify) Default() Chunkify     { return "chunkify" }
+func (c Cloudflare) Default() Cloudflare { return "cloudflare" }
+
+func (c Aws) MarshalJSON() ([]byte, error)        { return marshalString(c) }
+func (c Chunkify) MarshalJSON() ([]byte, error)   { return marshalString(c) }
+func (c Cloudflare) MarshalJSON() ([]byte, error) { return marshalString(c) }
+
 type constant[T any] interface {
 	Constant[T]
 	*T

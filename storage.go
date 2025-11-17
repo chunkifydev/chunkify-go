@@ -15,6 +15,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
 	"github.com/stainless-sdks/chunkify-go/shared"
+	"github.com/stainless-sdks/chunkify-go/shared/constant"
 )
 
 // StorageService contains methods and other services that help with interacting
@@ -182,19 +183,19 @@ type StorageNewParams struct {
 
 	// This field is a request body variant, only one variant field can be set. Storage
 	// parameters for AWS S3 storage.
-	OfObject *StorageNewParamsBodyObject `json:",inline"`
+	OfAws *StorageNewParamsBodyAws `json:",inline"`
 	// This field is a request body variant, only one variant field can be set. Storage
 	// parameters for Chunkify ephemeral storage.
-	OfStorageNewsBodyObject *StorageNewParamsBodyObject `json:",inline"`
+	OfChunkify *StorageNewParamsBodyChunkify `json:",inline"`
 	// This field is a request body variant, only one variant field can be set. Storage
 	// parameters for Cloudflare R2 storage.
-	OfVariant2 *StorageNewParamsBodyObject `json:",inline"`
+	OfCloudflare *StorageNewParamsBodyCloudflare `json:",inline"`
 
 	paramObj
 }
 
 func (u StorageNewParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfObject, u.OfStorageNewsBodyObject, u.OfVariant2)
+	return param.MarshalUnion(u, u.OfAws, u.OfChunkify, u.OfCloudflare)
 }
 func (r *StorageNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
@@ -204,16 +205,12 @@ func (r *StorageNewParams) UnmarshalJSON(data []byte) error {
 //
 // The properties AccessKeyID, Bucket, Provider, Region, SecretAccessKey are
 // required.
-type StorageNewParamsBodyObject struct {
+type StorageNewParamsBodyAws struct {
 	// AccessKeyId is the access key for the storage provider. Required if not using
 	// Chunkify storage.
 	AccessKeyID string `json:"access_key_id,required"`
 	// Bucket is the name of the storage bucket.
 	Bucket string `json:"bucket,required"`
-	// Provider specifies the storage provider.
-	//
-	// Any of "aws".
-	Provider string `json:"provider,omitzero,required"`
 	// Region specifies the region of the storage provider.
 	//
 	// Any of "us-east-1", "us-east-2", "us-central-1", "us-west-1", "us-west-2",
@@ -226,22 +223,102 @@ type StorageNewParamsBodyObject struct {
 	SecretAccessKey string `json:"secret_access_key,required"`
 	// Public indicates whether the storage is publicly accessible.
 	Public param.Opt[bool] `json:"public,omitzero"`
+	// Provider specifies the storage provider.
+	//
+	// This field can be elided, and will marshal its zero value as "aws".
+	Provider constant.Aws `json:"provider,required"`
 	paramObj
 }
 
-func (r StorageNewParamsBodyObject) MarshalJSON() (data []byte, err error) {
-	type shadow StorageNewParamsBodyObject
+func (r StorageNewParamsBodyAws) MarshalJSON() (data []byte, err error) {
+	type shadow StorageNewParamsBodyAws
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *StorageNewParamsBodyObject) UnmarshalJSON(data []byte) error {
+func (r *StorageNewParamsBodyAws) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[StorageNewParamsBodyObject](
-		"provider", "aws",
-	)
-	apijson.RegisterFieldValidator[StorageNewParamsBodyObject](
+	apijson.RegisterFieldValidator[StorageNewParamsBodyAws](
 		"region", "us-east-1", "us-east-2", "us-central-1", "us-west-1", "us-west-2", "eu-west-1", "eu-west-2", "eu-west-3", "eu-central-1", "eu-north-1", "ap-east-1", "ap-east-2", "ap-northeast-1", "ap-northeast-2", "ap-south-1", "ap-southeast-1", "ap-southeast-2",
+	)
+}
+
+// Storage parameters for Chunkify ephemeral storage.
+//
+// The properties Provider, Region are required.
+type StorageNewParamsBodyChunkify struct {
+	// Region specifies the region of the storage provider.
+	//
+	// Any of "us-east-1", "us-east-2", "us-central-1", "us-west-1", "us-west-2",
+	// "eu-west-1", "eu-west-2", "eu-west-3", "eu-central-1", "eu-north-1",
+	// "ap-east-1", "ap-east-2", "ap-northeast-1", "ap-northeast-2", "ap-south-1",
+	// "ap-southeast-1", "ap-southeast-2".
+	Region string `json:"region,omitzero,required"`
+	// Provider specifies the storage provider.
+	//
+	// This field can be elided, and will marshal its zero value as "chunkify".
+	Provider constant.Chunkify `json:"provider,required"`
+	paramObj
+}
+
+func (r StorageNewParamsBodyChunkify) MarshalJSON() (data []byte, err error) {
+	type shadow StorageNewParamsBodyChunkify
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *StorageNewParamsBodyChunkify) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[StorageNewParamsBodyChunkify](
+		"region", "us-east-1", "us-east-2", "us-central-1", "us-west-1", "us-west-2", "eu-west-1", "eu-west-2", "eu-west-3", "eu-central-1", "eu-north-1", "ap-east-1", "ap-east-2", "ap-northeast-1", "ap-northeast-2", "ap-south-1", "ap-southeast-1", "ap-southeast-2",
+	)
+}
+
+// Storage parameters for Cloudflare R2 storage.
+//
+// The properties AccessKeyID, Bucket, Endpoint, Location, Provider, Region,
+// SecretAccessKey are required.
+type StorageNewParamsBodyCloudflare struct {
+	// AccessKeyId is the access key for the storage provider.
+	AccessKeyID string `json:"access_key_id,required"`
+	// Bucket is the name of the storage bucket.
+	Bucket string `json:"bucket,required"`
+	// Endpoint is the endpoint of the storage provider.
+	Endpoint string `json:"endpoint,required"`
+	// Location specifies the location of the storage provider.
+	//
+	// Any of "US", "EU", "ASIA".
+	Location string `json:"location,omitzero,required"`
+	// Region must be set to 'auto'.
+	//
+	// Any of "auto".
+	Region string `json:"region,omitzero,required"`
+	// SecretAccessKey is the secret key for the storage provider.
+	SecretAccessKey string `json:"secret_access_key,required"`
+	// Public indicates whether the storage is publicly accessible.
+	Public param.Opt[bool] `json:"public,omitzero"`
+	// Provider specifies the storage provider.
+	//
+	// This field can be elided, and will marshal its zero value as "cloudflare".
+	Provider constant.Cloudflare `json:"provider,required"`
+	paramObj
+}
+
+func (r StorageNewParamsBodyCloudflare) MarshalJSON() (data []byte, err error) {
+	type shadow StorageNewParamsBodyCloudflare
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *StorageNewParamsBodyCloudflare) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[StorageNewParamsBodyCloudflare](
+		"location", "US", "EU", "ASIA",
+	)
+	apijson.RegisterFieldValidator[StorageNewParamsBodyCloudflare](
+		"region", "auto",
 	)
 }
