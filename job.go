@@ -219,8 +219,6 @@ type HlsAv1Param struct {
 	//
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev HlsAv1Profilev `json:"profilev,omitzero"`
-	// Name of the HLS AV1 configuration
-	//
 	// This field can be elided, and will marshal its zero value as "hls_av1".
 	Name constant.HlsAv1 `json:"name,required"`
 	paramObj
@@ -433,8 +431,6 @@ type HlsH264Param struct {
 	//
 	// Any of "baseline", "main", "high", "high10", "high422", "high444".
 	Profilev HlsH264Profilev `json:"profilev,omitzero"`
-	// Name of the HLS H264 configuration
-	//
 	// This field can be elided, and will marshal its zero value as "hls_h264".
 	Name constant.HlsH264 `json:"name,required"`
 	paramObj
@@ -647,8 +643,6 @@ type HlsH265Param struct {
 	//
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev HlsH265Profilev `json:"profilev,omitzero"`
-	// Name of the HLS H265 configuration
-	//
 	// This field can be elided, and will marshal its zero value as "hls_h265".
 	Name constant.HlsH265 `json:"name,required"`
 	paramObj
@@ -890,8 +884,6 @@ type JpgParam struct {
 	Seek   param.Opt[int64] `json:"seek,omitzero"`
 	Sprite param.Opt[bool]  `json:"sprite,omitzero"`
 	Width  param.Opt[int64] `json:"width,omitzero"`
-	// Name of the JPEG configuration
-	//
 	// This field can be elided, and will marshal its zero value as "jpg".
 	Name constant.Jpg `json:"name,required"`
 	paramObj
@@ -1321,8 +1313,6 @@ type MP4H265Param struct {
 	//
 	// Any of 30, 31, 41.
 	Level int64 `json:"level,omitzero"`
-	// Name of the MP4 H265 configuration
-	//
 	// Any of "mp4_h265".
 	Name MP4H265Name `json:"name,omitzero"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
@@ -1373,7 +1363,6 @@ func init() {
 	)
 }
 
-// Name of the MP4 H265 configuration
 type MP4H265Name string
 
 const (
