@@ -214,6 +214,7 @@ type RequestConfig struct {
 	Middlewares        []middleware
 	ProjectAccessToken string
 	TeamAccessToken    string
+	WebhookSecret      string
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -587,6 +588,7 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		Middlewares:        cfg.Middlewares,
 		ProjectAccessToken: cfg.ProjectAccessToken,
 		TeamAccessToken:    cfg.TeamAccessToken,
+		WebhookSecret:      cfg.WebhookSecret,
 	}
 
 	return new
