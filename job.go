@@ -987,8 +987,6 @@ type MP4Av1Param struct {
 	//
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev MP4Av1Profilev `json:"profilev,omitzero"`
-	// Name of the MP4 AV1 configuration
-	//
 	// This field can be elided, and will marshal its zero value as "mp4_av1".
 	Name constant.MP4Av1 `json:"name,required"`
 	paramObj
@@ -1136,8 +1134,6 @@ type MP4H264Param struct {
 	//
 	// Any of 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51.
 	Level int64 `json:"level,omitzero"`
-	// Name of the MP4 H264 configuration
-	//
 	// Any of "mp4_h264".
 	Name MP4H264Name `json:"name,omitzero"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
@@ -1191,7 +1187,6 @@ func init() {
 	)
 }
 
-// Name of the MP4 H264 configuration
 type MP4H264Name string
 
 const (
