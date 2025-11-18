@@ -26,9 +26,10 @@ func TestUsage(t *testing.T) {
 	)
 	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
 		Format: chunkify.JobNewParamsFormatUnion{
-			OfHlsAv1: &chunkify.HlsAv1Param{
-				AudioBitrate: 32000,
-				VideoBitrate: 100000,
+			OfMP4H264: &chunkify.MP4H264Param{
+				Width:  chunkify.Int(1920),
+				Height: chunkify.Int(1080),
+				Crf:    chunkify.Int(21),
 			},
 		},
 		SourceID: "src_2G6MJiNz71bHQGNzGwKx5cJwPFS",
