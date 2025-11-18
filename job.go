@@ -125,7 +125,7 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 	return
 }
 
-// The properties AudioBitrate, Name, VideoBitrate are required.
+// The properties ID, AudioBitrate, VideoBitrate are required.
 type HlsAv1Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
@@ -230,7 +230,7 @@ type HlsAv1Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev HlsAv1Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "hls_av1".
-	Name constant.HlsAv1 `json:"name,required"`
+	ID constant.HlsAv1 `json:"id,required"`
 	paramObj
 }
 
@@ -331,7 +331,7 @@ const (
 	HlsAv1ProfilevMainstillpicture HlsAv1Profilev = "mainstillpicture"
 )
 
-// The properties AudioBitrate, Name, VideoBitrate are required.
+// The properties ID, AudioBitrate, VideoBitrate are required.
 type HlsH264Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
@@ -442,7 +442,7 @@ type HlsH264Param struct {
 	// Any of "baseline", "main", "high", "high10", "high422", "high444".
 	Profilev HlsH264Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "hls_h264".
-	Name constant.HlsH264 `json:"name,required"`
+	ID constant.HlsH264 `json:"id,required"`
 	paramObj
 }
 
@@ -546,7 +546,7 @@ const (
 	HlsH264ProfilevHigh444  HlsH264Profilev = "high444"
 )
 
-// The properties AudioBitrate, Name, VideoBitrate are required.
+// The properties ID, AudioBitrate, VideoBitrate are required.
 type HlsH265Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
@@ -654,7 +654,7 @@ type HlsH265Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev HlsH265Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "hls_h265".
-	Name constant.HlsH265 `json:"name,required"`
+	ID constant.HlsH265 `json:"id,required"`
 	paramObj
 }
 
@@ -878,7 +878,7 @@ func (r *JobTranscoder) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to JPEG image extraction.
 //
-// The properties Interval, Name are required.
+// The properties ID, Interval are required.
 type JpgParam struct {
 	// Time interval in seconds at which frames are extracted from the video (e.g.,
 	// interval=10 extracts frames at 0s, 10s, 20s, etc.). Must be between 1 and 60
@@ -895,7 +895,7 @@ type JpgParam struct {
 	Sprite param.Opt[bool]  `json:"sprite,omitzero"`
 	Width  param.Opt[int64] `json:"width,omitzero"`
 	// This field can be elided, and will marshal its zero value as "jpg".
-	Name constant.Jpg `json:"name,required"`
+	ID constant.Jpg `json:"id,required"`
 	paramObj
 }
 
@@ -907,7 +907,7 @@ func (r *JpgParam) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// The property Name is required.
+// The property ID is required.
 type MP4Av1Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
@@ -990,7 +990,7 @@ type MP4Av1Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev MP4Av1Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "mp4_av1".
-	Name constant.MP4Av1 `json:"name,required"`
+	ID constant.MP4Av1 `json:"id,required"`
 	paramObj
 }
 
@@ -1080,7 +1080,7 @@ const (
 	MP4Av1ProfilevMainstillpicture MP4Av1Profilev = "mainstillpicture"
 )
 
-// The property Name is required.
+// The property ID is required.
 type MP4H264Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
@@ -1169,7 +1169,7 @@ type MP4H264Param struct {
 	// Any of "baseline", "main", "high", "high10", "high422", "high444".
 	Profilev MP4H264Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "mp4_h264".
-	Name constant.MP4H264 `json:"name,required"`
+	ID constant.MP4H264 `json:"id,required"`
 	paramObj
 }
 
@@ -1262,7 +1262,7 @@ const (
 	MP4H264ProfilevHigh444  MP4H264Profilev = "high444"
 )
 
-// The property Name is required.
+// The property ID is required.
 type MP4H265Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
@@ -1348,7 +1348,7 @@ type MP4H265Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev MP4H265Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "mp4_h265".
-	Name constant.MP4H265 `json:"name,required"`
+	ID constant.MP4H265 `json:"id,required"`
 	paramObj
 }
 
@@ -1435,7 +1435,7 @@ const (
 	MP4H265ProfilevMainstillpicture MP4H265Profilev = "mainstillpicture"
 )
 
-// The property Name is required.
+// The property ID is required.
 type WebmVp9Param struct {
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
@@ -1503,7 +1503,7 @@ type WebmVp9Param struct {
 	// Any of "good", "best", "realtime".
 	Quality WebmVp9Quality `json:"quality,omitzero"`
 	// This field can be elided, and will marshal its zero value as "webm_vp9".
-	Name constant.WebmVp9 `json:"name,required"`
+	ID constant.WebmVp9 `json:"id,required"`
 	paramObj
 }
 
@@ -1697,23 +1697,23 @@ func (u JobNewParamsFormatUnion) GetSprite() *bool {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetName() *string {
+func (u JobNewParamsFormatUnion) GetID() *string {
 	if vt := u.OfMP4Av1; vt != nil {
-		return (*string)(&vt.Name)
+		return (*string)(&vt.ID)
 	} else if vt := u.OfMP4H264; vt != nil {
-		return (*string)(&vt.Name)
+		return (*string)(&vt.ID)
 	} else if vt := u.OfMP4H265; vt != nil {
-		return (*string)(&vt.Name)
+		return (*string)(&vt.ID)
 	} else if vt := u.OfWebmVp9; vt != nil {
-		return (*string)(&vt.Name)
+		return (*string)(&vt.ID)
 	} else if vt := u.OfHlsAv1; vt != nil {
-		return (*string)(&vt.Name)
+		return (*string)(&vt.ID)
 	} else if vt := u.OfHlsH264; vt != nil {
-		return (*string)(&vt.Name)
+		return (*string)(&vt.ID)
 	} else if vt := u.OfHlsH265; vt != nil {
-		return (*string)(&vt.Name)
+		return (*string)(&vt.ID)
 	} else if vt := u.OfJpg; vt != nil {
-		return (*string)(&vt.Name)
+		return (*string)(&vt.ID)
 	}
 	return nil
 }
@@ -2212,7 +2212,7 @@ func (u JobNewParamsFormatUnion) GetHlsTime() *int64 {
 
 func init() {
 	apijson.RegisterUnion[JobNewParamsFormatUnion](
-		"name",
+		"id",
 		apijson.Discriminator[MP4Av1Param]("mp4_av1"),
 		apijson.Discriminator[MP4H264Param]("mp4_h264"),
 		apijson.Discriminator[MP4H265Param]("mp4_h265"),
