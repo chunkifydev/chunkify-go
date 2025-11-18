@@ -265,10 +265,6 @@ type StorageNewParamsStorageCloudflare struct {
 	//
 	// Any of "US", "EU", "ASIA".
 	Location string `json:"location,omitzero,required"`
-	// Region must be set to 'auto'.
-	//
-	// Any of "auto".
-	Region string `json:"region,omitzero,required"`
 	// SecretAccessKey is the secret key for the storage provider.
 	SecretAccessKey string `json:"secret_access_key,required"`
 	// Public indicates whether the storage is publicly accessible.
@@ -277,6 +273,10 @@ type StorageNewParamsStorageCloudflare struct {
 	//
 	// This field can be elided, and will marshal its zero value as "cloudflare".
 	Provider constant.Cloudflare `json:"provider,required"`
+	// Region must be set to 'auto'.
+	//
+	// This field can be elided, and will marshal its zero value as "auto".
+	Region constant.Auto `json:"region,required"`
 	paramObj
 }
 
@@ -291,9 +291,6 @@ func (r *StorageNewParamsStorageCloudflare) UnmarshalJSON(data []byte) error {
 func init() {
 	apijson.RegisterFieldValidator[StorageNewParamsStorageCloudflare](
 		"location", "US", "EU", "ASIA",
-	)
-	apijson.RegisterFieldValidator[StorageNewParamsStorageCloudflare](
-		"region", "auto",
 	)
 }
 
