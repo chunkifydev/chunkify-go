@@ -1492,8 +1492,6 @@ type WebmVp9Param struct {
 	//
 	// Any of "good", "best", "realtime".
 	Quality WebmVp9Quality `json:"quality,omitzero"`
-	// Name of the WebM VP9 configuration
-	//
 	// This field can be elided, and will marshal its zero value as "webm_vp9".
 	Name constant.WebmVp9 `json:"name,required"`
 	paramObj
@@ -1559,16 +1557,18 @@ const (
 	WebmVp9QualityRealtime WebmVp9Quality = "realtime"
 )
 
-// Successful response
 type JobNewResponse struct {
+	// Data contains the response object
 	Data Job `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -1577,16 +1577,18 @@ func (r *JobNewResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
 type JobGetResponse struct {
+	// Data contains the response object
 	Data Job `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API

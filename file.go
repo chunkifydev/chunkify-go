@@ -154,9 +154,12 @@ func (r *APIFile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Successful response
 type FileGetResponseEnvelope struct {
-	Data   APIFile `json:"data,required"`
-	Status string  `json:"status,required"`
+	// Data contains the response object
+	Data APIFile `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
