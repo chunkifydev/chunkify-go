@@ -18,6 +18,7 @@ func ValueOf[T Constant[T]]() T {
 	return t.Default()
 }
 
+type Auto string       // Always "auto"
 type Aws string        // Always "aws"
 type Chunkify string   // Always "chunkify"
 type Cloudflare string // Always "cloudflare"
@@ -30,6 +31,7 @@ type MP4H264 string    // Always "mp4_h264"
 type MP4H265 string    // Always "mp4_h265"
 type WebmVp9 string    // Always "webm_vp9"
 
+func (c Auto) Default() Auto             { return "auto" }
 func (c Aws) Default() Aws               { return "aws" }
 func (c Chunkify) Default() Chunkify     { return "chunkify" }
 func (c Cloudflare) Default() Cloudflare { return "cloudflare" }
@@ -42,6 +44,7 @@ func (c MP4H264) Default() MP4H264       { return "mp4_h264" }
 func (c MP4H265) Default() MP4H265       { return "mp4_h265" }
 func (c WebmVp9) Default() WebmVp9       { return "webm_vp9" }
 
+func (c Auto) MarshalJSON() ([]byte, error)       { return marshalString(c) }
 func (c Aws) MarshalJSON() ([]byte, error)        { return marshalString(c) }
 func (c Chunkify) MarshalJSON() ([]byte, error)   { return marshalString(c) }
 func (c Cloudflare) MarshalJSON() ([]byte, error) { return marshalString(c) }
