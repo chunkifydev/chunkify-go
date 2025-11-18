@@ -41,23 +41,33 @@ func NewSourceService(opts ...option.RequestOption) (r SourceService) {
 // Create a new source from a media URL. The source will be analyzed to extract
 // metadata and generate a thumbnail. The source will be automatically deleted
 // after the data retention period.
-func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...option.RequestOption) (res *SourceNewResponse, err error) {
+func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...option.RequestOption) (res *Source, err error) {
+	var env SourceNewResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	path := "api/sources"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
 // Retrieve details of a specific source by its ID, including metadata, media
 // properties, and associated jobs.
-func (r *SourceService) Get(ctx context.Context, sourceID string, opts ...option.RequestOption) (res *SourceGetResponse, err error) {
+func (r *SourceService) Get(ctx context.Context, sourceID string, opts ...option.RequestOption) (res *Source, err error) {
+	var env SourceGetResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	if sourceID == "" {
 		err = errors.New("missing required sourceId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/sources/%s", sourceID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
@@ -155,46 +165,6 @@ func (r *Source) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SourceNewResponse struct {
-	// Data contains the response object
-	Data Source `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SourceNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *SourceNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type SourceGetResponse struct {
-	// Data contains the response object
-	Data Source `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r SourceGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *SourceGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type SourceNewParams struct {
 	// Url is the URL of the source, which must be a valid HTTP URL.
 	URL string `json:"url,required"`
@@ -209,6 +179,46 @@ func (r SourceNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SourceNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SourceNewResponseEnvelope struct {
+	// Data contains the response object
+	Data Source `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SourceNewResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *SourceNewResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SourceGetResponseEnvelope struct {
+	// Data contains the response object
+	Data Source `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r SourceGetResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *SourceGetResponseEnvelope) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

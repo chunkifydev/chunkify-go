@@ -38,10 +38,15 @@ func NewTokenService(opts ...option.RequestOption) (r TokenService) {
 
 // Create a new access token for either account-wide or project-specific access.
 // Project tokens require a valid project slug.
-func (r *TokenService) New(ctx context.Context, body TokenNewParams, opts ...option.RequestOption) (res *TokenNewResponse, err error) {
+func (r *TokenService) New(ctx context.Context, body TokenNewParams, opts ...option.RequestOption) (res *Token, err error) {
+	var env TokenNewResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	path := "api/tokens"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
@@ -102,26 +107,6 @@ func (r *Token) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type TokenNewResponse struct {
-	// Data contains the response object
-	Data Token `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TokenNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *TokenNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 // Successful response
 type TokenListResponse struct {
 	Data []Token `json:"data"`
@@ -169,3 +154,23 @@ const (
 	TokenNewParamsScopeTeam    TokenNewParamsScope = "team"
 	TokenNewParamsScopeProject TokenNewParamsScope = "project"
 )
+
+type TokenNewResponseEnvelope struct {
+	// Data contains the response object
+	Data Token `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TokenNewResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *TokenNewResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}

@@ -39,22 +39,32 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 
 // Create a new storage configuration for cloud storage providers like AWS S3,
 // Cloudflare R2, etc. The storage credentials will be validated before saving.
-func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ...option.RequestOption) (res *StorageNewResponse, err error) {
+func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ...option.RequestOption) (res *Storage, err error) {
+	var env StorageNewResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	path := "api/storages"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
 // Retrieve details of a specific storage configuration by its id.
-func (r *StorageService) Get(ctx context.Context, storageID string, opts ...option.RequestOption) (res *StorageGetResponse, err error) {
+func (r *StorageService) Get(ctx context.Context, storageID string, opts ...option.RequestOption) (res *Storage, err error) {
+	var env StorageGetResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	if storageID == "" {
 		err = errors.New("missing required storageId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/storages/%s", storageID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
@@ -118,46 +128,6 @@ type Storage struct {
 // Returns the unmodified JSON received from the API
 func (r Storage) RawJSON() string { return r.JSON.raw }
 func (r *Storage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StorageNewResponse struct {
-	// Data contains the response object
-	Data Storage `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StorageNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *StorageNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type StorageGetResponse struct {
-	// Data contains the response object
-	Data Storage `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r StorageGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *StorageGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -325,4 +295,44 @@ func init() {
 	apijson.RegisterFieldValidator[StorageNewParamsBodyCloudflare](
 		"region", "auto",
 	)
+}
+
+type StorageNewResponseEnvelope struct {
+	// Data contains the response object
+	Data Storage `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r StorageNewResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *StorageNewResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type StorageGetResponseEnvelope struct {
+	// Data contains the response object
+	Data Storage `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r StorageGetResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *StorageGetResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }

@@ -40,23 +40,33 @@ func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
 
 // Create a new webhook for a project. The webhook will receive notifications for
 // specified events.
-func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ...option.RequestOption) (res *WebhookNewResponse, err error) {
+func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ...option.RequestOption) (res *Webhook, err error) {
+	var env WebhookNewResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	path := "api/webhooks"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
 // Retrieve details of a specific webhook configuration by its ID. The webhook must
 // belong to the current project.
-func (r *WebhookService) Get(ctx context.Context, webhookID string, opts ...option.RequestOption) (res *WebhookGetResponse, err error) {
+func (r *WebhookService) Get(ctx context.Context, webhookID string, opts ...option.RequestOption) (res *Webhook, err error) {
+	var env WebhookGetResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	if webhookID == "" {
 		err = errors.New("missing required webhookId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/webhooks/%s", webhookID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
@@ -132,46 +142,6 @@ type Webhook struct {
 // Returns the unmodified JSON received from the API
 func (r Webhook) RawJSON() string { return r.JSON.raw }
 func (r *Webhook) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WebhookNewResponse struct {
-	// Data contains the response object
-	Data Webhook `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebhookNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type WebhookGetResponse struct {
-	// Data contains the response object
-	Data Webhook `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WebhookGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *WebhookGetResponse) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -579,6 +549,46 @@ func (r WebhookNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WebhookNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebhookNewResponseEnvelope struct {
+	// Data contains the response object
+	Data Webhook `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookNewResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *WebhookNewResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type WebhookGetResponseEnvelope struct {
+	// Data contains the response object
+	Data Webhook `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WebhookGetResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *WebhookGetResponseEnvelope) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

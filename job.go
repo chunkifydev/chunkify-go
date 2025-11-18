@@ -47,22 +47,32 @@ func NewJobService(opts ...option.RequestOption) (r JobService) {
 }
 
 // Create a new video processing job with specified parameters
-func (r *JobService) New(ctx context.Context, body JobNewParams, opts ...option.RequestOption) (res *JobNewResponse, err error) {
+func (r *JobService) New(ctx context.Context, body JobNewParams, opts ...option.RequestOption) (res *Job, err error) {
+	var env JobNewResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	path := "api/jobs"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
 // Retrieve details of a specific job
-func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobGetResponse, err error) {
+func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *Job, err error) {
+	var env JobGetResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/jobs/%s", jobID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
@@ -1557,46 +1567,6 @@ const (
 	WebmVp9QualityRealtime WebmVp9Quality = "realtime"
 )
 
-type JobNewResponse struct {
-	// Data contains the response object
-	Data Job `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *JobNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type JobGetResponse struct {
-	// Data contains the response object
-	Data Job `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *JobGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type JobNewParams struct {
 	// Required format configuration, one and only one valid format configuration must
 	// be provided. If you want to use a format without specifying any configuration,
@@ -2303,6 +2273,46 @@ func init() {
 	apijson.RegisterFieldValidator[JobNewParamsTranscoder](
 		"type", "4vCPU", "8vCPU", "16vCPU",
 	)
+}
+
+type JobNewResponseEnvelope struct {
+	// Data contains the response object
+	Data Job `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JobNewResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *JobNewResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JobGetResponseEnvelope struct {
+	// Data contains the response object
+	Data Job `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r JobGetResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *JobGetResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
 }
 
 type JobListParams struct {

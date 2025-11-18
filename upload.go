@@ -40,23 +40,33 @@ func NewUploadService(opts ...option.RequestOption) (r UploadService) {
 }
 
 // Create a new upload with the specified name.
-func (r *UploadService) New(ctx context.Context, body UploadNewParams, opts ...option.RequestOption) (res *UploadNewResponse, err error) {
+func (r *UploadService) New(ctx context.Context, body UploadNewParams, opts ...option.RequestOption) (res *Upload, err error) {
+	var env UploadNewResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	path := "api/uploads"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
 // Retrieve details of a specific upload by its ID, including metadata, status, and
 // associated source.
-func (r *UploadService) Get(ctx context.Context, uploadID string, opts ...option.RequestOption) (res *UploadGetResponse, err error) {
+func (r *UploadService) Get(ctx context.Context, uploadID string, opts ...option.RequestOption) (res *Upload, err error) {
+	var env UploadGetResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	if uploadID == "" {
 		err = errors.New("missing required uploadId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/uploads/%s", uploadID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
@@ -137,46 +147,6 @@ func (r *Upload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UploadNewResponse struct {
-	// Data contains the response object
-	Data Upload `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *UploadNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type UploadGetResponse struct {
-	// Data contains the response object
-	Data Upload `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r UploadGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *UploadGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type UploadNewParams struct {
 	// The upload URL will be valid for the given timeout in seconds
 	ValidityTimeout param.Opt[int64] `json:"validity_timeout,omitzero"`
@@ -191,6 +161,46 @@ func (r UploadNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *UploadNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadNewResponseEnvelope struct {
+	// Data contains the response object
+	Data Upload `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadNewResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *UploadNewResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadGetResponseEnvelope struct {
+	// Data contains the response object
+	Data Upload `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r UploadGetResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *UploadGetResponseEnvelope) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
