@@ -814,7 +814,7 @@ type JobFormat struct {
 	// Configuration parameters for the template. A map of configuration values
 	// specific to the format For example, for mp4/h264 format this includes parameters
 	// like crf, preset, profile etc.
-	Config any `json:"config"`
+	Config map[string]any `json:"config"`
 	// Name of the transcoding template.The format to use for transcoding. Valid
 	// formats are: mp4/h264, mp4/h265, mp4/av1, webm/vp9, hls/h264, hls/h265, hls/av1,
 	// jpg
