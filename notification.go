@@ -39,22 +39,32 @@ func NewNotificationService(opts ...option.RequestOption) (r NotificationService
 }
 
 // Create a new notification for a job event
-func (r *NotificationService) New(ctx context.Context, body NotificationNewParams, opts ...option.RequestOption) (res *NotificationNewResponse, err error) {
+func (r *NotificationService) New(ctx context.Context, body NotificationNewParams, opts ...option.RequestOption) (res *Notification, err error) {
+	var env NotificationNewResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	path := "api/notifications"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
 // Retrieve details of a specific notification
-func (r *NotificationService) Get(ctx context.Context, notificationID string, opts ...option.RequestOption) (res *NotificationGetResponse, err error) {
+func (r *NotificationService) Get(ctx context.Context, notificationID string, opts ...option.RequestOption) (res *Notification, err error) {
+	var env NotificationGetResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	if notificationID == "" {
 		err = errors.New("missing required notificationId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/notifications/%s", notificationID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
@@ -129,46 +139,6 @@ func (r *Notification) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type NotificationNewResponse struct {
-	// Data contains the response object
-	Data Notification `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NotificationNewResponse) RawJSON() string { return r.JSON.raw }
-func (r *NotificationNewResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type NotificationGetResponse struct {
-	// Data contains the response object
-	Data Notification `json:"data,required"`
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Data        respjson.Field
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r NotificationGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *NotificationGetResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type NotificationNewParams struct {
 	// Event specifies the type of event that triggered the notification. Currently
 	// only supports "job.completed" event type.
@@ -203,6 +173,46 @@ const (
 	NotificationNewParamsEventUploadFailed    NotificationNewParamsEvent = "upload.failed"
 	NotificationNewParamsEventUploadExpired   NotificationNewParamsEvent = "upload.expired"
 )
+
+type NotificationNewResponseEnvelope struct {
+	// Data contains the response object
+	Data Notification `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationNewResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *NotificationNewResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type NotificationGetResponseEnvelope struct {
+	// Data contains the response object
+	Data Notification `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Data        respjson.Field
+		Status      respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r NotificationGetResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *NotificationGetResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type NotificationListParams struct {
 	// Pagination limit (max 100)
