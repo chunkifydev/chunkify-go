@@ -50,10 +50,10 @@ func main() {
 	)
 	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
 		Format: chunkify.JobNewParamsFormatUnion{
-			OfMP4H264: &chunkify.MP4H264Param{
-				Width:  chunkify.Int(1920),
-				Height: chunkify.Int(1080),
+			OfMP4Av1: &chunkify.MP4Av1Param{
 				Crf:    chunkify.Int(21),
+				Height: chunkify.Int(1080),
+				Width:  chunkify.Int(1920),
 			},
 		},
 		SourceID: "src_2G6MJiNz71bHQGNzGwKx5cJwPFS",
