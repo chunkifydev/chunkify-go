@@ -17,7 +17,6 @@ import (
 	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
-	"github.com/stainless-sdks/chunkify-go/shared"
 )
 
 // FileService contains methods and other services that help with interacting with
@@ -41,14 +40,19 @@ func NewFileService(opts ...option.RequestOption) (r FileService) {
 
 // Retrieve details of a specific file by its ID, including metadata, media
 // properties, and associated jobs.
-func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.RequestOption) (res *FileGetResponse, err error) {
+func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.RequestOption) (res *APIFile, err error) {
+	var env FileGetResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
 		return
 	}
 	path := fmt.Sprintf("api/files/%s", fileID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
+	if err != nil {
+		return
+	}
+	res = &env.Data
 	return
 }
 
@@ -150,21 +154,21 @@ func (r *APIFile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
-type FileGetResponse struct {
-	Data APIFile `json:"data,required"`
+type FileGetResponseEnvelope struct {
+	Data   APIFile `json:"data,required"`
+	Status string  `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
-func (r FileGetResponse) RawJSON() string { return r.JSON.raw }
-func (r *FileGetResponse) UnmarshalJSON(data []byte) error {
+func (r FileGetResponseEnvelope) RawJSON() string { return r.JSON.raw }
+func (r *FileGetResponseEnvelope) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
