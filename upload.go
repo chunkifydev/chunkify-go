@@ -96,7 +96,7 @@ func (r *UploadService) ListAutoPaging(ctx context.Context, query UploadListPara
 // Delete an upload.
 func (r *UploadService) Delete(ctx context.Context, uploadID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if uploadID == "" {
 		err = errors.New("missing required uploadId parameter")
 		return

@@ -102,7 +102,7 @@ func (r *JobService) ListAutoPaging(ctx context.Context, query JobListParams, op
 // Delete a job.
 func (r *JobService) Delete(ctx context.Context, jobID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
 		return
@@ -115,7 +115,7 @@ func (r *JobService) Delete(ctx context.Context, jobID string, opts ...option.Re
 // Cancel a job.
 func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
 		return

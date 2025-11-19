@@ -80,7 +80,7 @@ func (r *StorageService) List(ctx context.Context, opts ...option.RequestOption)
 // the project.
 func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if storageID == "" {
 		err = errors.New("missing required storageId parameter")
 		return

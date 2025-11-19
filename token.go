@@ -65,7 +65,7 @@ func (r *TokenService) List(ctx context.Context, opts ...option.RequestOption) (
 // immediately invalidate the token.
 func (r *TokenService) Revoke(ctx context.Context, tokenID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if tokenID == "" {
 		err = errors.New("missing required tokenId parameter")
 		return

@@ -94,7 +94,7 @@ func (r *NotificationService) ListAutoPaging(ctx context.Context, query Notifica
 // Delete a notification.
 func (r *NotificationService) Delete(ctx context.Context, notificationID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if notificationID == "" {
 		err = errors.New("missing required notificationId parameter")
 		return

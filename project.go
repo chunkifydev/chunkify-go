@@ -73,7 +73,7 @@ func (r *ProjectService) Get(ctx context.Context, projectID string, opts ...opti
 // projects.
 func (r *ProjectService) Update(ctx context.Context, projectID string, body ProjectUpdateParams, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return
@@ -95,7 +95,7 @@ func (r *ProjectService) List(ctx context.Context, query ProjectListParams, opts
 // delete projects.
 func (r *ProjectService) Delete(ctx context.Context, projectID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return
