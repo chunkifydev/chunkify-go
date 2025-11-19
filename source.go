@@ -99,7 +99,7 @@ func (r *SourceService) ListAutoPaging(ctx context.Context, query SourceListPara
 // Delete a source. It will fail if there are processing jobs using this source.
 func (r *SourceService) Delete(ctx context.Context, sourceID string, opts ...option.RequestOption) (err error) {
 	opts = slices.Concat(r.Options, opts)
-	opts = append([]option.RequestOption{option.WithHeader("Accept", "")}, opts...)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if sourceID == "" {
 		err = errors.New("missing required sourceId parameter")
 		return
