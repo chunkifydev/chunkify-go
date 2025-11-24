@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/stainless-sdks/chunkify-go/internal/apijson"
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
@@ -16,7 +17,6 @@ import (
 	"github.com/stainless-sdks/chunkify-go/option"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
-	"github.com/stainless-sdks/chunkify-go/shared"
 )
 
 // JobLogService contains methods and other services that help with interacting
@@ -50,16 +50,18 @@ func (r *JobLogService) List(ctx context.Context, jobID string, query JobLogList
 	return
 }
 
-// Successful response
+// Response containing a list of logs for a job
 type JobLogListResponse struct {
 	Data []JobLogListResponseData `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -72,13 +74,17 @@ type JobLogListResponseData struct {
 	// Additional structured data attached to the log
 	Attributes map[string]any `json:"attributes,required"`
 	// Log level (e.g. "info", "error", "debug")
+	//
+	// Any of "info", "error", "debug".
 	Level string `json:"level,required"`
 	// The log message content
 	Msg string `json:"msg,required"`
 	// Name of the service that generated the log
+	//
+	// Any of "transcoder", "manager".
 	Service string `json:"service,required"`
 	// Timestamp when the log was created
-	Time string `json:"time,required"`
+	Time time.Time `json:"time,required" format:"date-time"`
 	// Optional ID of the job this log is associated with
 	JobID string `json:"job_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].

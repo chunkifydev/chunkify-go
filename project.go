@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/stainless-sdks/chunkify-go/internal/apijson"
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
@@ -16,7 +17,6 @@ import (
 	"github.com/stainless-sdks/chunkify-go/option"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
-	"github.com/stainless-sdks/chunkify-go/shared"
 )
 
 // ProjectService contains methods and other services that help with interacting
@@ -115,7 +115,7 @@ type Project struct {
 	// StorageId identifier where project files are stored
 	StorageID string `json:"storage_id,required"`
 	// Timestamp when the project was created
-	CreatedAt string `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -134,16 +134,17 @@ func (r *Project) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
 type ProjectListResponse struct {
 	Data []Project `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -207,19 +208,38 @@ func (r *ProjectGetResponseEnvelope) UnmarshalJSON(data []byte) error {
 }
 
 type ProjectUpdateParams struct {
-	// Name is the new name for the project, which must be between 4 and 32 characters.
-	Name param.Opt[string] `json:"name,omitzero"`
-	// StorageId specifies the storage configuration for the project, which must be
-	// between 4 and 64 characters.
+
+	//
+	// Request body variants
+	//
+
+	// This field is a request body variant, only one variant field can be set.
+	OfObject *ProjectUpdateParamsBodyObject `json:",inline"`
+	// This field is a request body variant, only one variant field can be set.
+	OfProjectUpdatesBodyObject *ProjectUpdateParamsBodyObject `json:",inline"`
+
+	paramObj
+}
+
+func (u ProjectUpdateParams) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfObject, u.OfProjectUpdatesBodyObject)
+}
+func (r *ProjectUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The property Name is required.
+type ProjectUpdateParamsBodyObject struct {
+	Name      string            `json:"name,required"`
 	StorageID param.Opt[string] `json:"storage_id,omitzero"`
 	paramObj
 }
 
-func (r ProjectUpdateParams) MarshalJSON() (data []byte, err error) {
-	type shadow ProjectUpdateParams
+func (r ProjectUpdateParamsBodyObject) MarshalJSON() (data []byte, err error) {
+	type shadow ProjectUpdateParamsBodyObject
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ProjectUpdateParams) UnmarshalJSON(data []byte) error {
+func (r *ProjectUpdateParamsBodyObject) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -114,17 +114,17 @@ func TestJobListWithOptionalParams(t *testing.T) {
 	_, err := client.Jobs.List(context.TODO(), chunkify.JobListParams{
 		ID: chunkify.String("id"),
 		Created: chunkify.JobListParamsCreated{
-			Gte:  chunkify.String("gte"),
-			Lte:  chunkify.String("lte"),
-			Sort: chunkify.String("sort"),
+			Gte:  chunkify.String("2102-57-32"),
+			Lte:  chunkify.String("2102-57-32"),
+			Sort: "asc",
 		},
-		FormatName:    chunkify.String("format_name"),
+		FormatID:      chunkify.JobListParamsFormatIDMP4H264,
 		HlsManifestID: chunkify.String("hls_manifest_id"),
-		Limit:         chunkify.Int(0),
-		Metadata:      chunkify.String("metadata"),
+		Limit:         chunkify.Int(1),
+		Metadata:      [][]string{{"J!Q0Ok0bzJb7:pro"}},
 		Offset:        chunkify.Int(0),
 		SourceID:      chunkify.String("source_id"),
-		Status:        chunkify.String("status"),
+		Status:        chunkify.JobListParamsStatusCompleted,
 	})
 	if err != nil {
 		var apierr *chunkify.Error

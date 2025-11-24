@@ -19,7 +19,40 @@ type Error = apierror.Error
 // This is an alias to an internal type.
 type ChunkifyError = shared.ChunkifyError
 
-// Successful response
+// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
 //
 // This is an alias to an internal type.
-type ResponseOk = shared.ResponseOk
+type ChunkifyErrorType = shared.ChunkifyErrorType
+
+// Equals "setup"
+const ChunkifyErrorTypeSetup = shared.ChunkifyErrorTypeSetup
+
+// Equals "ffmpeg"
+const ChunkifyErrorTypeFfmpeg = shared.ChunkifyErrorTypeFfmpeg
+
+// Equals "source"
+const ChunkifyErrorTypeSource = shared.ChunkifyErrorTypeSource
+
+// Equals "upload"
+const ChunkifyErrorTypeUpload = shared.ChunkifyErrorTypeUpload
+
+// Equals "download"
+const ChunkifyErrorTypeDownload = shared.ChunkifyErrorTypeDownload
+
+// Equals "ingest"
+const ChunkifyErrorTypeIngest = shared.ChunkifyErrorTypeIngest
+
+// Equals "job"
+const ChunkifyErrorTypeJob = shared.ChunkifyErrorTypeJob
+
+// Equals "unexpected"
+const ChunkifyErrorTypeUnexpected = shared.ChunkifyErrorTypeUnexpected
+
+// Equals "permission"
+const ChunkifyErrorTypePermission = shared.ChunkifyErrorTypePermission
+
+// Equals "timeout"
+const ChunkifyErrorTypeTimeout = shared.ChunkifyErrorTypeTimeout
+
+// Equals "cancelled"
+const ChunkifyErrorTypeCancelled = shared.ChunkifyErrorTypeCancelled

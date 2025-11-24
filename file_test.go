@@ -55,7 +55,7 @@ func TestFileListWithOptionalParams(t *testing.T) {
 		Created: chunkify.FileListParamsCreated{
 			Gte:  chunkify.String("gte"),
 			Lte:  chunkify.String("lte"),
-			Sort: chunkify.String("sort"),
+			Sort: "asc",
 		},
 		Duration: chunkify.FileListParamsDuration{
 			Eq:  chunkify.Float(0),
@@ -72,7 +72,7 @@ func TestFileListWithOptionalParams(t *testing.T) {
 			Lte: chunkify.Int(0),
 		},
 		JobID:    chunkify.String("job_id"),
-		Limit:    chunkify.Int(0),
+		Limit:    chunkify.Int(1),
 		MimeType: chunkify.String("mime_type"),
 		Offset:   chunkify.Int(0),
 		Path: chunkify.FileListParamsPath{

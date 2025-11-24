@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/stainless-sdks/chunkify-go/internal/apijson"
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
@@ -18,6 +19,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
 	"github.com/stainless-sdks/chunkify-go/shared"
+	"github.com/stainless-sdks/chunkify-go/shared/constant"
 )
 
 // UploadService contains methods and other services that help with interacting
@@ -110,32 +112,34 @@ type Upload struct {
 	// Unique identifier of the upload
 	ID string `json:"id,required"`
 	// Timestamp when the upload was created
-	CreatedAt string `json:"created_at,required"`
-	// Error message of the upload
-	Error shared.ChunkifyError `json:"error,required"`
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Timestamp when the upload will expire
-	ExpiresAt string `json:"expires_at,required"`
-	// SourceId is the id of the source that was created from the upload
-	SourceID string `json:"source_id,required"`
+	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
 	// Current status of the upload (waiting, completed, failed, expired)
-	Status string `json:"status,required"`
+	//
+	// Any of "waiting", "completed", "failed", "expired".
+	Status UploadStatus `json:"status,required"`
 	// Timestamp when the upload was updated
-	UpdatedAt string `json:"updated_at,required"`
+	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
 	// Pre-signed URL where the file should be uploaded to
 	UploadURL string `json:"upload_url,required"`
+	// Error message of the upload
+	Error shared.ChunkifyError `json:"error"`
 	// Additional metadata for the upload
 	Metadata map[string]string `json:"metadata"`
+	// SourceId is the id of the source that was created from the upload
+	SourceID string `json:"source_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		CreatedAt   respjson.Field
-		Error       respjson.Field
 		ExpiresAt   respjson.Field
-		SourceID    respjson.Field
 		Status      respjson.Field
 		UpdatedAt   respjson.Field
 		UploadURL   respjson.Field
+		Error       respjson.Field
 		Metadata    respjson.Field
+		SourceID    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -146,6 +150,16 @@ func (r Upload) RawJSON() string { return r.JSON.raw }
 func (r *Upload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Current status of the upload (waiting, completed, failed, expired)
+type UploadStatus string
+
+const (
+	UploadStatusWaiting   UploadStatus = "waiting"
+	UploadStatusCompleted UploadStatus = "completed"
+	UploadStatusFailed    UploadStatus = "failed"
+	UploadStatusExpired   UploadStatus = "expired"
+)
 
 type UploadNewParams struct {
 	// The upload URL will be valid for the given timeout in seconds
@@ -168,7 +182,7 @@ type UploadNewResponseEnvelope struct {
 	// Data contains the response object
 	Data Upload `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -188,7 +202,7 @@ type UploadGetResponseEnvelope struct {
 	// Data contains the response object
 	Data Upload `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -209,15 +223,17 @@ type UploadListParams struct {
 	ID param.Opt[string] `query:"id,omitzero" json:"-"`
 	// Pagination limit (max 100)
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Filter by metadata (format: key:value,key:value)
-	Metadata param.Opt[string] `query:"metadata,omitzero" json:"-"`
 	// Pagination offset
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Filter by source ID
-	SourceID param.Opt[string] `query:"source_id,omitzero" json:"-"`
+	SourceID param.Opt[string]       `query:"source_id,omitzero" json:"-"`
+	Created  UploadListParamsCreated `query:"created,omitzero" json:"-"`
+	// Filter by metadata (format: key:value,key:value)
+	Metadata [][]string `query:"metadata,omitzero" json:"-"`
 	// Filter by status (pending, completed, error)
-	Status  param.Opt[string]       `query:"status,omitzero" json:"-"`
-	Created UploadListParamsCreated `query:"created,omitzero" json:"-"`
+	//
+	// Any of "waiting", "completed", "failed", "expired".
+	Status UploadListParamsStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -235,7 +251,9 @@ type UploadListParamsCreated struct {
 	// Filter by creation date less than or equal (RFC3339)
 	Lte param.Opt[string] `query:"lte,omitzero" json:"-"`
 	// Sort by creation date (asc/desc)
-	Sort param.Opt[string] `query:"sort,omitzero" json:"-"`
+	//
+	// Any of "asc", "desc".
+	Sort string `query:"sort,omitzero" json:"-"`
 	paramObj
 }
 
@@ -247,3 +265,13 @@ func (r UploadListParamsCreated) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Filter by status (pending, completed, error)
+type UploadListParamsStatus string
+
+const (
+	UploadListParamsStatusWaiting   UploadListParamsStatus = "waiting"
+	UploadListParamsStatusCompleted UploadListParamsStatus = "completed"
+	UploadListParamsStatusFailed    UploadListParamsStatus = "failed"
+	UploadListParamsStatusExpired   UploadListParamsStatus = "expired"
+)

@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/stainless-sdks/chunkify-go/internal/apijson"
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
@@ -17,6 +18,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/stainless-sdks/chunkify-go/shared/constant"
 )
 
 // FileService contains methods and other services that help with interacting with
@@ -100,7 +102,7 @@ type APIFile struct {
 	// Audio codec used (e.g. aac, mp3)
 	AudioCodec string `json:"audio_codec,required"`
 	// Timestamp when the file was created
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Duration of the video in seconds
 	Duration int64 `json:"duration,required"`
 	// Height of the video in pixels
@@ -159,7 +161,7 @@ type FileGetResponseEnvelope struct {
 	// Data contains the response object
 	Data APIFile `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -215,7 +217,9 @@ type FileListParamsCreated struct {
 	// Filter by creation date less than or equal (RFC3339)
 	Lte param.Opt[string] `query:"lte,omitzero" json:"-"`
 	// Sort by creation date (asc/desc)
-	Sort param.Opt[string] `query:"sort,omitzero" json:"-"`
+	//
+	// Any of "asc", "desc".
+	Sort string `query:"sort,omitzero" json:"-"`
 	paramObj
 }
 
