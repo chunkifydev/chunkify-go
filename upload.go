@@ -115,7 +115,7 @@ type Upload struct {
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Timestamp when the upload will expire
 	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
-	// Current status of the upload (waiting, completed, failed, expired)
+	// Current status of the upload
 	//
 	// Any of "waiting", "completed", "failed", "expired".
 	Status UploadStatus `json:"status,required"`
@@ -151,7 +151,7 @@ func (r *Upload) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Current status of the upload (waiting, completed, failed, expired)
+// Current status of the upload
 type UploadStatus string
 
 const (
