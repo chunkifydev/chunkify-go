@@ -19,7 +19,7 @@ type Error = apierror.Error
 // This is an alias to an internal type.
 type ChunkifyError = shared.ChunkifyError
 
-// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
+// Type of error
 //
 // This is an alias to an internal type.
 type ChunkifyErrorType = shared.ChunkifyErrorType

@@ -1237,12 +1237,11 @@ type Job struct {
 	Progress float64 `json:"progress,required"`
 	// ID of the source video being transcoded
 	SourceID string `json:"source_id,required"`
-	// Current status of the job (e.g., "queued", "ingesting","transcoding",
-	// "downloading", "merging", "uploading", "failed", "completed")
+	// Current status of the job
 	//
 	// Any of "queued", "ingesting", "transcoding", "downloading", "merging",
 	// "uploading", "failed", "completed", "cancelled", "merged", "downloaded",
-	// "transcoded".
+	// "transcoded", "waiting".
 	Status JobStatus `json:"status,required"`
 	// Storage settings for where the job output will be saved
 	Storage JobStorage `json:"storage,required"`
@@ -1476,9 +1475,7 @@ func (r *JobFormatUnion) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to MP4 with AV1 encoding.
 type JobFormatMP4Av1 struct {
-	// Name of the transcoding template. The format to use for transcoding. Valid
-	// formats are: mp4_h264, mp4_h265, mp4_av1, webm_vp9, hls_h264, hls_h265, hls_av1,
-	// jpg
+	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
@@ -1500,9 +1497,7 @@ func (r *JobFormatMP4Av1) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to MP4 with H.264 encoding.
 type JobFormatMP4H264 struct {
-	// Name of the transcoding template. The format to use for transcoding. Valid
-	// formats are: mp4_h264, mp4_h265, mp4_av1, webm_vp9, hls_h264, hls_h265, hls_av1,
-	// jpg
+	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
@@ -1524,9 +1519,7 @@ func (r *JobFormatMP4H264) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to MP4 with H.265 encoding.
 type JobFormatMP4H265 struct {
-	// Name of the transcoding template. The format to use for transcoding. Valid
-	// formats are: mp4_h264, mp4_h265, mp4_av1, webm_vp9, hls_h264, hls_h265, hls_av1,
-	// jpg
+	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
@@ -1548,9 +1541,7 @@ func (r *JobFormatMP4H265) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to WebM with VP9 encoding.
 type JobFormatWebmVp9 struct {
-	// Name of the transcoding template. The format to use for transcoding. Valid
-	// formats are: mp4_h264, mp4_h265, mp4_av1, webm_vp9, hls_h264, hls_h265, hls_av1,
-	// jpg
+	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
@@ -1572,9 +1563,7 @@ func (r *JobFormatWebmVp9) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to HLS with AV1 encoding.
 type JobFormatHlsAv1 struct {
-	// Name of the transcoding template. The format to use for transcoding. Valid
-	// formats are: mp4_h264, mp4_h265, mp4_av1, webm_vp9, hls_h264, hls_h265, hls_av1,
-	// jpg
+	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
@@ -1596,9 +1585,7 @@ func (r *JobFormatHlsAv1) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to HLS with H.264 encoding.
 type JobFormatHlsH264 struct {
-	// Name of the transcoding template. The format to use for transcoding. Valid
-	// formats are: mp4_h264, mp4_h265, mp4_av1, webm_vp9, hls_h264, hls_h265, hls_av1,
-	// jpg
+	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
@@ -1620,9 +1607,7 @@ func (r *JobFormatHlsH264) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to HLS with H.265 encoding.
 type JobFormatHlsH265 struct {
-	// Name of the transcoding template. The format to use for transcoding. Valid
-	// formats are: mp4_h264, mp4_h265, mp4_av1, webm_vp9, hls_h264, hls_h265, hls_av1,
-	// jpg
+	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
@@ -1644,9 +1629,7 @@ func (r *JobFormatHlsH265) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to JPEG image extraction.
 type JobFormatJpg struct {
-	// Name of the transcoding template. The format to use for transcoding. Valid
-	// formats are: mp4_h264, mp4_h265, mp4_av1, webm_vp9, hls_h264, hls_h265, hls_av1,
-	// jpg
+	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
@@ -1666,8 +1649,7 @@ func (r *JobFormatJpg) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Current status of the job (e.g., "queued", "ingesting","transcoding",
-// "downloading", "merging", "uploading", "failed", "completed")
+// Current status of the job
 type JobStatus string
 
 const (
@@ -1683,6 +1665,7 @@ const (
 	JobStatusMerged      JobStatus = "merged"
 	JobStatusDownloaded  JobStatus = "downloaded"
 	JobStatusTranscoded  JobStatus = "transcoded"
+	JobStatusWaiting     JobStatus = "waiting"
 )
 
 // Storage settings for where the job output will be saved
@@ -3670,8 +3653,7 @@ func (r *JobNewParamsStorage) UnmarshalJSON(data []byte) error {
 // file specifications and output requirements. This auto-scaling ensures efficient
 // resource utilization.
 type JobNewParamsTranscoder struct {
-	// Quantity specifies the number of transcoder instances to use (1-50). Required if
-	// Type is set.
+	// Quantity specifies the number of transcoder instances. Required if Type is set.
 	Quantity param.Opt[int64] `json:"quantity,omitzero"`
 	// Type specifies the CPU configuration for each transcoder instance. Required if
 	// Quantity is set.

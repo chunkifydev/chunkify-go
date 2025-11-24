@@ -108,21 +108,21 @@ func (r *ProjectService) Delete(ctx context.Context, projectID string, opts ...o
 type Project struct {
 	// Id is the unique identifier for the project.
 	ID string `json:"id,required"`
+	// Timestamp when the project was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Name of the project
 	Name string `json:"name,required"`
 	// Slug is the slug for the project.
 	Slug string `json:"slug,required"`
 	// StorageId identifier where project files are stored
 	StorageID string `json:"storage_id,required"`
-	// Timestamp when the project was created
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		CreatedAt   respjson.Field
 		Name        respjson.Field
 		Slug        respjson.Field
 		StorageID   respjson.Field
-		CreatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -208,38 +208,18 @@ func (r *ProjectGetResponseEnvelope) UnmarshalJSON(data []byte) error {
 }
 
 type ProjectUpdateParams struct {
-
-	//
-	// Request body variants
-	//
-
-	// This field is a request body variant, only one variant field can be set.
-	OfObject *ProjectUpdateParamsBodyObject `json:",inline"`
-	// This field is a request body variant, only one variant field can be set.
-	OfProjectUpdatesBodyObject *ProjectUpdateParamsBodyObject `json:",inline"`
-
-	paramObj
-}
-
-func (u ProjectUpdateParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfObject, u.OfProjectUpdatesBodyObject)
-}
-func (r *ProjectUpdateParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The property Name is required.
-type ProjectUpdateParamsBodyObject struct {
-	Name      string            `json:"name,required"`
+	// Name is the name of the project. Required when storage_id is not provided.
+	Name param.Opt[string] `json:"name,omitzero"`
+	// StorageId is the storage id of the project. Required when name is not provided.
 	StorageID param.Opt[string] `json:"storage_id,omitzero"`
 	paramObj
 }
 
-func (r ProjectUpdateParamsBodyObject) MarshalJSON() (data []byte, err error) {
-	type shadow ProjectUpdateParamsBodyObject
+func (r ProjectUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow ProjectUpdateParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ProjectUpdateParamsBodyObject) UnmarshalJSON(data []byte) error {
+func (r *ProjectUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -79,7 +79,7 @@ func TestNotificationListWithOptionalParams(t *testing.T) {
 	_, err := client.Notifications.List(context.TODO(), chunkify.NotificationListParams{
 		Created: chunkify.NotificationListParamsCreated{
 			Gte:  chunkify.String("2102-57-32"),
-			Lte:  chunkify.String("2102-57-32"),
+			Lte:  chunkify.String("2025-01-01"),
 			Sort: "asc",
 		},
 		Events:   []string{"job.completed"},
