@@ -19,7 +19,7 @@ type ChunkifyError struct {
 	Detail string `json:"detail,required"`
 	// Main error message
 	Message string `json:"message,required"`
-	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
+	// Type of error
 	//
 	// Any of "setup", "ffmpeg", "source", "upload", "download", "ingest", "job",
 	// "unexpected", "permission", "timeout", "cancelled".
@@ -40,7 +40,7 @@ func (r *ChunkifyError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
+// Type of error
 type ChunkifyErrorType string
 
 const (

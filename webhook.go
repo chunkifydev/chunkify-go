@@ -122,6 +122,9 @@ type Webhook struct {
 	// Whether the webhook is currently enabled
 	Enabled bool `json:"enabled,required"`
 	// Array of event types this webhook subscribes to
+	//
+	// Any of "job.completed", "job.failed", "job.cancelled", "upload.completed",
+	// "upload.failed", "upload.expired".
 	Events []string `json:"events,required"`
 	// ID of the project this webhook belongs to
 	ProjectID string `json:"project_id,required"`

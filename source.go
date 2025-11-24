@@ -116,7 +116,7 @@ type Source struct {
 	ID string `json:"id,required"`
 	// Audio bitrate in bits per second
 	AudioBitrate int64 `json:"audio_bitrate,required"`
-	// Audio codec used (e.g. aac, mp3)
+	// Audio codec used
 	AudioCodec string `json:"audio_codec,required"`
 	// Timestamp when the source was created
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
@@ -134,7 +134,7 @@ type Source struct {
 	URL string `json:"url,required"`
 	// Video bitrate in bits per second
 	VideoBitrate int64 `json:"video_bitrate,required"`
-	// Video codec used (e.g. h264, h265)
+	// Video codec used
 	VideoCodec string `json:"video_codec,required"`
 	// Video framerate in frames per second
 	VideoFramerate float64 `json:"video_framerate,required"`

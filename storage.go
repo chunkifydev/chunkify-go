@@ -97,10 +97,14 @@ type Storage struct {
 	Bucket string `json:"bucket,required"`
 	// Created at timestamp
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Continent location of the storage (eg. US, EU, ASIA)
-	Location string `json:"location,required"`
-	// Name of the storage provider (e.g. AWS, GCP)
-	Provider string `json:"provider,required"`
+	// Continent location of the storage
+	//
+	// Any of "US", "EU", "Asia".
+	Location StorageLocation `json:"location,required"`
+	// Name of the storage provider
+	//
+	// Any of "aws", "chunkify", "cloudflare".
+	Provider StorageProvider `json:"provider,required"`
 	// Whether the storage bucket is publicly accessible
 	Public bool `json:"public,required"`
 	// Geographic region where the storage is located
@@ -130,6 +134,24 @@ func (r Storage) RawJSON() string { return r.JSON.raw }
 func (r *Storage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Continent location of the storage
+type StorageLocation string
+
+const (
+	StorageLocationUs   StorageLocation = "US"
+	StorageLocationEu   StorageLocation = "EU"
+	StorageLocationAsia StorageLocation = "Asia"
+)
+
+// Name of the storage provider
+type StorageProvider string
+
+const (
+	StorageProviderAws        StorageProvider = "aws"
+	StorageProviderChunkify   StorageProvider = "chunkify"
+	StorageProviderCloudflare StorageProvider = "cloudflare"
+)
 
 type StorageListResponse struct {
 	Data []Storage `json:"data,required"`
@@ -225,10 +247,8 @@ func init() {
 type StorageNewParamsStorageChunkify struct {
 	// Region specifies the region of the storage provider.
 	//
-	// Any of "us-east-1", "us-east-2", "us-central-1", "us-west-1", "us-west-2",
-	// "eu-west-1", "eu-west-2", "eu-west-3", "eu-central-1", "eu-north-1",
-	// "ap-east-1", "ap-east-2", "ap-northeast-1", "ap-northeast-2", "ap-south-1",
-	// "ap-southeast-1", "ap-southeast-2".
+	// Any of "us-east-1", "us-east-2", "us-west-1", "us-west-2", "eu-west-1",
+	// "eu-west-2", "ap-northeast-1", "ap-southeast-1".
 	Region string `json:"region,omitzero,required"`
 	// Provider specifies the storage provider.
 	//
@@ -247,7 +267,7 @@ func (r *StorageNewParamsStorageChunkify) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[StorageNewParamsStorageChunkify](
-		"region", "us-east-1", "us-east-2", "us-central-1", "us-west-1", "us-west-2", "eu-west-1", "eu-west-2", "eu-west-3", "eu-central-1", "eu-north-1", "ap-east-1", "ap-east-2", "ap-northeast-1", "ap-northeast-2", "ap-south-1", "ap-southeast-1", "ap-southeast-2",
+		"region", "us-east-1", "us-east-2", "us-west-1", "us-west-2", "eu-west-1", "eu-west-2", "ap-northeast-1", "ap-southeast-1",
 	)
 }
 

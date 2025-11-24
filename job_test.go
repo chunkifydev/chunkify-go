@@ -63,7 +63,7 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 		},
 		Transcoder: chunkify.JobNewParamsTranscoder{
 			Quantity: chunkify.Int(2),
-			Type:     "8vCPU",
+			Type:     "4vCPU",
 		},
 	})
 	if err != nil {
@@ -114,14 +114,14 @@ func TestJobListWithOptionalParams(t *testing.T) {
 	_, err := client.Jobs.List(context.TODO(), chunkify.JobListParams{
 		ID: chunkify.String("id"),
 		Created: chunkify.JobListParamsCreated{
-			Gte:  chunkify.String("2102-57-32"),
-			Lte:  chunkify.String("2102-57-32"),
+			Gte:  chunkify.String("2025-01-01"),
+			Lte:  chunkify.String("2025-01-01"),
 			Sort: "asc",
 		},
 		FormatID:      chunkify.JobListParamsFormatIDMP4H264,
 		HlsManifestID: chunkify.String("hls_manifest_id"),
 		Limit:         chunkify.Int(1),
-		Metadata:      [][]string{{"J!Q0Ok0bzJb7:pro"}},
+		Metadata:      [][]string{{"key1:value1"}},
 		Offset:        chunkify.Int(0),
 		SourceID:      chunkify.String("source_id"),
 		Status:        chunkify.JobListParamsStatusCompleted,

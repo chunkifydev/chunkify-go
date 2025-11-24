@@ -73,7 +73,7 @@ func (r *JobLogListResponse) UnmarshalJSON(data []byte) error {
 type JobLogListResponseData struct {
 	// Additional structured data attached to the log
 	Attributes map[string]any `json:"attributes,required"`
-	// Log level (e.g. "info", "error", "debug")
+	// Log level
 	//
 	// Any of "info", "error", "debug".
 	Level string `json:"level,required"`

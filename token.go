@@ -87,8 +87,10 @@ type Token struct {
 	Name string `json:"name,required"`
 	// ID of the project this token belongs to
 	ProjectID string `json:"project_id,required"`
-	// Access scope of the token (e.g.project, team)
-	Scope string `json:"scope,required"`
+	// Access scope of the token
+	//
+	// Any of "project", "team".
+	Scope TokenScope `json:"scope,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -107,6 +109,14 @@ func (r Token) RawJSON() string { return r.JSON.raw }
 func (r *Token) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
+
+// Access scope of the token
+type TokenScope string
+
+const (
+	TokenScopeProject TokenScope = "project"
+	TokenScopeTeam    TokenScope = "team"
+)
 
 type TokenListResponse struct {
 	Data []Token `json:"data,required"`
@@ -131,7 +141,7 @@ type TokenNewParams struct {
 	// Scope specifies the scope of the token, which must be either "team" or
 	// "project".
 	//
-	// Any of "team", "project".
+	// Any of "project", "team".
 	Scope TokenNewParamsScope `json:"scope,omitzero,required"`
 	// Name is the name of the token, which can be up to 64 characters long.
 	Name param.Opt[string] `json:"name,omitzero"`
@@ -153,8 +163,8 @@ func (r *TokenNewParams) UnmarshalJSON(data []byte) error {
 type TokenNewParamsScope string
 
 const (
-	TokenNewParamsScopeTeam    TokenNewParamsScope = "team"
 	TokenNewParamsScopeProject TokenNewParamsScope = "project"
+	TokenNewParamsScopeTeam    TokenNewParamsScope = "team"
 )
 
 type TokenNewResponseEnvelope struct {
