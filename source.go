@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/stainless-sdks/chunkify-go/internal/apijson"
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
@@ -17,6 +18,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/packages/pagination"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/stainless-sdks/chunkify-go/shared/constant"
 )
 
 // SourceService contains methods and other services that help with interacting
@@ -117,7 +119,7 @@ type Source struct {
 	// Audio codec used (e.g. aac, mp3)
 	AudioCodec string `json:"audio_codec,required"`
 	// Timestamp when the source was created
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Device used to record the video
 	Device string `json:"device,required"`
 	// Duration of the video in seconds
@@ -186,7 +188,7 @@ type SourceNewResponseEnvelope struct {
 	// Data contains the response object
 	Data Source `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -206,7 +208,7 @@ type SourceGetResponseEnvelope struct {
 	// Data contains the response object
 	Data Source `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -227,21 +229,23 @@ type SourceListParams struct {
 	ID param.Opt[string] `query:"id,omitzero" json:"-"`
 	// Filter by audio codec
 	AudioCodec param.Opt[string] `query:"audio_codec,omitzero" json:"-"`
-	// Filter by device (apple/android)
-	Device param.Opt[string] `query:"device,omitzero" json:"-"`
 	// Pagination limit (max 100)
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Filter by metadata (format: key:value,key:value)
-	Metadata param.Opt[string] `query:"metadata,omitzero" json:"-"`
 	// Pagination offset
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Filter by video codec
-	VideoCodec param.Opt[string]        `query:"video_codec,omitzero" json:"-"`
-	Created    SourceListParamsCreated  `query:"created,omitzero" json:"-"`
-	Duration   SourceListParamsDuration `query:"duration,omitzero" json:"-"`
-	Height     SourceListParamsHeight   `query:"height,omitzero" json:"-"`
-	Size       SourceListParamsSize     `query:"size,omitzero" json:"-"`
-	Width      SourceListParamsWidth    `query:"width,omitzero" json:"-"`
+	VideoCodec param.Opt[string]       `query:"video_codec,omitzero" json:"-"`
+	Created    SourceListParamsCreated `query:"created,omitzero" json:"-"`
+	// Filter by device (apple/android)
+	//
+	// Any of "apple", "android", "unknown".
+	Device   SourceListParamsDevice   `query:"device,omitzero" json:"-"`
+	Duration SourceListParamsDuration `query:"duration,omitzero" json:"-"`
+	Height   SourceListParamsHeight   `query:"height,omitzero" json:"-"`
+	// Filter by metadata (format: key:value,key:value)
+	Metadata [][]string            `query:"metadata,omitzero" json:"-"`
+	Size     SourceListParamsSize  `query:"size,omitzero" json:"-"`
+	Width    SourceListParamsWidth `query:"width,omitzero" json:"-"`
 	paramObj
 }
 
@@ -259,7 +263,9 @@ type SourceListParamsCreated struct {
 	// Filter by creation date less than or equal (RFC3339)
 	Lte param.Opt[string] `query:"lte,omitzero" json:"-"`
 	// Sort by creation date (asc/desc)
-	Sort param.Opt[string] `query:"sort,omitzero" json:"-"`
+	//
+	// Any of "asc", "desc".
+	Sort string `query:"sort,omitzero" json:"-"`
 	paramObj
 }
 
@@ -271,6 +277,15 @@ func (r SourceListParamsCreated) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Filter by device (apple/android)
+type SourceListParamsDevice string
+
+const (
+	SourceListParamsDeviceApple   SourceListParamsDevice = "apple"
+	SourceListParamsDeviceAndroid SourceListParamsDevice = "android"
+	SourceListParamsDeviceUnknown SourceListParamsDevice = "unknown"
+)
 
 type SourceListParamsDuration struct {
 	// Filter by exact duration

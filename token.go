@@ -8,13 +8,14 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
+	"time"
 
 	"github.com/stainless-sdks/chunkify-go/internal/apijson"
 	"github.com/stainless-sdks/chunkify-go/internal/requestconfig"
 	"github.com/stainless-sdks/chunkify-go/option"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
-	"github.com/stainless-sdks/chunkify-go/shared"
+	"github.com/stainless-sdks/chunkify-go/shared/constant"
 )
 
 // TokenService contains methods and other services that help with interacting with
@@ -80,22 +81,22 @@ type Token struct {
 	ID string `json:"id,required"`
 	// The actual token value (only returned on creation)
 	Token string `json:"token,required"`
+	// Timestamp when the token was created
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Name given to the token
 	Name string `json:"name,required"`
 	// ID of the project this token belongs to
 	ProjectID string `json:"project_id,required"`
 	// Access scope of the token (e.g.project, team)
 	Scope string `json:"scope,required"`
-	// Timestamp when the token was created
-	CreatedAt string `json:"created_at"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Token       respjson.Field
+		CreatedAt   respjson.Field
 		Name        respjson.Field
 		ProjectID   respjson.Field
 		Scope       respjson.Field
-		CreatedAt   respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -107,16 +108,17 @@ func (r *Token) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
 type TokenListResponse struct {
-	Data []Token `json:"data"`
+	Data []Token `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -159,7 +161,7 @@ type TokenNewResponseEnvelope struct {
 	// Data contains the response object
 	Data Token `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

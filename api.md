@@ -1,7 +1,6 @@
 # Shared Response Types
 
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/shared#ChunkifyError">ChunkifyError</a>
-- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go/shared#ResponseOk">ResponseOk</a>
 
 # Files
 
@@ -30,7 +29,15 @@ Params Types:
 
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#HlsAv1">HlsAv1</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#HlsH264">HlsH264</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#HlsH265">HlsH265</a>
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#Job">Job</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#Jpg">Jpg</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#MP4Av1">MP4Av1</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#MP4H264">MP4H264</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#MP4H265">MP4H265</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/chunkify-go#WebmVp9">WebmVp9</a>
 
 Methods:
 

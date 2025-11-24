@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
+	"time"
 
 	"github.com/stainless-sdks/chunkify-go/internal/apijson"
 	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
@@ -108,17 +109,20 @@ type Notification struct {
 	// Unique identifier of the notification
 	ID string `json:"id,required"`
 	// Timestamp when the notification was created
-	CreatedAt string `json:"created_at,required"`
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Type of event that triggered this notification
-	Event string `json:"event,required"`
+	//
+	// Any of "job.completed", "job.failed", "job.cancelled", "upload.completed",
+	// "upload.failed", "upload.expired".
+	Event NotificationEvent `json:"event,required"`
 	// ID of the object that triggered this notification
 	ObjectID string `json:"object_id,required"`
 	// JSON payload that was sent to the webhook endpoint
 	Payload string `json:"payload,required"`
-	// HTTP status code received from the webhook endpoint
-	ResponseStatusCode int64 `json:"response_status_code,required"`
 	// Webhook endpoint configuration that received this notification
 	Webhook Webhook `json:"webhook,required"`
+	// HTTP status code received from the webhook endpoint
+	ResponseStatusCode int64 `json:"response_status_code"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID                 respjson.Field
@@ -126,8 +130,8 @@ type Notification struct {
 		Event              respjson.Field
 		ObjectID           respjson.Field
 		Payload            respjson.Field
-		ResponseStatusCode respjson.Field
 		Webhook            respjson.Field
+		ResponseStatusCode respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
 	} `json:"-"`
@@ -139,9 +143,20 @@ func (r *Notification) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Type of event that triggered this notification
+type NotificationEvent string
+
+const (
+	NotificationEventJobCompleted    NotificationEvent = "job.completed"
+	NotificationEventJobFailed       NotificationEvent = "job.failed"
+	NotificationEventJobCancelled    NotificationEvent = "job.cancelled"
+	NotificationEventUploadCompleted NotificationEvent = "upload.completed"
+	NotificationEventUploadFailed    NotificationEvent = "upload.failed"
+	NotificationEventUploadExpired   NotificationEvent = "upload.expired"
+)
+
 type NotificationNewParams struct {
-	// Event specifies the type of event that triggered the notification. Currently
-	// only supports "job.completed" event type.
+	// Event specifies the type of event that triggered the notification.
 	//
 	// Any of "job.completed", "job.failed", "job.cancelled", "upload.completed",
 	// "upload.failed", "upload.expired".
@@ -161,8 +176,7 @@ func (r *NotificationNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Event specifies the type of event that triggered the notification. Currently
-// only supports "job.completed" event type.
+// Event specifies the type of event that triggered the notification.
 type NotificationNewParamsEvent string
 
 const (
@@ -226,6 +240,9 @@ type NotificationListParams struct {
 	Created   NotificationListParamsCreated `query:"created,omitzero" json:"-"`
 	// Filter by events (e.g. job.completed, job.failed, upload.completed,
 	// upload.failed, upload.expired)
+	//
+	// Any of "job.completed", "job.failed", "job.cancelled", "upload.completed",
+	// "upload.failed", "upload.expired".
 	Events             []string                                 `query:"events,omitzero" json:"-"`
 	ResponseStatusCode NotificationListParamsResponseStatusCode `query:"response_status_code,omitzero" json:"-"`
 	paramObj
@@ -245,7 +262,9 @@ type NotificationListParamsCreated struct {
 	// Filter by creation date less than or equal (RFC3339)
 	Lte param.Opt[string] `query:"lte,omitzero" json:"-"`
 	// Sort by creation date (asc/desc)
-	Sort param.Opt[string] `query:"sort,omitzero" json:"-"`
+	//
+	// Any of "asc", "desc".
+	Sort string `query:"sort,omitzero" json:"-"`
 	paramObj
 }
 

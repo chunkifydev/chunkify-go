@@ -13,7 +13,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/internal/requestconfig"
 	"github.com/stainless-sdks/chunkify-go/option"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
-	"github.com/stainless-sdks/chunkify-go/shared"
+	"github.com/stainless-sdks/chunkify-go/shared/constant"
 )
 
 // JobFileService contains methods and other services that help with interacting
@@ -47,16 +47,18 @@ func (r *JobFileService) List(ctx context.Context, jobID string, opts ...option.
 	return
 }
 
-// Successful response
+// Response containing a list of files for a job
 type JobFileListResponse struct {
-	Data []APIFile `json:"data"`
+	Data []APIFile `json:"data,required"`
+	// Status indicates the response status "success"
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API

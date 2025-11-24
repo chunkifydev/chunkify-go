@@ -16,11 +16,14 @@ type paramObj = param.APIObject
 
 type ChunkifyError struct {
 	// Additional error details or output
-	Detail string `json:"detail"`
+	Detail string `json:"detail,required"`
 	// Main error message
-	Message string `json:"message"`
+	Message string `json:"message,required"`
 	// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
-	Type string `json:"type"`
+	//
+	// Any of "setup", "ffmpeg", "source", "upload", "download", "ingest", "job",
+	// "unexpected", "permission", "timeout", "cancelled".
+	Type ChunkifyErrorType `json:"type,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Detail      respjson.Field
@@ -37,20 +40,19 @@ func (r *ChunkifyError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
-type ResponseOk struct {
-	// Status indicates the response status "success"
-	Status string `json:"status,required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Status      respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
+// Type of error (e.g., "ffmpeg", "network", "storage", etc.)
+type ChunkifyErrorType string
 
-// Returns the unmodified JSON received from the API
-func (r ResponseOk) RawJSON() string { return r.JSON.raw }
-func (r *ResponseOk) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
+const (
+	ChunkifyErrorTypeSetup      ChunkifyErrorType = "setup"
+	ChunkifyErrorTypeFfmpeg     ChunkifyErrorType = "ffmpeg"
+	ChunkifyErrorTypeSource     ChunkifyErrorType = "source"
+	ChunkifyErrorTypeUpload     ChunkifyErrorType = "upload"
+	ChunkifyErrorTypeDownload   ChunkifyErrorType = "download"
+	ChunkifyErrorTypeIngest     ChunkifyErrorType = "ingest"
+	ChunkifyErrorTypeJob        ChunkifyErrorType = "job"
+	ChunkifyErrorTypeUnexpected ChunkifyErrorType = "unexpected"
+	ChunkifyErrorTypePermission ChunkifyErrorType = "permission"
+	ChunkifyErrorTypeTimeout    ChunkifyErrorType = "timeout"
+	ChunkifyErrorTypeCancelled  ChunkifyErrorType = "cancelled"
+)

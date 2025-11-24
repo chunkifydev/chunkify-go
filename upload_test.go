@@ -83,13 +83,13 @@ func TestUploadListWithOptionalParams(t *testing.T) {
 		Created: chunkify.UploadListParamsCreated{
 			Gte:  chunkify.String("gte"),
 			Lte:  chunkify.String("lte"),
-			Sort: chunkify.String("sort"),
+			Sort: "asc",
 		},
-		Limit:    chunkify.Int(0),
-		Metadata: chunkify.String("metadata"),
+		Limit:    chunkify.Int(1),
+		Metadata: [][]string{{"J!Q0Ok0bzJb7:pro"}},
 		Offset:   chunkify.Int(0),
 		SourceID: chunkify.String("source_id"),
-		Status:   chunkify.String("status"),
+		Status:   chunkify.UploadListParamsStatusWaiting,
 	})
 	if err != nil {
 		var apierr *chunkify.Error

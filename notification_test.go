@@ -78,18 +78,18 @@ func TestNotificationListWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Notifications.List(context.TODO(), chunkify.NotificationListParams{
 		Created: chunkify.NotificationListParamsCreated{
-			Gte:  chunkify.String("gte"),
-			Lte:  chunkify.String("lte"),
-			Sort: chunkify.String("sort"),
+			Gte:  chunkify.String("2102-57-32"),
+			Lte:  chunkify.String("2102-57-32"),
+			Sort: "asc",
 		},
-		Events:   []string{"string"},
-		Limit:    chunkify.Int(0),
+		Events:   []string{"job.completed"},
+		Limit:    chunkify.Int(1),
 		ObjectID: chunkify.String("object_id"),
 		Offset:   chunkify.Int(0),
 		ResponseStatusCode: chunkify.NotificationListParamsResponseStatusCode{
-			Eq:  chunkify.Int(0),
-			Gte: chunkify.Int(0),
-			Lte: chunkify.Int(0),
+			Eq:  chunkify.Int(100),
+			Gte: chunkify.Int(100),
+			Lte: chunkify.Int(100),
 		},
 		WebhookID: chunkify.String("webhook_id"),
 	})

@@ -8,13 +8,13 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
+	"time"
 
 	"github.com/stainless-sdks/chunkify-go/internal/apijson"
 	"github.com/stainless-sdks/chunkify-go/internal/requestconfig"
 	"github.com/stainless-sdks/chunkify-go/option"
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
-	"github.com/stainless-sdks/chunkify-go/shared"
 	"github.com/stainless-sdks/chunkify-go/shared/constant"
 )
 
@@ -96,9 +96,7 @@ type Storage struct {
 	// Name of the storage bucket
 	Bucket string `json:"bucket,required"`
 	// Created at timestamp
-	CreatedAt string `json:"created_at,required"`
-	// Endpoint of the storage provider
-	Endpoint string `json:"endpoint,required"`
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
 	// Continent location of the storage (eg. US, EU, ASIA)
 	Location string `json:"location,required"`
 	// Name of the storage provider (e.g. AWS, GCP)
@@ -109,17 +107,19 @@ type Storage struct {
 	Region string `json:"region,required"`
 	// Unique identifier of the storage configuration
 	Slug string `json:"slug,required"`
+	// Endpoint of the storage provider
+	Endpoint string `json:"endpoint"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
 		Bucket      respjson.Field
 		CreatedAt   respjson.Field
-		Endpoint    respjson.Field
 		Location    respjson.Field
 		Provider    respjson.Field
 		Public      respjson.Field
 		Region      respjson.Field
 		Slug        respjson.Field
+		Endpoint    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -131,16 +131,17 @@ func (r *Storage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Successful response
 type StorageListResponse struct {
-	Data []Storage `json:"data"`
+	Data []Storage `json:"data,required"`
+	// Status indicates the response status "success"
+	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
+		Status      respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
-	shared.ResponseOk
 }
 
 // Returns the unmodified JSON received from the API
@@ -260,7 +261,7 @@ type StorageNewParamsStorageCloudflare struct {
 	// Bucket is the name of the storage bucket.
 	Bucket string `json:"bucket,required"`
 	// Endpoint is the endpoint of the storage provider.
-	Endpoint string `json:"endpoint,required"`
+	Endpoint string `json:"endpoint,required" format:"uri"`
 	// Location specifies the location of the storage provider.
 	//
 	// Any of "US", "EU", "ASIA".
@@ -298,7 +299,7 @@ type StorageNewResponseEnvelope struct {
 	// Data contains the response object
 	Data Storage `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -318,7 +319,7 @@ type StorageGetResponseEnvelope struct {
 	// Data contains the response object
 	Data Storage `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
