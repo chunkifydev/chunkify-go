@@ -282,10 +282,10 @@ func WithTeamAccessToken(value string) RequestOption {
 	})
 }
 
-// WithWebhookSecret returns a RequestOption that sets the client setting "webhook_secret".
-func WithWebhookSecret(value string) RequestOption {
-	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
-		r.WebhookSecret = value
+// WithWebhookKey returns a RequestOption that sets the client setting "webhook_key".
+func WithWebhookKey(value string) RequestOption {
+	return requestconfig.PreRequestOptionFunc(func(r *requestconfig.RequestConfig) error {
+		r.WebhookKey = value
 		return nil
 	})
 }

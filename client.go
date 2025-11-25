@@ -43,7 +43,7 @@ func DefaultClientOptions() []option.RequestOption {
 		defaults = append(defaults, option.WithTeamAccessToken(o))
 	}
 	if o, ok := os.LookupEnv("CHUNKIFY_WEBHOOK_SECRET"); ok {
-		defaults = append(defaults, option.WithWebhookSecret(o))
+		defaults = append(defaults, option.WithWebhookKey(o))
 	}
 	return defaults
 }
