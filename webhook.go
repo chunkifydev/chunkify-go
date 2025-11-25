@@ -17,6 +17,7 @@ import (
 	"github.com/stainless-sdks/chunkify-go/packages/param"
 	"github.com/stainless-sdks/chunkify-go/packages/respjson"
 	"github.com/stainless-sdks/chunkify-go/shared/constant"
+	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 )
 
 // WebhookService contains methods and other services that help with interacting
@@ -107,9 +108,26 @@ func (r *WebhookService) Delete(ctx context.Context, webhookID string, opts ...o
 	return
 }
 
-func (r *WebhookService) Unwrap(payload []byte, opts ...option.RequestOption) (*UnwrapWebhookEvent, error) {
+func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...option.RequestOption) (*UnwrapWebhookEvent, error) {
+	opts = slices.Concat(r.Options, opts)
+	cfg, err := requestconfig.PreRequestOptions(opts...)
+	if err != nil {
+		return nil, err
+	}
+	key := cfg.WebhookKey
+	if key == "" {
+		return nil, errors.New("The WebhookKey option must be set in order to verify webhook headers")
+	}
+	wh, err := standardwebhooks.NewWebhook(key)
+	if err != nil {
+		return nil, err
+	}
+	err = wh.Verify(payload, headers)
+	if err != nil {
+		return nil, err
+	}
 	res := &UnwrapWebhookEvent{}
-	err := res.UnmarshalJSON(payload)
+	err = res.UnmarshalJSON(payload)
 	if err != nil {
 		return res, err
 	}
