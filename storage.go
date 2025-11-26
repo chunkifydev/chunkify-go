@@ -4,6 +4,7 @@ package chunkify
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -39,7 +40,7 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 
 // Create a new storage configuration for cloud storage providers like AWS S3,
 // Cloudflare R2, etc. The storage credentials will be validated before saving.
-func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ...option.RequestOption) (res *Storage, err error) {
+func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ...option.RequestOption) (res *StorageUnion, err error) {
 	var env StorageNewResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	path := "api/storages"
@@ -52,7 +53,7 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 }
 
 // Retrieve details of a specific storage configuration by its id.
-func (r *StorageService) Get(ctx context.Context, storageID string, opts ...option.RequestOption) (res *Storage, err error) {
+func (r *StorageService) Get(ctx context.Context, storageID string, opts ...option.RequestOption) (res *StorageUnion, err error) {
 	var env StorageGetResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	if storageID == "" {
@@ -90,71 +91,209 @@ func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...o
 	return
 }
 
-type Storage struct {
+// StorageUnion contains all possible properties and values from [StorageChunkify],
+// [StorageCloudflare], [StorageAws].
+//
+// Use the [StorageUnion.AsAny] method to switch on the variant.
+//
+// Use the methods beginning with 'As' to cast the union to one of its variants.
+type StorageUnion struct {
+	ID        string    `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	// Any of "chunkify", "cloudflare", "aws".
+	Provider string `json:"provider"`
+	Region   string `json:"region"`
+	Slug     string `json:"slug"`
+	Bucket   string `json:"bucket"`
+	// This field is from variant [StorageCloudflare].
+	Endpoint string `json:"endpoint"`
+	// This field is from variant [StorageCloudflare].
+	Location string `json:"location"`
+	Public   bool   `json:"public"`
+	JSON     struct {
+		ID        respjson.Field
+		CreatedAt respjson.Field
+		Provider  respjson.Field
+		Region    respjson.Field
+		Slug      respjson.Field
+		Bucket    respjson.Field
+		Endpoint  respjson.Field
+		Location  respjson.Field
+		Public    respjson.Field
+		raw       string
+	} `json:"-"`
+}
+
+// anyStorage is implemented by each variant of [StorageUnion] to add type safety
+// for the return type of [StorageUnion.AsAny]
+type anyStorage interface {
+	implStorageUnion()
+}
+
+func (StorageChunkify) implStorageUnion()   {}
+func (StorageCloudflare) implStorageUnion() {}
+func (StorageAws) implStorageUnion()        {}
+
+// Use the following switch statement to find the correct variant
+//
+//	switch variant := StorageUnion.AsAny().(type) {
+//	case chunkify.StorageChunkify:
+//	case chunkify.StorageCloudflare:
+//	case chunkify.StorageAws:
+//	default:
+//	  fmt.Errorf("no variant present")
+//	}
+func (u StorageUnion) AsAny() anyStorage {
+	switch u.Provider {
+	case "chunkify":
+		return u.AsChunkify()
+	case "cloudflare":
+		return u.AsCloudflare()
+	case "aws":
+		return u.AsAws()
+	}
+	return nil
+}
+
+func (u StorageUnion) AsChunkify() (v StorageChunkify) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u StorageUnion) AsCloudflare() (v StorageCloudflare) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u StorageUnion) AsAws() (v StorageAws) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+// Returns the unmodified JSON received from the API
+func (u StorageUnion) RawJSON() string { return u.JSON.raw }
+
+func (r *StorageUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type StorageChunkify struct {
 	// Unique identifier of the storage configuration
 	ID string `json:"id,required"`
-	// Name of the storage bucket
-	Bucket string `json:"bucket,required"`
 	// Created at timestamp
 	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
-	// Continent location of the storage
+	// Provider specifies the storage provider.
+	Provider constant.Chunkify `json:"provider,required"`
+	// Region specifies the region of the storage provider.
 	//
-	// Any of "US", "EU", "Asia".
-	Location StorageLocation `json:"location,required"`
-	// Name of the storage provider
-	//
-	// Any of "aws", "chunkify", "cloudflare".
-	Provider StorageProvider `json:"provider,required"`
-	// Whether the storage bucket is publicly accessible
-	Public bool `json:"public,required"`
-	// Geographic region where the storage is located
+	// Any of "us-east-1", "us-east-2", "us-west-1", "us-west-2", "eu-west-1",
+	// "eu-west-2", "ap-northeast-1", "ap-southeast-1".
 	Region string `json:"region,required"`
 	// Unique identifier of the storage configuration
 	Slug string `json:"slug,required"`
-	// Endpoint of the storage provider
-	Endpoint string `json:"endpoint"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		Bucket      respjson.Field
 		CreatedAt   respjson.Field
-		Location    respjson.Field
 		Provider    respjson.Field
-		Public      respjson.Field
 		Region      respjson.Field
 		Slug        respjson.Field
-		Endpoint    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
 }
 
 // Returns the unmodified JSON received from the API
-func (r Storage) RawJSON() string { return r.JSON.raw }
-func (r *Storage) UnmarshalJSON(data []byte) error {
+func (r StorageChunkify) RawJSON() string { return r.JSON.raw }
+func (r *StorageChunkify) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Continent location of the storage
-type StorageLocation string
+type StorageCloudflare struct {
+	// Unique identifier of the storage configuration
+	ID string `json:"id,required"`
+	// Bucket is the name of the storage bucket.
+	Bucket string `json:"bucket,required"`
+	// Created at timestamp
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Endpoint is the endpoint of the storage provider.
+	Endpoint string `json:"endpoint,required" format:"uri"`
+	// Location specifies the location of the storage provider.
+	//
+	// Any of "US", "EU", "ASIA".
+	Location string `json:"location,required"`
+	// Provider specifies the storage provider.
+	Provider constant.Cloudflare `json:"provider,required"`
+	// Public indicates whether the storage is publicly accessible.
+	Public bool `json:"public,required"`
+	// Region specifies the region of the storage provider.
+	Region constant.Auto `json:"region,required"`
+	// Unique identifier of the storage configuration
+	Slug string `json:"slug,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Bucket      respjson.Field
+		CreatedAt   respjson.Field
+		Endpoint    respjson.Field
+		Location    respjson.Field
+		Provider    respjson.Field
+		Public      respjson.Field
+		Region      respjson.Field
+		Slug        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	StorageLocationUs   StorageLocation = "US"
-	StorageLocationEu   StorageLocation = "EU"
-	StorageLocationAsia StorageLocation = "Asia"
-)
+// Returns the unmodified JSON received from the API
+func (r StorageCloudflare) RawJSON() string { return r.JSON.raw }
+func (r *StorageCloudflare) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-// Name of the storage provider
-type StorageProvider string
+type StorageAws struct {
+	// Unique identifier of the storage configuration
+	ID string `json:"id,required"`
+	// Bucket is the name of the storage bucket.
+	Bucket string `json:"bucket,required"`
+	// Created at timestamp
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// Provider specifies the storage provider.
+	Provider constant.Aws `json:"provider,required"`
+	// Public indicates whether the storage is publicly accessible.
+	Public bool `json:"public,required"`
+	// Region specifies the region of the storage provider.
+	//
+	// Any of "us-east-1", "us-east-2", "us-central-1", "us-west-1", "us-west-2",
+	// "eu-west-1", "eu-west-2", "eu-west-3", "eu-central-1", "eu-north-1",
+	// "ap-east-1", "ap-east-2", "ap-northeast-1", "ap-northeast-2", "ap-south-1",
+	// "ap-southeast-1", "ap-southeast-2".
+	Region string `json:"region,required"`
+	// Unique identifier of the storage configuration
+	Slug string `json:"slug,required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Bucket      respjson.Field
+		CreatedAt   respjson.Field
+		Provider    respjson.Field
+		Public      respjson.Field
+		Region      respjson.Field
+		Slug        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
 
-const (
-	StorageProviderAws        StorageProvider = "aws"
-	StorageProviderChunkify   StorageProvider = "chunkify"
-	StorageProviderCloudflare StorageProvider = "cloudflare"
-)
+// Returns the unmodified JSON received from the API
+func (r StorageAws) RawJSON() string { return r.JSON.raw }
+func (r *StorageAws) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 type StorageListResponse struct {
-	Data []Storage `json:"data,required"`
+	Data []StorageUnion `json:"data,required"`
 	// Status indicates the response status "success"
 	Status string `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -317,7 +456,7 @@ func init() {
 
 type StorageNewResponseEnvelope struct {
 	// Data contains the response object
-	Data Storage `json:"data,required"`
+	Data StorageUnion `json:"data,required"`
 	// Status indicates the response status "success"
 	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -337,7 +476,7 @@ func (r *StorageNewResponseEnvelope) UnmarshalJSON(data []byte) error {
 
 type StorageGetResponseEnvelope struct {
 	// Data contains the response object
-	Data Storage `json:"data,required"`
+	Data StorageUnion `json:"data,required"`
 	// Status indicates the response status "success"
 	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
