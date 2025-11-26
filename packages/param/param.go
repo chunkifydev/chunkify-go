@@ -2,7 +2,7 @@ package param
 
 import (
 	"encoding/json"
-	"github.com/stainless-sdks/chunkify-go/internal/encoding/json/sentinel"
+	"github.com/chunkifydev/chunkify-go/internal/encoding/json/sentinel"
 	"reflect"
 )
 

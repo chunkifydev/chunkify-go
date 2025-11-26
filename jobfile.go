@@ -9,11 +9,11 @@ import (
 	"net/http"
 	"slices"
 
-	"github.com/stainless-sdks/chunkify-go/internal/apijson"
-	"github.com/stainless-sdks/chunkify-go/internal/requestconfig"
-	"github.com/stainless-sdks/chunkify-go/option"
-	"github.com/stainless-sdks/chunkify-go/packages/respjson"
-	"github.com/stainless-sdks/chunkify-go/shared/constant"
+	"github.com/chunkifydev/chunkify-go/internal/apijson"
+	"github.com/chunkifydev/chunkify-go/internal/requestconfig"
+	"github.com/chunkifydev/chunkify-go/option"
+	"github.com/chunkifydev/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/shared/constant"
 )
 
 // JobFileService contains methods and other services that help with interacting

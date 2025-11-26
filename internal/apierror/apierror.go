@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"net/http/httputil"
 
-	"github.com/stainless-sdks/chunkify-go/internal/apijson"
-	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/internal/apijson"
+	"github.com/chunkifydev/chunkify-go/packages/respjson"
 )
 
 // Error represents an error that originates from the API, i.e. when a request is

@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/chunkify-go
+module github.com/chunkifydev/chunkify-go
 
 go 1.22
 

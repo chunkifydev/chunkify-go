@@ -3,8 +3,8 @@ package respjson_test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/stainless-sdks/chunkify-go/internal/apijson"
-	rj "github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/internal/apijson"
+	rj "github.com/chunkifydev/chunkify-go/packages/respjson"
 	"reflect"
 	"testing"
 )

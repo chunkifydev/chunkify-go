@@ -2,7 +2,7 @@ package param_test
 
 import (
 	"encoding/json"
-	"github.com/stainless-sdks/chunkify-go/packages/param"
+	"github.com/chunkifydev/chunkify-go/packages/param"
 	"testing"
 )
 

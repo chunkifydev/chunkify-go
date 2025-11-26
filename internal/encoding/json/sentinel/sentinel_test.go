@@ -1,8 +1,8 @@
 package sentinel_test
 
 import (
-	"github.com/stainless-sdks/chunkify-go/internal/encoding/json/sentinel"
-	"github.com/stainless-sdks/chunkify-go/packages/param"
+	"github.com/chunkifydev/chunkify-go/internal/encoding/json/sentinel"
+	"github.com/chunkifydev/chunkify-go/packages/param"
 	"reflect"
 	"slices"
 	"testing"

@@ -18,10 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/chunkify-go/internal"
-	"github.com/stainless-sdks/chunkify-go/internal/apierror"
-	"github.com/stainless-sdks/chunkify-go/internal/apiform"
-	"github.com/stainless-sdks/chunkify-go/internal/apiquery"
+	"github.com/chunkifydev/chunkify-go/internal"
+	"github.com/chunkifydev/chunkify-go/internal/apierror"
+	"github.com/chunkifydev/chunkify-go/internal/apiform"
+	"github.com/chunkifydev/chunkify-go/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {

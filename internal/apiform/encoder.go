@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/stainless-sdks/chunkify-go/packages/param"
+	"github.com/chunkifydev/chunkify-go/packages/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc

@@ -1,7 +1,7 @@
 package apijson
 
 import (
-	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/packages/respjson"
 	"reflect"
 )
 

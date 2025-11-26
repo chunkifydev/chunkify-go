@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/chunkify-go"
-	"github.com/stainless-sdks/chunkify-go/internal/testutil"
-	"github.com/stainless-sdks/chunkify-go/option"
+	"github.com/chunkifydev/chunkify-go"
+	"github.com/chunkifydev/chunkify-go/internal/testutil"
+	"github.com/chunkifydev/chunkify-go/option"
 	standardwebhooks "github.com/standard-webhooks/standard-webhooks/libraries/go"
 )
 

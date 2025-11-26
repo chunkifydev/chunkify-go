@@ -3,7 +3,7 @@
 package constant
 
 import (
-	shimjson "github.com/stainless-sdks/chunkify-go/internal/encoding/json"
+	shimjson "github.com/chunkifydev/chunkify-go/internal/encoding/json"
 )
 
 type Constant[T any] interface {

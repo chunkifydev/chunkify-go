@@ -2,8 +2,8 @@ package apijson_test
 
 import (
 	"encoding/json"
-	"github.com/stainless-sdks/chunkify-go/internal/apijson"
-	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/internal/apijson"
+	"github.com/chunkifydev/chunkify-go/packages/respjson"
 	"testing"
 )
 

@@ -2,7 +2,7 @@ package apijson
 
 import (
 	"errors"
-	"github.com/stainless-sdks/chunkify-go/packages/param"
+	"github.com/chunkifydev/chunkify-go/packages/param"
 	"reflect"
 
 	"github.com/tidwall/gjson"
