@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomchunkifydevchunkifygo_test
+package chunkify_test
 
 import (
 	"context"
@@ -22,17 +22,17 @@ func TestNotificationNew(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Notifications.New(context.TODO(), githubcomchunkifydevchunkifygo.NotificationNewParams{
-		Event:     githubcomchunkifydevchunkifygo.NotificationNewParamsEventJobCompleted,
+	_, err := client.Notifications.New(context.TODO(), chunkify.NotificationNewParams{
+		Event:     chunkify.NotificationNewParamsEventJobCompleted,
 		ObjectID:  "job_A1cce6120E56e7Tu9ioP09Nhjk9",
 		WebhookID: "wh_A1cce6120E56e7Tu9ioP09Nhjk9",
 	})
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -49,13 +49,13 @@ func TestNotificationGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Notifications.Get(context.TODO(), "notificationId")
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -72,29 +72,29 @@ func TestNotificationListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Notifications.List(context.TODO(), githubcomchunkifydevchunkifygo.NotificationListParams{
-		Created: githubcomchunkifydevchunkifygo.NotificationListParamsCreated{
-			Gte:  githubcomchunkifydevchunkifygo.String("2102-57-32"),
-			Lte:  githubcomchunkifydevchunkifygo.String("2025-01-01"),
+	_, err := client.Notifications.List(context.TODO(), chunkify.NotificationListParams{
+		Created: chunkify.NotificationListParamsCreated{
+			Gte:  chunkify.String("2102-57-32"),
+			Lte:  chunkify.String("2025-01-01"),
 			Sort: "asc",
 		},
 		Events:   []string{"job.completed"},
-		Limit:    githubcomchunkifydevchunkifygo.Int(1),
-		ObjectID: githubcomchunkifydevchunkifygo.String("object_id"),
-		Offset:   githubcomchunkifydevchunkifygo.Int(0),
-		ResponseStatusCode: githubcomchunkifydevchunkifygo.NotificationListParamsResponseStatusCode{
-			Eq:  githubcomchunkifydevchunkifygo.Int(100),
-			Gte: githubcomchunkifydevchunkifygo.Int(100),
-			Lte: githubcomchunkifydevchunkifygo.Int(100),
+		Limit:    chunkify.Int(1),
+		ObjectID: chunkify.String("object_id"),
+		Offset:   chunkify.Int(0),
+		ResponseStatusCode: chunkify.NotificationListParamsResponseStatusCode{
+			Eq:  chunkify.Int(100),
+			Gte: chunkify.Int(100),
+			Lte: chunkify.Int(100),
 		},
-		WebhookID: githubcomchunkifydevchunkifygo.String("webhook_id"),
+		WebhookID: chunkify.String("webhook_id"),
 	})
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -111,13 +111,13 @@ func TestNotificationDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	err := client.Notifications.Delete(context.TODO(), "notificationId")
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

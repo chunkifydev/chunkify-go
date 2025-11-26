@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomchunkifydevchunkifygo_test
+package chunkify_test
 
 import (
 	"context"
@@ -22,19 +22,19 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Uploads.New(context.TODO(), githubcomchunkifydevchunkifygo.UploadNewParams{
+	_, err := client.Uploads.New(context.TODO(), chunkify.UploadNewParams{
 		Metadata: map[string]string{
 			"key":  "value",
 			"key2": "value2",
 		},
-		ValidityTimeout: githubcomchunkifydevchunkifygo.Int(3600),
+		ValidityTimeout: chunkify.Int(3600),
 	})
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -51,13 +51,13 @@ func TestUploadGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Uploads.Get(context.TODO(), "uploadId")
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -74,25 +74,25 @@ func TestUploadListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Uploads.List(context.TODO(), githubcomchunkifydevchunkifygo.UploadListParams{
-		ID: githubcomchunkifydevchunkifygo.String("id"),
-		Created: githubcomchunkifydevchunkifygo.UploadListParamsCreated{
-			Gte:  githubcomchunkifydevchunkifygo.String("gte"),
-			Lte:  githubcomchunkifydevchunkifygo.String("lte"),
+	_, err := client.Uploads.List(context.TODO(), chunkify.UploadListParams{
+		ID: chunkify.String("id"),
+		Created: chunkify.UploadListParamsCreated{
+			Gte:  chunkify.String("gte"),
+			Lte:  chunkify.String("lte"),
 			Sort: "asc",
 		},
-		Limit:    githubcomchunkifydevchunkifygo.Int(1),
+		Limit:    chunkify.Int(1),
 		Metadata: [][]string{{"J!Q0Ok0bzJb7:pro"}},
-		Offset:   githubcomchunkifydevchunkifygo.Int(0),
-		SourceID: githubcomchunkifydevchunkifygo.String("source_id"),
-		Status:   githubcomchunkifydevchunkifygo.UploadListParamsStatusWaiting,
+		Offset:   chunkify.Int(0),
+		SourceID: chunkify.String("source_id"),
+		Status:   chunkify.UploadListParamsStatusWaiting,
 	})
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -109,13 +109,13 @@ func TestUploadDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	err := client.Uploads.Delete(context.TODO(), "uploadId")
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

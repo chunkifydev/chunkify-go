@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomchunkifydevchunkifygo_test
+package chunkify_test
 
 import (
 	"context"
@@ -20,12 +20,12 @@ func TestManualPagination(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	page, err := client.Sources.List(context.TODO(), githubcomchunkifydevchunkifygo.SourceListParams{
-		Limit: githubcomchunkifydevchunkifygo.Int(30),
+	page, err := client.Sources.List(context.TODO(), chunkify.SourceListParams{
+		Limit: chunkify.Int(30),
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
