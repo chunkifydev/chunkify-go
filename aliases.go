@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package chunkify
+package githubcomchunkifydevchunkifygo
 
 import (
 	"github.com/chunkifydev/chunkify-go/internal/apierror"

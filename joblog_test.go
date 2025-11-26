@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package chunkify_test
+package githubcomchunkifydevchunkifygo_test
 
 import (
 	"context"
@@ -22,20 +22,20 @@ func TestJobLogListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.Logs.List(
 		context.TODO(),
 		"jobId",
-		chunkify.JobLogListParams{
-			Service:      chunkify.JobLogListParamsServiceTranscoder,
-			TranscoderID: chunkify.Int(0),
+		githubcomchunkifydevchunkifygo.JobLogListParams{
+			Service:      githubcomchunkifydevchunkifygo.JobLogListParamsServiceTranscoder,
+			TranscoderID: githubcomchunkifydevchunkifygo.Int(0),
 		},
 	)
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

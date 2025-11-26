@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package chunkify
+package githubcomchunkifydevchunkifygo
 
 import (
 	"context"
@@ -1393,14 +1393,14 @@ func (JobFormatJpg) implJobFormatUnion()     {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := JobFormatUnion.AsAny().(type) {
-//	case chunkify.JobFormatMP4Av1:
-//	case chunkify.JobFormatMP4H264:
-//	case chunkify.JobFormatMP4H265:
-//	case chunkify.JobFormatWebmVp9:
-//	case chunkify.JobFormatHlsAv1:
-//	case chunkify.JobFormatHlsH264:
-//	case chunkify.JobFormatHlsH265:
-//	case chunkify.JobFormatJpg:
+//	case githubcomchunkifydevchunkifygo.JobFormatMP4Av1:
+//	case githubcomchunkifydevchunkifygo.JobFormatMP4H264:
+//	case githubcomchunkifydevchunkifygo.JobFormatMP4H265:
+//	case githubcomchunkifydevchunkifygo.JobFormatWebmVp9:
+//	case githubcomchunkifydevchunkifygo.JobFormatHlsAv1:
+//	case githubcomchunkifydevchunkifygo.JobFormatHlsH264:
+//	case githubcomchunkifydevchunkifygo.JobFormatHlsH265:
+//	case githubcomchunkifydevchunkifygo.JobFormatJpg:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}

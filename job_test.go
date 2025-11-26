@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package chunkify_test
+package githubcomchunkifydevchunkifygo_test
 
 import (
 	"context"
@@ -22,52 +22,52 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
-		Format: chunkify.JobNewParamsFormatUnion{
-			OfMP4Av1: &chunkify.MP4Av1Param{
-				AudioBitrate: chunkify.Int(32000),
-				Bufsize:      chunkify.Int(100000),
+	_, err := client.Jobs.New(context.TODO(), githubcomchunkifydevchunkifygo.JobNewParams{
+		Format: githubcomchunkifydevchunkifygo.JobNewParamsFormatUnion{
+			OfMP4Av1: &githubcomchunkifydevchunkifygo.MP4Av1Param{
+				AudioBitrate: githubcomchunkifydevchunkifygo.Int(32000),
+				Bufsize:      githubcomchunkifydevchunkifygo.Int(100000),
 				Channels:     1,
-				Crf:          chunkify.Int(35),
-				DisableAudio: chunkify.Bool(true),
-				DisableVideo: chunkify.Bool(true),
-				Duration:     chunkify.Int(1),
-				Framerate:    chunkify.Float(15),
-				Gop:          chunkify.Int(1),
-				Height:       chunkify.Int(-2),
+				Crf:          githubcomchunkifydevchunkifygo.Int(35),
+				DisableAudio: githubcomchunkifydevchunkifygo.Bool(true),
+				DisableVideo: githubcomchunkifydevchunkifygo.Bool(true),
+				Duration:     githubcomchunkifydevchunkifygo.Int(1),
+				Framerate:    githubcomchunkifydevchunkifygo.Float(15),
+				Gop:          githubcomchunkifydevchunkifygo.Int(1),
+				Height:       githubcomchunkifydevchunkifygo.Int(-2),
 				Level:        41,
-				Maxrate:      chunkify.Int(100000),
-				Minrate:      chunkify.Int(100000),
-				Movflags:     chunkify.String("movflags"),
-				Pixfmt:       chunkify.MP4Av1PixfmtYuv410p,
-				Preset:       chunkify.MP4Av1Preset10,
-				Profilev:     chunkify.MP4Av1ProfilevMain10,
-				Seek:         chunkify.Int(1),
-				VideoBitrate: chunkify.Int(100000),
-				Width:        chunkify.Int(-2),
+				Maxrate:      githubcomchunkifydevchunkifygo.Int(100000),
+				Minrate:      githubcomchunkifydevchunkifygo.Int(100000),
+				Movflags:     githubcomchunkifydevchunkifygo.String("movflags"),
+				Pixfmt:       githubcomchunkifydevchunkifygo.MP4Av1PixfmtYuv410p,
+				Preset:       githubcomchunkifydevchunkifygo.MP4Av1Preset10,
+				Profilev:     githubcomchunkifydevchunkifygo.MP4Av1ProfilevMain10,
+				Seek:         githubcomchunkifydevchunkifygo.Int(1),
+				VideoBitrate: githubcomchunkifydevchunkifygo.Int(100000),
+				Width:        githubcomchunkifydevchunkifygo.Int(-2),
 			},
 		},
 		SourceID:      "src_UioP9I876hjKlNBH78ILp0mo56t",
-		HlsManifestID: chunkify.String("hls_2v6EIgcNAycdS5g0IUm0TXBjvHV"),
+		HlsManifestID: githubcomchunkifydevchunkifygo.String("hls_2v6EIgcNAycdS5g0IUm0TXBjvHV"),
 		Metadata: map[string]string{
 			"key":  "value",
 			"key2": "value2",
 		},
-		Storage: chunkify.JobNewParamsStorage{
-			ID:   chunkify.String("aws-my-storage"),
-			Path: chunkify.String("/path/to/video.mp4"),
+		Storage: githubcomchunkifydevchunkifygo.JobNewParamsStorage{
+			ID:   githubcomchunkifydevchunkifygo.String("aws-my-storage"),
+			Path: githubcomchunkifydevchunkifygo.String("/path/to/video.mp4"),
 		},
-		Transcoder: chunkify.JobNewParamsTranscoder{
-			Quantity: chunkify.Int(2),
+		Transcoder: githubcomchunkifydevchunkifygo.JobNewParamsTranscoder{
+			Quantity: githubcomchunkifydevchunkifygo.Int(2),
 			Type:     "4vCPU",
 		},
 	})
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -84,13 +84,13 @@ func TestJobGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.Get(context.TODO(), "jobId")
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -107,27 +107,27 @@ func TestJobListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Jobs.List(context.TODO(), chunkify.JobListParams{
-		ID: chunkify.String("id"),
-		Created: chunkify.JobListParamsCreated{
-			Gte:  chunkify.String("2025-01-01"),
-			Lte:  chunkify.String("2025-01-01"),
+	_, err := client.Jobs.List(context.TODO(), githubcomchunkifydevchunkifygo.JobListParams{
+		ID: githubcomchunkifydevchunkifygo.String("id"),
+		Created: githubcomchunkifydevchunkifygo.JobListParamsCreated{
+			Gte:  githubcomchunkifydevchunkifygo.String("2025-01-01"),
+			Lte:  githubcomchunkifydevchunkifygo.String("2025-01-01"),
 			Sort: "asc",
 		},
-		FormatID:      chunkify.JobListParamsFormatIDMP4H264,
-		HlsManifestID: chunkify.String("hls_manifest_id"),
-		Limit:         chunkify.Int(1),
+		FormatID:      githubcomchunkifydevchunkifygo.JobListParamsFormatIDMP4H264,
+		HlsManifestID: githubcomchunkifydevchunkifygo.String("hls_manifest_id"),
+		Limit:         githubcomchunkifydevchunkifygo.Int(1),
 		Metadata:      [][]string{{"key1:value1"}},
-		Offset:        chunkify.Int(0),
-		SourceID:      chunkify.String("source_id"),
-		Status:        chunkify.JobListParamsStatusCompleted,
+		Offset:        githubcomchunkifydevchunkifygo.Int(0),
+		SourceID:      githubcomchunkifydevchunkifygo.String("source_id"),
+		Status:        githubcomchunkifydevchunkifygo.JobListParamsStatusCompleted,
 	})
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -144,13 +144,13 @@ func TestJobDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	err := client.Jobs.Delete(context.TODO(), "jobId")
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -167,13 +167,13 @@ func TestJobCancel(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	err := client.Jobs.Cancel(context.TODO(), "jobId")
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
