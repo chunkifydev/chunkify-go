@@ -1671,9 +1671,9 @@ const (
 // Storage settings for where the job output will be saved
 type JobStorage struct {
 	// ID of the storage
-	ID string `json:"id"`
+	ID string `json:"id,required"`
 	// Path where the output will be stored
-	Path string `json:"path"`
+	Path string `json:"path,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
