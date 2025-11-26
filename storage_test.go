@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package chunkify_test
+package githubcomchunkifydevchunkifygo_test
 
 import (
 	"context"
@@ -22,13 +22,13 @@ func TestStorageNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Storages.New(context.TODO(), chunkify.StorageNewParams{})
+	_, err := client.Storages.New(context.TODO(), githubcomchunkifydevchunkifygo.StorageNewParams{})
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -45,13 +45,13 @@ func TestStorageGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Storages.Get(context.TODO(), "storageId")
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -68,13 +68,13 @@ func TestStorageList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Storages.List(context.TODO())
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -91,13 +91,13 @@ func TestStorageDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	err := client.Storages.Delete(context.TODO(), "storageId")
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

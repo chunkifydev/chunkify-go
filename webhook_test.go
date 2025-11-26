@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package chunkify_test
+package githubcomchunkifydevchunkifygo_test
 
 import (
 	"context"
@@ -26,17 +26,17 @@ func TestWebhookNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Webhooks.New(context.TODO(), chunkify.WebhookNewParams{
+	_, err := client.Webhooks.New(context.TODO(), githubcomchunkifydevchunkifygo.WebhookNewParams{
 		URL:     "https://example.com/webhook",
-		Enabled: chunkify.Bool(true),
+		Enabled: githubcomchunkifydevchunkifygo.Bool(true),
 		Events:  []string{"job.completed"},
 	})
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -53,13 +53,13 @@ func TestWebhookGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Webhooks.Get(context.TODO(), "webhookId")
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -76,20 +76,20 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	err := client.Webhooks.Update(
 		context.TODO(),
 		"webhookId",
-		chunkify.WebhookUpdateParams{
-			Enabled: chunkify.Bool(true),
+		githubcomchunkifydevchunkifygo.WebhookUpdateParams{
+			Enabled: githubcomchunkifydevchunkifygo.Bool(true),
 			Events:  []string{"job.completed"},
 		},
 	)
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -106,13 +106,13 @@ func TestWebhookList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Webhooks.List(context.TODO())
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -129,13 +129,13 @@ func TestWebhookDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	err := client.Webhooks.Delete(context.TODO(), "webhookId")
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -144,7 +144,7 @@ func TestWebhookDelete(t *testing.T) {
 }
 
 func TestWebhookUnwrap(t *testing.T) {
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithWebhookKey("whsec_c2VjcmV0Cg=="),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)

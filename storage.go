@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package chunkify
+package githubcomchunkifydevchunkifygo
 
 import (
 	"context"
@@ -137,9 +137,9 @@ func (StorageAws) implStorageUnion()        {}
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := StorageUnion.AsAny().(type) {
-//	case chunkify.StorageChunkify:
-//	case chunkify.StorageCloudflare:
-//	case chunkify.StorageAws:
+//	case githubcomchunkifydevchunkifygo.StorageChunkify:
+//	case githubcomchunkifydevchunkifygo.StorageCloudflare:
+//	case githubcomchunkifydevchunkifygo.StorageAws:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}

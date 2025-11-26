@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package chunkify_test
+package githubcomchunkifydevchunkifygo_test
 
 import (
 	"context"
@@ -20,21 +20,21 @@ func TestUsage(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
-		Format: chunkify.JobNewParamsFormatUnion{
-			OfMP4H264: &chunkify.MP4H264Param{
-				Width:  chunkify.Int(1920),
-				Height: chunkify.Int(1080),
-				Crf:    chunkify.Int(21),
+	job, err := client.Jobs.New(context.TODO(), githubcomchunkifydevchunkifygo.JobNewParams{
+		Format: githubcomchunkifydevchunkifygo.JobNewParamsFormatUnion{
+			OfMP4H264: &githubcomchunkifydevchunkifygo.MP4H264Param{
+				Width:  githubcomchunkifydevchunkifygo.Int(1920),
+				Height: githubcomchunkifydevchunkifygo.Int(1080),
+				Crf:    githubcomchunkifydevchunkifygo.Int(21),
 			},
 		},
 		SourceID: "src_2G6MJiNz71bHQGNzGwKx5cJwPFS",
-		Transcoder: chunkify.JobNewParamsTranscoder{
-			Quantity: chunkify.Int(4),
+		Transcoder: githubcomchunkifydevchunkifygo.JobNewParamsTranscoder{
+			Quantity: githubcomchunkifydevchunkifygo.Int(4),
 			Type:     "8vCPU",
 		},
 	})

@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package chunkify_test
+package githubcomchunkifydevchunkifygo_test
 
 import (
 	"context"
@@ -22,17 +22,17 @@ func TestTokenNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Tokens.New(context.TODO(), chunkify.TokenNewParams{
-		Scope:     chunkify.TokenNewParamsScopeProject,
-		Name:      chunkify.String("My Token"),
-		ProjectID: chunkify.String("proj_A1cce6120E56e7Tu9ioP09Nhjk1"),
+	_, err := client.Tokens.New(context.TODO(), githubcomchunkifydevchunkifygo.TokenNewParams{
+		Scope:     githubcomchunkifydevchunkifygo.TokenNewParamsScopeProject,
+		Name:      githubcomchunkifydevchunkifygo.String("My Token"),
+		ProjectID: githubcomchunkifydevchunkifygo.String("proj_A1cce6120E56e7Tu9ioP09Nhjk1"),
 	})
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -49,13 +49,13 @@ func TestTokenList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Tokens.List(context.TODO())
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -72,13 +72,13 @@ func TestTokenRevoke(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	err := client.Tokens.Revoke(context.TODO(), "tokenId")
 	if err != nil {
-		var apierr *chunkify.Error
+		var apierr *githubcomchunkifydevchunkifygo.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

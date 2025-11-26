@@ -17,7 +17,7 @@ It is generated with [Stainless](https://www.stainless.com/).
 
 ```go
 import (
-	"github.com/chunkifydev/chunkify-go" // imported as chunkify
+	"github.com/chunkifydev/chunkify-go" // imported as githubcomchunkifydevchunkifygo
 )
 ```
 
@@ -53,20 +53,20 @@ import (
 )
 
 func main() {
-	client := chunkify.NewClient(
+	client := githubcomchunkifydevchunkifygo.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"), // defaults to os.LookupEnv("CHUNKIFY_TOKEN")
 	)
-	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
-		Format: chunkify.JobNewParamsFormatUnion{
-			OfMP4H264: &chunkify.MP4H264Param{
-				Width:  chunkify.Int(1920),
-				Height: chunkify.Int(1080),
-				Crf:    chunkify.Int(21),
+	job, err := client.Jobs.New(context.TODO(), githubcomchunkifydevchunkifygo.JobNewParams{
+		Format: githubcomchunkifydevchunkifygo.JobNewParamsFormatUnion{
+			OfMP4H264: &githubcomchunkifydevchunkifygo.MP4H264Param{
+				Width:  githubcomchunkifydevchunkifygo.Int(1920),
+				Height: githubcomchunkifydevchunkifygo.Int(1080),
+				Crf:    githubcomchunkifydevchunkifygo.Int(21),
 			},
 		},
 		SourceID: "src_2G6MJiNz71bHQGNzGwKx5cJwPFS",
-		Transcoder: chunkify.JobNewParamsTranscoder{
-			Quantity: chunkify.Int(4),
+		Transcoder: githubcomchunkifydevchunkifygo.JobNewParamsTranscoder{
+			Quantity: githubcomchunkifydevchunkifygo.Int(4),
 			Type:     "8vCPU",
 		},
 	})
@@ -80,13 +80,13 @@ func main() {
 
 ### Request fields
 
-The chunkify library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
+The githubcomchunkifydevchunkifygo library uses the [`omitzero`](https://tip.golang.org/doc/go1.24#encodingjsonpkgencodingjson)
 semantics from the Go 1.24+ `encoding/json` release for request fields.
 
 Required primitive fields (`int64`, `string`, etc.) feature the tag <code>\`json:"...,required"\`</code>. These
 fields are always serialized, even their zero values.
 
-Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `chunkify.String(string)`, `chunkify.Int(int64)`, etc.
+Optional primitive types are wrapped in a `param.Opt[T]`. These fields can be set with the provided constructors, `githubcomchunkifydevchunkifygo.String(string)`, `githubcomchunkifydevchunkifygo.Int(int64)`, etc.
 
 Any `param.Opt[T]`, map, slice, struct or string enum uses the
 tag <code>\`json:"...,omitzero"\`</code>. Its zero value is considered omitted.
@@ -94,17 +94,17 @@ tag <code>\`json:"...,omitzero"\`</code>. Its zero value is considered omitted.
 The `param.IsOmitted(any)` function can confirm the presence of any `omitzero` field.
 
 ```go
-p := chunkify.ExampleParams{
-	ID:   "id_xxx",               // required property
-	Name: chunkify.String("..."), // optional property
+p := githubcomchunkifydevchunkifygo.ExampleParams{
+	ID:   "id_xxx",                                     // required property
+	Name: githubcomchunkifydevchunkifygo.String("..."), // optional property
 
-	Point: chunkify.Point{
-		X: 0,               // required field will serialize as 0
-		Y: chunkify.Int(1), // optional field will serialize as 1
+	Point: githubcomchunkifydevchunkifygo.Point{
+		X: 0,                                     // required field will serialize as 0
+		Y: githubcomchunkifydevchunkifygo.Int(1), // optional field will serialize as 1
 		// ... omitted non-required fields will not be serialized
 	},
 
-	Origin: chunkify.Origin{}, // the zero value of [Origin] is considered omitted
+	Origin: githubcomchunkifydevchunkifygo.Origin{}, // the zero value of [Origin] is considered omitted
 }
 ```
 
@@ -133,7 +133,7 @@ p.SetExtraFields(map[string]any{
 })
 
 // Send a number instead of an object
-custom := param.Override[chunkify.FooParams](12)
+custom := param.Override[githubcomchunkifydevchunkifygo.FooParams](12)
 ```
 
 ### Request unions
@@ -274,7 +274,7 @@ This library uses the functional options pattern. Functions defined in the
 requests. For example:
 
 ```go
-client := chunkify.NewClient(
+client := githubcomchunkifydevchunkifygo.NewClient(
 	// Adds a header to every request made by the client
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
@@ -298,8 +298,8 @@ This library provides some conveniences for working with paginated list endpoint
 You can use `.ListAutoPaging()` methods to iterate through items across all pages:
 
 ```go
-iter := client.Sources.ListAutoPaging(context.TODO(), chunkify.SourceListParams{
-	Limit: chunkify.Int(30),
+iter := client.Sources.ListAutoPaging(context.TODO(), githubcomchunkifydevchunkifygo.SourceListParams{
+	Limit: githubcomchunkifydevchunkifygo.Int(30),
 })
 // Automatically fetches more pages as needed.
 for iter.Next() {
@@ -315,8 +315,8 @@ Or you can use simple `.List()` methods to fetch a single page and receive a sta
 with additional helper methods like `.GetNextPage()`, e.g.:
 
 ```go
-page, err := client.Sources.List(context.TODO(), chunkify.SourceListParams{
-	Limit: chunkify.Int(30),
+page, err := client.Sources.List(context.TODO(), githubcomchunkifydevchunkifygo.SourceListParams{
+	Limit: githubcomchunkifydevchunkifygo.Int(30),
 })
 for page != nil {
 	for _, source := range page.Data {
@@ -332,16 +332,16 @@ if err != nil {
 ### Errors
 
 When the API returns a non-success status code, we return an error with type
-`*chunkify.Error`. This contains the `StatusCode`, `*http.Request`, and
+`*githubcomchunkifydevchunkifygo.Error`. This contains the `StatusCode`, `*http.Request`, and
 `*http.Response` values of the request, as well as the JSON of the error body
 (much like other response objects in the SDK).
 
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
+_, err := client.Files.List(context.TODO(), githubcomchunkifydevchunkifygo.FileListParams{})
 if err != nil {
-	var apierr *chunkify.Error
+	var apierr *githubcomchunkifydevchunkifygo.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
@@ -366,7 +366,7 @@ ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
 client.Files.List(
 	ctx,
-	chunkify.FileListParams{},
+	githubcomchunkifydevchunkifygo.FileListParams{},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -382,7 +382,7 @@ The file name and content-type can be customized by implementing `Name() string`
 string` on the run-time type of `io.Reader`. Note that `os.File` implements `Name() string`, so a
 file returned by `os.Open` will be sent with the file name on disk.
 
-We also provide a helper `chunkify.File(reader io.Reader, filename string, contentType string)`
+We also provide a helper `githubcomchunkifydevchunkifygo.File(reader io.Reader, filename string, contentType string)`
 which can be used to wrap any `io.Reader` with the appropriate file name and content type.
 
 ### Retries
@@ -395,14 +395,14 @@ You can use the `WithMaxRetries` option to configure or disable this:
 
 ```go
 // Configure the default for all requests:
-client := chunkify.NewClient(
+client := githubcomchunkifydevchunkifygo.NewClient(
 	option.WithMaxRetries(0), // default is 2
 )
 
 // Override per-request:
 client.Files.List(
 	context.TODO(),
-	chunkify.FileListParams{},
+	githubcomchunkifydevchunkifygo.FileListParams{},
 	option.WithMaxRetries(5),
 )
 ```
@@ -417,7 +417,7 @@ you need to examine response headers, status codes, or other details.
 var response *http.Response
 page, err := client.Files.List(
 	context.TODO(),
-	chunkify.FileListParams{},
+	githubcomchunkifydevchunkifygo.FileListParams{},
 	option.WithResponseInto(&response),
 )
 if err != nil {
@@ -464,7 +464,7 @@ or the `option.WithJSONSet()` methods.
 params := FooNewParams{
     ID:   "id_xxxx",
     Data: FooNewParamsData{
-        FirstName: chunkify.String("John"),
+        FirstName: githubcomchunkifydevchunkifygo.String("John"),
     },
 }
 client.Foo.New(context.Background(), params, option.WithJSONSet("data.last_name", "Doe"))
@@ -499,7 +499,7 @@ func Logger(req *http.Request, next option.MiddlewareNext) (res *http.Response, 
     return res, err
 }
 
-client := chunkify.NewClient(
+client := githubcomchunkifydevchunkifygo.NewClient(
 	option.WithMiddleware(Logger),
 )
 ```

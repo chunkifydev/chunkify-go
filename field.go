@@ -1,4 +1,4 @@
-package chunkify
+package githubcomchunkifydevchunkifygo
 
 import (
 	"github.com/chunkifydev/chunkify-go/packages/param"
