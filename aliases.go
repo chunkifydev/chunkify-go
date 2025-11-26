@@ -3,9 +3,9 @@
 package chunkify
 
 import (
-	"github.com/stainless-sdks/chunkify-go/internal/apierror"
-	"github.com/stainless-sdks/chunkify-go/packages/param"
-	"github.com/stainless-sdks/chunkify-go/shared"
+	"github.com/chunkifydev/chunkify-go/internal/apierror"
+	"github.com/chunkifydev/chunkify-go/packages/param"
+	"github.com/chunkifydev/chunkify-go/shared"
 )
 
 // aliased to make [param.APIUnion] private when embedding

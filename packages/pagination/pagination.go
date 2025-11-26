@@ -6,11 +6,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/stainless-sdks/chunkify-go/internal/apijson"
-	"github.com/stainless-sdks/chunkify-go/internal/requestconfig"
-	"github.com/stainless-sdks/chunkify-go/option"
-	"github.com/stainless-sdks/chunkify-go/packages/param"
-	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/internal/apijson"
+	"github.com/chunkifydev/chunkify-go/internal/requestconfig"
+	"github.com/chunkifydev/chunkify-go/option"
+	"github.com/chunkifydev/chunkify-go/packages/param"
+	"github.com/chunkifydev/chunkify-go/packages/respjson"
 )
 
 // aliased to make [param.APIUnion] private when embedding

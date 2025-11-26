@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/chunkify-go/packages/param"
+	"github.com/chunkifydev/chunkify-go/packages/param"
 )
 
 type Struct struct {

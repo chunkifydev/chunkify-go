@@ -1,7 +1,7 @@
 package chunkify
 
 import (
-	"github.com/stainless-sdks/chunkify-go/packages/param"
+	"github.com/chunkifydev/chunkify-go/packages/param"
 	"io"
 	"time"
 )

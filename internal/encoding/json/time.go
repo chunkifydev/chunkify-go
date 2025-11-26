@@ -2,7 +2,7 @@
 package json
 
 import (
-	"github.com/stainless-sdks/chunkify-go/internal/encoding/json/shims"
+	"github.com/chunkifydev/chunkify-go/internal/encoding/json/shims"
 	"reflect"
 	"time"
 )

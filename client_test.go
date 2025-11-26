@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/chunkify-go"
-	"github.com/stainless-sdks/chunkify-go/internal"
-	"github.com/stainless-sdks/chunkify-go/option"
+	"github.com/chunkifydev/chunkify-go"
+	"github.com/chunkifydev/chunkify-go/internal"
+	"github.com/chunkifydev/chunkify-go/option"
 )
 
 type closureTransport struct {

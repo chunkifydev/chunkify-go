@@ -3,9 +3,9 @@
 package shared
 
 import (
-	"github.com/stainless-sdks/chunkify-go/internal/apijson"
-	"github.com/stainless-sdks/chunkify-go/packages/param"
-	"github.com/stainless-sdks/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/internal/apijson"
+	"github.com/chunkifydev/chunkify-go/packages/param"
+	"github.com/chunkifydev/chunkify-go/packages/respjson"
 )
 
 // aliased to make [param.APIUnion] private when embedding
