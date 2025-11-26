@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomchunkifydevchunkifygo_test
+package chunkify_test
 
 import (
 	"context"
@@ -22,13 +22,13 @@ func TestFileGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Files.Get(context.TODO(), "fileId")
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -45,59 +45,59 @@ func TestFileListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Files.List(context.TODO(), githubcomchunkifydevchunkifygo.FileListParams{
-		ID:         githubcomchunkifydevchunkifygo.String("id"),
-		AudioCodec: githubcomchunkifydevchunkifygo.String("audio_codec"),
-		Created: githubcomchunkifydevchunkifygo.FileListParamsCreated{
-			Gte:  githubcomchunkifydevchunkifygo.String("gte"),
-			Lte:  githubcomchunkifydevchunkifygo.String("lte"),
+	_, err := client.Files.List(context.TODO(), chunkify.FileListParams{
+		ID:         chunkify.String("id"),
+		AudioCodec: chunkify.String("audio_codec"),
+		Created: chunkify.FileListParamsCreated{
+			Gte:  chunkify.String("gte"),
+			Lte:  chunkify.String("lte"),
 			Sort: "asc",
 		},
-		Duration: githubcomchunkifydevchunkifygo.FileListParamsDuration{
-			Eq:  githubcomchunkifydevchunkifygo.Float(0),
-			Gt:  githubcomchunkifydevchunkifygo.Float(0),
-			Gte: githubcomchunkifydevchunkifygo.Float(0),
-			Lt:  githubcomchunkifydevchunkifygo.Float(0),
-			Lte: githubcomchunkifydevchunkifygo.Float(0),
+		Duration: chunkify.FileListParamsDuration{
+			Eq:  chunkify.Float(0),
+			Gt:  chunkify.Float(0),
+			Gte: chunkify.Float(0),
+			Lt:  chunkify.Float(0),
+			Lte: chunkify.Float(0),
 		},
-		Height: githubcomchunkifydevchunkifygo.FileListParamsHeight{
-			Eq:  githubcomchunkifydevchunkifygo.Int(0),
-			Gt:  githubcomchunkifydevchunkifygo.Int(0),
-			Gte: githubcomchunkifydevchunkifygo.Int(0),
-			Lt:  githubcomchunkifydevchunkifygo.Int(0),
-			Lte: githubcomchunkifydevchunkifygo.Int(0),
+		Height: chunkify.FileListParamsHeight{
+			Eq:  chunkify.Int(0),
+			Gt:  chunkify.Int(0),
+			Gte: chunkify.Int(0),
+			Lt:  chunkify.Int(0),
+			Lte: chunkify.Int(0),
 		},
-		JobID:    githubcomchunkifydevchunkifygo.String("job_id"),
-		Limit:    githubcomchunkifydevchunkifygo.Int(1),
-		MimeType: githubcomchunkifydevchunkifygo.String("mime_type"),
-		Offset:   githubcomchunkifydevchunkifygo.Int(0),
-		Path: githubcomchunkifydevchunkifygo.FileListParamsPath{
-			Eq:    githubcomchunkifydevchunkifygo.String("eq"),
-			Ilike: githubcomchunkifydevchunkifygo.String("ilike"),
+		JobID:    chunkify.String("job_id"),
+		Limit:    chunkify.Int(1),
+		MimeType: chunkify.String("mime_type"),
+		Offset:   chunkify.Int(0),
+		Path: chunkify.FileListParamsPath{
+			Eq:    chunkify.String("eq"),
+			Ilike: chunkify.String("ilike"),
 		},
-		Size: githubcomchunkifydevchunkifygo.FileListParamsSize{
-			Eq:  githubcomchunkifydevchunkifygo.Int(0),
-			Gt:  githubcomchunkifydevchunkifygo.Int(0),
-			Gte: githubcomchunkifydevchunkifygo.Int(0),
-			Lt:  githubcomchunkifydevchunkifygo.Int(0),
-			Lte: githubcomchunkifydevchunkifygo.Int(0),
+		Size: chunkify.FileListParamsSize{
+			Eq:  chunkify.Int(0),
+			Gt:  chunkify.Int(0),
+			Gte: chunkify.Int(0),
+			Lt:  chunkify.Int(0),
+			Lte: chunkify.Int(0),
 		},
-		StorageID:  githubcomchunkifydevchunkifygo.String("storage_id"),
-		VideoCodec: githubcomchunkifydevchunkifygo.String("video_codec"),
-		Width: githubcomchunkifydevchunkifygo.FileListParamsWidth{
-			Eq:  githubcomchunkifydevchunkifygo.Int(0),
-			Gt:  githubcomchunkifydevchunkifygo.Int(0),
-			Gte: githubcomchunkifydevchunkifygo.Int(0),
-			Lt:  githubcomchunkifydevchunkifygo.Int(0),
-			Lte: githubcomchunkifydevchunkifygo.Int(0),
+		StorageID:  chunkify.String("storage_id"),
+		VideoCodec: chunkify.String("video_codec"),
+		Width: chunkify.FileListParamsWidth{
+			Eq:  chunkify.Int(0),
+			Gt:  chunkify.Int(0),
+			Gte: chunkify.Int(0),
+			Lt:  chunkify.Int(0),
+			Lte: chunkify.Int(0),
 		},
 	})
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -114,13 +114,13 @@ func TestFileDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	err := client.Files.Delete(context.TODO(), "fileId")
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

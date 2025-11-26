@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomchunkifydevchunkifygo_test
+package chunkify_test
 
 import (
 	"context"
@@ -22,11 +22,11 @@ func TestSourceNewWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Sources.New(context.TODO(), githubcomchunkifydevchunkifygo.SourceNewParams{
+	_, err := client.Sources.New(context.TODO(), chunkify.SourceNewParams{
 		URL: "https://example.com/video.mp4",
 		Metadata: map[string]string{
 			"key":  "value",
@@ -34,7 +34,7 @@ func TestSourceNewWithOptionalParams(t *testing.T) {
 		},
 	})
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -51,13 +51,13 @@ func TestSourceGet(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Sources.Get(context.TODO(), "sourceId")
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -74,54 +74,54 @@ func TestSourceListWithOptionalParams(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	_, err := client.Sources.List(context.TODO(), githubcomchunkifydevchunkifygo.SourceListParams{
-		ID:         githubcomchunkifydevchunkifygo.String("id"),
-		AudioCodec: githubcomchunkifydevchunkifygo.String("audio_codec"),
-		Created: githubcomchunkifydevchunkifygo.SourceListParamsCreated{
-			Gte:  githubcomchunkifydevchunkifygo.String("2025-01-01"),
-			Lte:  githubcomchunkifydevchunkifygo.String("2025-01-01"),
+	_, err := client.Sources.List(context.TODO(), chunkify.SourceListParams{
+		ID:         chunkify.String("id"),
+		AudioCodec: chunkify.String("audio_codec"),
+		Created: chunkify.SourceListParamsCreated{
+			Gte:  chunkify.String("2025-01-01"),
+			Lte:  chunkify.String("2025-01-01"),
 			Sort: "asc",
 		},
-		Device: githubcomchunkifydevchunkifygo.SourceListParamsDeviceApple,
-		Duration: githubcomchunkifydevchunkifygo.SourceListParamsDuration{
-			Eq:  githubcomchunkifydevchunkifygo.Float(0),
-			Gt:  githubcomchunkifydevchunkifygo.Float(0),
-			Gte: githubcomchunkifydevchunkifygo.Float(0),
-			Lt:  githubcomchunkifydevchunkifygo.Float(0),
-			Lte: githubcomchunkifydevchunkifygo.Float(0),
+		Device: chunkify.SourceListParamsDeviceApple,
+		Duration: chunkify.SourceListParamsDuration{
+			Eq:  chunkify.Float(0),
+			Gt:  chunkify.Float(0),
+			Gte: chunkify.Float(0),
+			Lt:  chunkify.Float(0),
+			Lte: chunkify.Float(0),
 		},
-		Height: githubcomchunkifydevchunkifygo.SourceListParamsHeight{
-			Eq:  githubcomchunkifydevchunkifygo.Int(0),
-			Gt:  githubcomchunkifydevchunkifygo.Int(0),
-			Gte: githubcomchunkifydevchunkifygo.Int(0),
-			Lt:  githubcomchunkifydevchunkifygo.Int(0),
-			Lte: githubcomchunkifydevchunkifygo.Int(0),
+		Height: chunkify.SourceListParamsHeight{
+			Eq:  chunkify.Int(0),
+			Gt:  chunkify.Int(0),
+			Gte: chunkify.Int(0),
+			Lt:  chunkify.Int(0),
+			Lte: chunkify.Int(0),
 		},
-		Limit:    githubcomchunkifydevchunkifygo.Int(1),
+		Limit:    chunkify.Int(1),
 		Metadata: [][]string{{"J!Q0Ok0bzJb7:pro"}},
-		Offset:   githubcomchunkifydevchunkifygo.Int(0),
-		Size: githubcomchunkifydevchunkifygo.SourceListParamsSize{
-			Eq:  githubcomchunkifydevchunkifygo.Int(0),
-			Gt:  githubcomchunkifydevchunkifygo.Int(0),
-			Gte: githubcomchunkifydevchunkifygo.Int(0),
-			Lt:  githubcomchunkifydevchunkifygo.Int(0),
-			Lte: githubcomchunkifydevchunkifygo.Int(0),
+		Offset:   chunkify.Int(0),
+		Size: chunkify.SourceListParamsSize{
+			Eq:  chunkify.Int(0),
+			Gt:  chunkify.Int(0),
+			Gte: chunkify.Int(0),
+			Lt:  chunkify.Int(0),
+			Lte: chunkify.Int(0),
 		},
-		VideoCodec: githubcomchunkifydevchunkifygo.String("video_codec"),
-		Width: githubcomchunkifydevchunkifygo.SourceListParamsWidth{
-			Eq:  githubcomchunkifydevchunkifygo.Int(0),
-			Gt:  githubcomchunkifydevchunkifygo.Int(0),
-			Gte: githubcomchunkifydevchunkifygo.Int(0),
-			Lt:  githubcomchunkifydevchunkifygo.Int(0),
-			Lte: githubcomchunkifydevchunkifygo.Int(0),
+		VideoCodec: chunkify.String("video_codec"),
+		Width: chunkify.SourceListParamsWidth{
+			Eq:  chunkify.Int(0),
+			Gt:  chunkify.Int(0),
+			Gte: chunkify.Int(0),
+			Lt:  chunkify.Int(0),
+			Lte: chunkify.Int(0),
 		},
 	})
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}
@@ -138,13 +138,13 @@ func TestSourceDelete(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	err := client.Sources.Delete(context.TODO(), "sourceId")
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

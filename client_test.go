@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomchunkifydevchunkifygo_test
+package chunkify_test
 
 import (
 	"context"
@@ -25,7 +25,7 @@ func (t *closureTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 
 func TestUserAgentHeader(t *testing.T) {
 	var userAgent string
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -38,7 +38,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Files.List(context.Background(), githubcomchunkifydevchunkifygo.FileListParams{})
+	client.Files.List(context.Background(), chunkify.FileListParams{})
 	if userAgent != fmt.Sprintf("Chunkify/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
 	}
@@ -46,7 +46,7 @@ func TestUserAgentHeader(t *testing.T) {
 
 func TestRetryAfter(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -62,7 +62,7 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Files.List(context.Background(), githubcomchunkifydevchunkifygo.FileListParams{})
+	_, err := client.Files.List(context.Background(), chunkify.FileListParams{})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -80,7 +80,7 @@ func TestRetryAfter(t *testing.T) {
 
 func TestDeleteRetryCountHeader(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -97,7 +97,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	_, err := client.Files.List(context.Background(), githubcomchunkifydevchunkifygo.FileListParams{})
+	_, err := client.Files.List(context.Background(), chunkify.FileListParams{})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -110,7 +110,7 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 
 func TestOverwriteRetryCountHeader(t *testing.T) {
 	retryCountHeaders := make([]string, 0)
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -127,7 +127,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	_, err := client.Files.List(context.Background(), githubcomchunkifydevchunkifygo.FileListParams{})
+	_, err := client.Files.List(context.Background(), chunkify.FileListParams{})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -140,7 +140,7 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 
 func TestRetryAfterMs(t *testing.T) {
 	attempts := 0
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -156,7 +156,7 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	_, err := client.Files.List(context.Background(), githubcomchunkifydevchunkifygo.FileListParams{})
+	_, err := client.Files.List(context.Background(), chunkify.FileListParams{})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
@@ -166,7 +166,7 @@ func TestRetryAfterMs(t *testing.T) {
 }
 
 func TestContextCancel(t *testing.T) {
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -179,14 +179,14 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	_, err := client.Files.List(cancelCtx, githubcomchunkifydevchunkifygo.FileListParams{})
+	_, err := client.Files.List(cancelCtx, chunkify.FileListParams{})
 	if err == nil {
 		t.Error("Expected there to be a cancel error")
 	}
 }
 
 func TestContextCancelDelay(t *testing.T) {
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithHTTPClient(&http.Client{
 			Transport: &closureTransport{
@@ -199,7 +199,7 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	_, err := client.Files.List(cancelCtx, githubcomchunkifydevchunkifygo.FileListParams{})
+	_, err := client.Files.List(cancelCtx, chunkify.FileListParams{})
 	if err == nil {
 		t.Error("expected there to be a cancel error")
 	}
@@ -214,7 +214,7 @@ func TestContextDeadline(t *testing.T) {
 	defer cancel()
 
 	go func() {
-		client := githubcomchunkifydevchunkifygo.NewClient(
+		client := chunkify.NewClient(
 			option.WithProjectAccessToken("My Project Access Token"),
 			option.WithHTTPClient(&http.Client{
 				Transport: &closureTransport{
@@ -225,7 +225,7 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		_, err := client.Files.List(deadlineCtx, githubcomchunkifydevchunkifygo.FileListParams{})
+		_, err := client.Files.List(deadlineCtx, chunkify.FileListParams{})
 		if err == nil {
 			t.Error("expected there to be a deadline error")
 		}
