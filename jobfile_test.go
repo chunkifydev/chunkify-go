@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomchunkifydevchunkifygo_test
+package chunkify_test
 
 import (
 	"context"
@@ -22,13 +22,13 @@ func TestJobFileList(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
 	_, err := client.Jobs.Files.List(context.TODO(), "jobId")
 	if err != nil {
-		var apierr *githubcomchunkifydevchunkifygo.Error
+		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
 			t.Log(string(apierr.DumpRequest(true)))
 		}

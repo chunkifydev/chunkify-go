@@ -1,6 +1,6 @@
 // File generated from our OpenAPI spec by Stainless. See CONTRIBUTING.md for details.
 
-package githubcomchunkifydevchunkifygo_test
+package chunkify_test
 
 import (
 	"context"
@@ -20,12 +20,12 @@ func TestAutoPagination(t *testing.T) {
 	if !testutil.CheckTestServer(t, baseURL) {
 		return
 	}
-	client := githubcomchunkifydevchunkifygo.NewClient(
+	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
 	)
-	iter := client.Sources.ListAutoPaging(context.TODO(), githubcomchunkifydevchunkifygo.SourceListParams{
-		Limit: githubcomchunkifydevchunkifygo.Int(30),
+	iter := client.Sources.ListAutoPaging(context.TODO(), chunkify.SourceListParams{
+		Limit: chunkify.Int(30),
 	})
 	// Prism mock isn't going to give us real pagination
 	for i := 0; i < 3 && iter.Next(); i++ {
