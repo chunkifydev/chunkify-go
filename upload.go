@@ -228,7 +228,7 @@ type UploadListParams struct {
 	// Filter by source ID
 	SourceID param.Opt[string]       `query:"source_id,omitzero" json:"-"`
 	Created  UploadListParamsCreated `query:"created,omitzero" json:"-"`
-	// Filter by metadata (format: key:value,key:value)
+	// Filter by metadata
 	Metadata [][]string `query:"metadata,omitzero" json:"-"`
 	// Filter by status (pending, completed, error)
 	//
