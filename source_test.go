@@ -82,8 +82,8 @@ func TestSourceListWithOptionalParams(t *testing.T) {
 		ID:         chunkify.String("id"),
 		AudioCodec: chunkify.String("audio_codec"),
 		Created: chunkify.SourceListParamsCreated{
-			Gte:  chunkify.String("2025-01-01"),
-			Lte:  chunkify.String("2025-01-01"),
+			Gte:  chunkify.Int(0),
+			Lte:  chunkify.Int(0),
 			Sort: "asc",
 		},
 		Device: chunkify.SourceListParamsDeviceApple,

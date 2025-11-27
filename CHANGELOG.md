@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.0 (2025-11-27)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/chunkifydev/chunkify-go/compare/v0.2.0...v0.3.0)
+
+### ⚠ BREAKING CHANGES
+
+* **api:** update all created.* query string to epoch unix time format
+
+### Features
+
+* **api:** update all created.* query string to epoch unix time format ([7aa5f40](https://github.com/chunkifydev/chunkify-go/commit/7aa5f408b15e374193a3318e68e82981117de840))
+
 ## 0.2.0 (2025-11-26)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/chunkifydev/chunkify-go/compare/v0.1.0...v0.2.0)
