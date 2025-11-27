@@ -242,7 +242,7 @@ type SourceListParams struct {
 	Device   SourceListParamsDevice   `query:"device,omitzero" json:"-"`
 	Duration SourceListParamsDuration `query:"duration,omitzero" json:"-"`
 	Height   SourceListParamsHeight   `query:"height,omitzero" json:"-"`
-	// Filter by metadata (format: key:value,key:value)
+	// Filter by metadata
 	Metadata [][]string            `query:"metadata,omitzero" json:"-"`
 	Size     SourceListParamsSize  `query:"size,omitzero" json:"-"`
 	Width    SourceListParamsWidth `query:"width,omitzero" json:"-"`
