@@ -114,8 +114,8 @@ func TestJobListWithOptionalParams(t *testing.T) {
 	_, err := client.Jobs.List(context.TODO(), chunkify.JobListParams{
 		ID: chunkify.String("id"),
 		Created: chunkify.JobListParamsCreated{
-			Gte:  chunkify.String("2025-01-01"),
-			Lte:  chunkify.String("2025-01-01"),
+			Gte:  chunkify.Int(0),
+			Lte:  chunkify.Int(0),
 			Sort: "asc",
 		},
 		FormatID:      chunkify.JobListParamsFormatIDMP4H264,

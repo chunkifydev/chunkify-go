@@ -81,8 +81,8 @@ func TestUploadListWithOptionalParams(t *testing.T) {
 	_, err := client.Uploads.List(context.TODO(), chunkify.UploadListParams{
 		ID: chunkify.String("id"),
 		Created: chunkify.UploadListParamsCreated{
-			Gte:  chunkify.String("gte"),
-			Lte:  chunkify.String("lte"),
+			Gte:  chunkify.Int(0),
+			Lte:  chunkify.Int(0),
 			Sort: "asc",
 		},
 		Limit:    chunkify.Int(1),
