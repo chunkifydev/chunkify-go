@@ -53,8 +53,8 @@ func TestFileListWithOptionalParams(t *testing.T) {
 		ID:         chunkify.String("id"),
 		AudioCodec: chunkify.String("audio_codec"),
 		Created: chunkify.FileListParamsCreated{
-			Gte:  chunkify.String("gte"),
-			Lte:  chunkify.String("lte"),
+			Gte:  chunkify.Int(0),
+			Lte:  chunkify.Int(0),
 			Sort: "asc",
 		},
 		Duration: chunkify.FileListParamsDuration{

@@ -238,8 +238,7 @@ type NotificationListParams struct {
 	// Filter by webhook ID
 	WebhookID param.Opt[string]             `query:"webhook_id,omitzero" json:"-"`
 	Created   NotificationListParamsCreated `query:"created,omitzero" json:"-"`
-	// Filter by events (e.g. job.completed, job.failed, upload.completed,
-	// upload.failed, upload.expired)
+	// Filter by events
 	//
 	// Any of "job.completed", "job.failed", "job.cancelled", "upload.completed",
 	// "upload.failed", "upload.expired".
@@ -257,10 +256,10 @@ func (r NotificationListParams) URLQuery() (v url.Values, err error) {
 }
 
 type NotificationListParamsCreated struct {
-	// Filter by creation date greater than or equal (RFC3339)
-	Gte param.Opt[string] `query:"gte,omitzero" json:"-"`
-	// Filter by creation date less than or equal (RFC3339)
-	Lte param.Opt[string] `query:"lte,omitzero" json:"-"`
+	// Filter by creation date greater than or equal (UNIX epoch time)
+	Gte param.Opt[int64] `query:"gte,omitzero" json:"-"`
+	// Filter by creation date less than or equal (UNIX epoch time)
+	Lte param.Opt[int64] `query:"lte,omitzero" json:"-"`
 	// Sort by creation date (asc/desc)
 	//
 	// Any of "asc", "desc".

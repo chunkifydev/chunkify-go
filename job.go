@@ -3753,9 +3753,9 @@ func (r JobListParams) URLQuery() (v url.Values, err error) {
 
 type JobListParamsCreated struct {
 	// Filter by creation date greater than or equal
-	Gte param.Opt[string] `query:"gte,omitzero" json:"-"`
+	Gte param.Opt[int64] `query:"gte,omitzero" json:"-"`
 	// Filter by creation date less than or equal
-	Lte param.Opt[string] `query:"lte,omitzero" json:"-"`
+	Lte param.Opt[int64] `query:"lte,omitzero" json:"-"`
 	// Sort by creation date (asc/desc)
 	//
 	// Any of "asc", "desc".
