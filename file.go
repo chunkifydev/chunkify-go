@@ -206,7 +206,7 @@ type FileListParams struct {
 // URLQuery serializes [FileListParams]'s query parameters as `url.Values`.
 func (r FileListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -226,7 +226,7 @@ type FileListParamsCreated struct {
 // URLQuery serializes [FileListParamsCreated]'s query parameters as `url.Values`.
 func (r FileListParamsCreated) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -248,7 +248,7 @@ type FileListParamsDuration struct {
 // URLQuery serializes [FileListParamsDuration]'s query parameters as `url.Values`.
 func (r FileListParamsDuration) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -270,7 +270,7 @@ type FileListParamsHeight struct {
 // URLQuery serializes [FileListParamsHeight]'s query parameters as `url.Values`.
 func (r FileListParamsHeight) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -286,7 +286,7 @@ type FileListParamsPath struct {
 // URLQuery serializes [FileListParamsPath]'s query parameters as `url.Values`.
 func (r FileListParamsPath) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -308,7 +308,7 @@ type FileListParamsSize struct {
 // URLQuery serializes [FileListParamsSize]'s query parameters as `url.Values`.
 func (r FileListParamsSize) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -330,7 +330,7 @@ type FileListParamsWidth struct {
 // URLQuery serializes [FileListParamsWidth]'s query parameters as `url.Values`.
 func (r FileListParamsWidth) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
