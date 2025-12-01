@@ -3746,7 +3746,7 @@ type JobListParams struct {
 // URLQuery serializes [JobListParams]'s query parameters as `url.Values`.
 func (r JobListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -3766,7 +3766,7 @@ type JobListParamsCreated struct {
 // URLQuery serializes [JobListParamsCreated]'s query parameters as `url.Values`.
 func (r JobListParamsCreated) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }

@@ -234,7 +234,7 @@ type ProjectListParams struct {
 // URLQuery serializes [ProjectListParams]'s query parameters as `url.Values`.
 func (r ProjectListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
