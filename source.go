@@ -252,7 +252,7 @@ type SourceListParams struct {
 // URLQuery serializes [SourceListParams]'s query parameters as `url.Values`.
 func (r SourceListParams) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -273,7 +273,7 @@ type SourceListParamsCreated struct {
 // `url.Values`.
 func (r SourceListParamsCreated) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -305,7 +305,7 @@ type SourceListParamsDuration struct {
 // `url.Values`.
 func (r SourceListParamsDuration) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -327,7 +327,7 @@ type SourceListParamsHeight struct {
 // URLQuery serializes [SourceListParamsHeight]'s query parameters as `url.Values`.
 func (r SourceListParamsHeight) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -349,7 +349,7 @@ type SourceListParamsSize struct {
 // URLQuery serializes [SourceListParamsSize]'s query parameters as `url.Values`.
 func (r SourceListParamsSize) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
@@ -371,7 +371,7 @@ type SourceListParamsWidth struct {
 // URLQuery serializes [SourceListParamsWidth]'s query parameters as `url.Values`.
 func (r SourceListParamsWidth) URLQuery() (v url.Values, err error) {
 	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatComma,
+		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.0 (2025-12-01)
+
+Full Changelog: [v0.6.0...v0.7.0](https://github.com/chunkifydev/chunkify-go/compare/v0.6.0...v0.7.0)
+
+### Features
+
+* **api:** manual updates ([cd47b10](https://github.com/chunkifydev/chunkify-go/commit/cd47b101a44a4cd2cbb54cd9f2876b67545e27cf))
+
 ## 0.6.0 (2025-11-27)
 
 Full Changelog: [v0.3.0...v0.6.0](https://github.com/chunkifydev/chunkify-go/compare/v0.3.0...v0.6.0)
