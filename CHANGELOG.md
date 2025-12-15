@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.8.0 (2025-12-12)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/chunkifydev/chunkify-go/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* **encoder:** support bracket encoding form-data object members ([e2e2496](https://github.com/chunkifydev/chunkify-go/commit/e2e2496e6fcf9514f3c52cd3e8ee2c42dad2cd47))
+
+
+### Bug Fixes
+
+* **mcp:** correct code tool API endpoint ([2e70115](https://github.com/chunkifydev/chunkify-go/commit/2e7011536e04735858e5569eac2d61bcfad75094))
+* rename param to avoid collision ([e5e4d9c](https://github.com/chunkifydev/chunkify-go/commit/e5e4d9c2ed01610da12d4ad1f2027cd44f6a585f))
+
+
+### Chores
+
+* elide duplicate aliases ([7e9a6a2](https://github.com/chunkifydev/chunkify-go/commit/7e9a6a25a69d9238e828b19fdc7241515215cacc))
+* **internal:** codegen related update ([d5d2b40](https://github.com/chunkifydev/chunkify-go/commit/d5d2b40b0f917d40807b4d43ca0d2be86ce1131f))
+* **internal:** codegen related update ([4f45b16](https://github.com/chunkifydev/chunkify-go/commit/4f45b1690dd2b165ed2e868c4c242a694f903c1b))
+
 ## 0.7.0 (2025-12-01)
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/chunkifydev/chunkify-go/compare/v0.6.0...v0.7.0)
