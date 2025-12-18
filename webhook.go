@@ -166,10 +166,12 @@ func (r *Webhook) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Response containing the list of all webhooks for a project
 type WebhookListResponse struct {
+	// Data contains the webhook items
 	Data []Webhook `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

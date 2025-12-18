@@ -171,7 +171,7 @@ type SourceNewParams struct {
 	// Url is the URL of the source, which must be a valid HTTP URL.
 	URL string `json:"url,required"`
 	// Metadata allows for additional information to be attached to the source, with a
-	// maximum size of 1024 bytes.
+	// maximum size of 2048 bytes.
 	Metadata map[string]string `json:"metadata,omitzero"`
 	paramObj
 }

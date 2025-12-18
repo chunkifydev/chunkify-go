@@ -7,16 +7,15 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"net/url"
 	"slices"
 	"time"
 
 	"github.com/chunkifydev/chunkify-go/internal/apijson"
-	"github.com/chunkifydev/chunkify-go/internal/apiquery"
 	"github.com/chunkifydev/chunkify-go/internal/requestconfig"
 	"github.com/chunkifydev/chunkify-go/option"
 	"github.com/chunkifydev/chunkify-go/packages/param"
 	"github.com/chunkifydev/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/shared/constant"
 )
 
 // ProjectService contains methods and other services that help with interacting
@@ -83,11 +82,11 @@ func (r *ProjectService) Update(ctx context.Context, projectID string, body Proj
 	return
 }
 
-// Retrieve a list of all projects with optional filtering and pagination
-func (r *ProjectService) List(ctx context.Context, query ProjectListParams, opts ...option.RequestOption) (res *ProjectListResponse, err error) {
+// Retrieve a list of all projects for a team
+func (r *ProjectService) List(ctx context.Context, opts ...option.RequestOption) (res *ProjectListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "api/projects"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
@@ -134,10 +133,12 @@ func (r *Project) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Response containing the list of projects for a team
 type ProjectListResponse struct {
+	// Data contains the project items
 	Data []Project `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -171,7 +172,7 @@ type ProjectNewResponseEnvelope struct {
 	// Data contains the response object
 	Data Project `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -191,7 +192,7 @@ type ProjectGetResponseEnvelope struct {
 	// Data contains the response object
 	Data Project `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -221,20 +222,4 @@ func (r ProjectUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *ProjectUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-type ProjectListParams struct {
-	// Pagination limit (max 100)
-	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
-	// Pagination offset
-	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
-	paramObj
-}
-
-// URLQuery serializes [ProjectListParams]'s query parameters as `url.Values`.
-func (r ProjectListParams) URLQuery() (v url.Values, err error) {
-	return apiquery.MarshalWithSettings(r, apiquery.QuerySettings{
-		ArrayFormat:  apiquery.ArrayQueryFormatRepeat,
-		NestedFormat: apiquery.NestedQueryFormatBrackets,
-	})
 }

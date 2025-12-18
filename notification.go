@@ -18,6 +18,7 @@ import (
 	"github.com/chunkifydev/chunkify-go/packages/pagination"
 	"github.com/chunkifydev/chunkify-go/packages/param"
 	"github.com/chunkifydev/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/shared/constant"
 )
 
 // NotificationService contains methods and other services that help with
@@ -192,7 +193,7 @@ type NotificationNewResponseEnvelope struct {
 	// Data contains the response object
 	Data Notification `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -212,7 +213,7 @@ type NotificationGetResponseEnvelope struct {
 	// Data contains the response object
 	Data Notification `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
