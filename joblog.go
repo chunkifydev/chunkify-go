@@ -17,6 +17,7 @@ import (
 	"github.com/chunkifydev/chunkify-go/option"
 	"github.com/chunkifydev/chunkify-go/packages/param"
 	"github.com/chunkifydev/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/shared/constant"
 )
 
 // JobLogService contains methods and other services that help with interacting
@@ -54,7 +55,7 @@ func (r *JobLogService) List(ctx context.Context, jobID string, query JobLogList
 type JobLogListResponse struct {
 	Data []JobLogListResponseData `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
