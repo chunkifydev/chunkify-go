@@ -292,10 +292,12 @@ func (r *StorageAws) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Response containing the list of storages configurations for a project
 type StorageListResponse struct {
+	// Data contains the storage items
 	Data []StorageUnion `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

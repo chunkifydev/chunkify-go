@@ -51,10 +51,10 @@ func (r *TokenService) New(ctx context.Context, body TokenNewParams, opts ...opt
 	return
 }
 
-// Retrieve a list of all API tokens for your account, including both
-// account-scoped and project-scoped tokens. For each token, the response includes
-// its name, scope, creation date, and usage statistics. The token values are not
-// included in the response for security reasons.
+// Retrieve a list of all API tokens for your account, including both team-scoped
+// and project-scoped tokens. For each token, the response includes its name,
+// scope, creation date, and usage statistics. The token values are not included in
+// the response for security reasons.
 func (r *TokenService) List(ctx context.Context, opts ...option.RequestOption) (res *TokenListResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "api/tokens"
@@ -118,10 +118,13 @@ const (
 	TokenScopeTeam    TokenScope = "team"
 )
 
+// Response containing the list of all tokens for a team. Including project and
+// team tokens.
 type TokenListResponse struct {
+	// Data contains the token items
 	Data []Token `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

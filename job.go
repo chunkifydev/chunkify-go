@@ -2981,7 +2981,7 @@ type JobNewParams struct {
 	// multiple jobs into a single HLS manifest By default, it's automatically
 	// generated if no set for HLS jobs
 	HlsManifestID param.Opt[string] `json:"hls_manifest_id,omitzero"`
-	// Optional metadata to attach to the job (max 1024 bytes)
+	// Optional metadata to attach to the job, the maximum size allowed is 2048 bytes
 	Metadata map[string]string `json:"metadata,omitzero"`
 	// Optional storage configuration
 	Storage JobNewParamsStorage `json:"storage,omitzero"`
