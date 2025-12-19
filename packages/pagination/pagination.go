@@ -50,7 +50,9 @@ func (r *PaginatedResults[T]) GetNextPage() (res *PaginatedResults[T], err error
 	}
 	cfg := r.cfg.Clone(r.cfg.Context)
 
-	next := r.Offset
+	offset := r.Offset
+	length := int64(len(r.Data))
+	next := offset + length
 
 	if next < r.Total && next != 0 {
 		err = cfg.Apply(option.WithQuery("offset", strconv.FormatInt(next, 10)))
