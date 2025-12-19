@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.1 (2025-12-19)
+
+Full Changelog: [v0.9.0...v0.9.1](https://github.com/chunkifydev/chunkify-go/compare/v0.9.0...v0.9.1)
+
+### Chores
+
+* add float64 to valid types for RegisterFieldValidator ([ef0ee77](https://github.com/chunkifydev/chunkify-go/commit/ef0ee777920b179582316650af6328ce1f52cb92))
+* **internal:** codegen related update ([bb0a087](https://github.com/chunkifydev/chunkify-go/commit/bb0a0875ef4e028ef508b95decb48935064b76dc))
+
 ## 0.9.0 (2025-12-18)
 
 Full Changelog: [v0.8.0...v0.9.0](https://github.com/chunkifydev/chunkify-go/compare/v0.8.0...v0.9.0)
