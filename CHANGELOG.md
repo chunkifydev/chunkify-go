@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.2 (2026-01-06)
+
+Full Changelog: [v0.9.1...v0.9.2](https://github.com/chunkifydev/chunkify-go/compare/v0.9.1...v0.9.2)
+
+### Chores
+
+* **internal:** codegen related update ([c3cc72f](https://github.com/chunkifydev/chunkify-go/commit/c3cc72f70a1b1954c79243e5632a30a58343cf3d))
+
 ## 0.9.1 (2025-12-19)
 
 Full Changelog: [v0.9.0...v0.9.1](https://github.com/chunkifydev/chunkify-go/compare/v0.9.0...v0.9.1)
