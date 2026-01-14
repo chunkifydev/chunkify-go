@@ -42,7 +42,7 @@ func NewFileService(opts ...option.RequestOption) (r FileService) {
 
 // Retrieve details of a specific file by its ID, including metadata, media
 // properties, and associated jobs.
-func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.RequestOption) (res *APIFile, err error) {
+func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.RequestOption) (res *JobFile, err error) {
 	var env FileGetResponseEnvelope
 	opts = slices.Concat(r.Options, opts)
 	if fileID == "" {
@@ -59,7 +59,7 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 }
 
 // Retrieve a list of files with optional filtering and pagination
-func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[APIFile], err error) {
+func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[JobFile], err error) {
 	var raw *http.Response
 	opts = slices.Concat(r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
@@ -77,7 +77,7 @@ func (r *FileService) List(ctx context.Context, query FileListParams, opts ...op
 }
 
 // Retrieve a list of files with optional filtering and pagination
-func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[APIFile] {
+func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[JobFile] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
@@ -94,7 +94,7 @@ func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.
 	return
 }
 
-type APIFile struct {
+type JobFile struct {
 	// Unique identifier of the file
 	ID string `json:"id,required"`
 	// Audio bitrate in bits per second
@@ -151,15 +151,15 @@ type APIFile struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r APIFile) RawJSON() string { return r.JSON.raw }
-func (r *APIFile) UnmarshalJSON(data []byte) error {
+func (r JobFile) RawJSON() string { return r.JSON.raw }
+func (r *JobFile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Successful response
 type FileGetResponseEnvelope struct {
 	// Data contains the response object
-	Data APIFile `json:"data,required"`
+	Data JobFile `json:"data,required"`
 	// Status indicates the response status "success"
 	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
