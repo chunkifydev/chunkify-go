@@ -49,7 +49,7 @@ func (r *JobFileService) List(ctx context.Context, jobID string, opts ...option.
 
 // Response containing a list of files for a job
 type JobFileListResponse struct {
-	Data []APIFile `json:"data,required"`
+	Data []JobFile `json:"data,required"`
 	// Status indicates the response status "success"
 	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
