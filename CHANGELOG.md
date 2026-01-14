@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.9.3 (2026-01-14)
+
+Full Changelog: [v0.9.2...v0.9.3](https://github.com/chunkifydev/chunkify-go/compare/v0.9.2...v0.9.3)
+
+### Chores
+
+* **internal:** codegen related update ([44bf73b](https://github.com/chunkifydev/chunkify-go/commit/44bf73b65cf5a6b2a73d6e6d616f1a2592220a75))
+* **sdk/config:** change model api_file to job-file ([2f2fce8](https://github.com/chunkifydev/chunkify-go/commit/2f2fce87bfa97c540dd66d9c4f4f4c64826df9d8))
+
 ## 0.9.2 (2026-01-06)
 
 Full Changelog: [v0.9.1...v0.9.2](https://github.com/chunkifydev/chunkify-go/compare/v0.9.1...v0.9.2)
