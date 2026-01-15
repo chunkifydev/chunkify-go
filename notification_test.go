@@ -25,6 +25,7 @@ func TestNotificationNew(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Notifications.New(context.TODO(), chunkify.NotificationNewParams{
 		Event:     chunkify.NotificationNewParamsEventJobCompleted,
@@ -52,6 +53,7 @@ func TestNotificationGet(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Notifications.Get(context.TODO(), "notificationId")
 	if err != nil {
@@ -75,6 +77,7 @@ func TestNotificationListWithOptionalParams(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Notifications.List(context.TODO(), chunkify.NotificationListParams{
 		Created: chunkify.NotificationListParamsCreated{
@@ -114,6 +117,7 @@ func TestNotificationDelete(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	err := client.Notifications.Delete(context.TODO(), "notificationId")
 	if err != nil {
