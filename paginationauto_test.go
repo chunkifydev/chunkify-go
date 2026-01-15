@@ -23,6 +23,7 @@ func TestAutoPagination(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	iter := client.Sources.ListAutoPaging(context.TODO(), chunkify.SourceListParams{
 		Limit: chunkify.Int(30),

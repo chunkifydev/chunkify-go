@@ -25,6 +25,7 @@ func TestSourceNewWithOptionalParams(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Sources.New(context.TODO(), chunkify.SourceNewParams{
 		URL: "https://example.com/video.mp4",
@@ -54,6 +55,7 @@ func TestSourceGet(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Sources.Get(context.TODO(), "sourceId")
 	if err != nil {
@@ -77,6 +79,7 @@ func TestSourceListWithOptionalParams(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Sources.List(context.TODO(), chunkify.SourceListParams{
 		ID:         chunkify.String("id"),
@@ -141,6 +144,7 @@ func TestSourceDelete(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	err := client.Sources.Delete(context.TODO(), "sourceId")
 	if err != nil {

@@ -25,6 +25,7 @@ func TestJobLogListWithOptionalParams(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Jobs.Logs.List(
 		context.TODO(),
