@@ -23,6 +23,7 @@ func TestUsage(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	t.Skip("Prism tests are disabled")
 	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{

@@ -23,6 +23,7 @@ func TestManualPagination(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	page, err := client.Sources.List(context.TODO(), chunkify.SourceListParams{
 		Limit: chunkify.Int(30),

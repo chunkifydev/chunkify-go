@@ -25,6 +25,7 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Uploads.New(context.TODO(), chunkify.UploadNewParams{
 		Metadata: map[string]string{
@@ -54,6 +55,7 @@ func TestUploadGet(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Uploads.Get(context.TODO(), "uploadId")
 	if err != nil {
@@ -77,6 +79,7 @@ func TestUploadListWithOptionalParams(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Uploads.List(context.TODO(), chunkify.UploadListParams{
 		ID: chunkify.String("id"),
@@ -112,6 +115,7 @@ func TestUploadDelete(t *testing.T) {
 	client := chunkify.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	err := client.Uploads.Delete(context.TODO(), "uploadId")
 	if err != nil {
