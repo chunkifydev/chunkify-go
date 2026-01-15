@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 (2026-01-15)
+
+Full Changelog: [v0.9.3...v0.10.0](https://github.com/chunkifydev/chunkify-go/compare/v0.9.3...v0.10.0)
+
+### Features
+
+* **config:** added per endpoint security settings ([7701e0b](https://github.com/chunkifydev/chunkify-go/commit/7701e0b5f621f18992ffcddca6039372634f3701))
+
 ## 0.9.3 (2026-01-14)
 
 Full Changelog: [v0.9.2...v0.9.3](https://github.com/chunkifydev/chunkify-go/compare/v0.9.2...v0.9.3)
