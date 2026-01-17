@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.11.0 (2026-01-17)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/chunkifydev/chunkify-go/compare/v0.10.0...v0.11.0)
+
+### Features
+
+* **api:** api update ([f1834bc](https://github.com/chunkifydev/chunkify-go/commit/f1834bcd0c7994e51547f814b42eb7308858b00e))
+
+
+### Bug Fixes
+
+* **docs:** add missing pointer prefix to api.md return types ([6403cd1](https://github.com/chunkifydev/chunkify-go/commit/6403cd147b832f3076964735253993b09cc8584b))
+
+
+### Chores
+
+* **internal:** update `actions/checkout` version ([e1fb1c4](https://github.com/chunkifydev/chunkify-go/commit/e1fb1c453f8990408b6e49598debf44187884d72))
+
 ## 0.10.0 (2026-01-15)
 
 Full Changelog: [v0.9.3...v0.10.0](https://github.com/chunkifydev/chunkify-go/compare/v0.9.3...v0.10.0)
