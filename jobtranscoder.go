@@ -15,6 +15,7 @@ import (
 	"github.com/chunkifydev/chunkify-go/option"
 	"github.com/chunkifydev/chunkify-go/packages/respjson"
 	"github.com/chunkifydev/chunkify-go/shared"
+	"github.com/chunkifydev/chunkify-go/shared/constant"
 )
 
 // JobTranscoderService contains methods and other services that help with
@@ -48,10 +49,11 @@ func (r *JobTranscoderService) List(ctx context.Context, jobID string, opts ...o
 	return
 }
 
+// Response containing a list of transcoders for a job
 type JobTranscoderListResponse struct {
 	Data []JobTranscoderListResponseData `json:"data,required"`
 	// Status indicates the response status "success"
-	Status string `json:"status,required"`
+	Status constant.Success `json:"status,required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
