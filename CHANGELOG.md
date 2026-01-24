@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.12.0 (2026-01-24)
+
+Full Changelog: [v0.11.0...v0.12.0](https://github.com/chunkifydev/chunkify-go/compare/v0.11.0...v0.12.0)
+
+### Features
+
+* **client:** add a convenient param.SetJSON helper ([a1ff01a](https://github.com/chunkifydev/chunkify-go/commit/a1ff01aa6961bf3015f86db425a090ae233d1fb0))
+
 ## 0.11.0 (2026-01-17)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/chunkifydev/chunkify-go/compare/v0.10.0...v0.11.0)
