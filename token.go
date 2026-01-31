@@ -41,7 +41,8 @@ func NewTokenService(opts ...option.RequestOption) (r TokenService) {
 // Project tokens require a valid project slug.
 func (r *TokenService) New(ctx context.Context, body TokenNewParams, opts ...option.RequestOption) (res *Token, err error) {
 	var env TokenNewResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/tokens"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
@@ -56,7 +57,8 @@ func (r *TokenService) New(ctx context.Context, body TokenNewParams, opts ...opt
 // scope, creation date, and usage statistics. The token values are not included in
 // the response for security reasons.
 func (r *TokenService) List(ctx context.Context, opts ...option.RequestOption) (res *TokenListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/tokens"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -65,7 +67,8 @@ func (r *TokenService) List(ctx context.Context, opts ...option.RequestOption) (
 // Revoke an access token by its ID. This action is irreversible and will
 // immediately invalidate the token.
 func (r *TokenService) Revoke(ctx context.Context, tokenID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if tokenID == "" {
 		err = errors.New("missing required tokenId parameter")

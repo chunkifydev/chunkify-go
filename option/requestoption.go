@@ -270,7 +270,7 @@ func WithEnvironmentProduction() RequestOption {
 func WithProjectAccessToken(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.ProjectAccessToken = value
-		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.ProjectAccessToken)))
+		return nil
 	})
 }
 
@@ -278,7 +278,7 @@ func WithProjectAccessToken(value string) RequestOption {
 func WithTeamAccessToken(value string) RequestOption {
 	return requestconfig.RequestOptionFunc(func(r *requestconfig.RequestConfig) error {
 		r.TeamAccessToken = value
-		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.TeamAccessToken)))
+		return nil
 	})
 }
 
