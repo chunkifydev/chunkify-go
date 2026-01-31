@@ -44,7 +44,8 @@ func NewFileService(opts ...option.RequestOption) (r FileService) {
 // properties, and associated jobs.
 func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.RequestOption) (res *JobFile, err error) {
 	var env FileGetResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
 		return
@@ -61,7 +62,8 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 // Retrieve a list of files with optional filtering and pagination
 func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[JobFile], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "api/files"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -83,7 +85,8 @@ func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, 
 
 // Delete a file. It will fail if there are processing jobs using this file.
 func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")

@@ -43,7 +43,8 @@ func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
 // specified events.
 func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ...option.RequestOption) (res *Webhook, err error) {
 	var env WebhookNewResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/webhooks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
@@ -57,7 +58,8 @@ func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ..
 // belong to the current project.
 func (r *WebhookService) Get(ctx context.Context, webhookID string, opts ...option.RequestOption) (res *Webhook, err error) {
 	var env WebhookGetResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if webhookID == "" {
 		err = errors.New("missing required webhookId parameter")
 		return
@@ -74,7 +76,8 @@ func (r *WebhookService) Get(ctx context.Context, webhookID string, opts ...opti
 // Update the enabled status of a webhook. The webhook must belong to the current
 // project.
 func (r *WebhookService) Update(ctx context.Context, webhookID string, body WebhookUpdateParams, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if webhookID == "" {
 		err = errors.New("missing required webhookId parameter")
@@ -88,7 +91,8 @@ func (r *WebhookService) Update(ctx context.Context, webhookID string, body Webh
 // Retrieve a list of all webhooks configured for the current project. Each webhook
 // includes its URL, enabled status, and subscribed events.
 func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption) (res *WebhookListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/webhooks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -97,7 +101,8 @@ func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption)
 // Permanently delete a webhook configuration. The webhook must belong to the
 // current project. This action cannot be undone.
 func (r *WebhookService) Delete(ctx context.Context, webhookID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if webhookID == "" {
 		err = errors.New("missing required webhookId parameter")

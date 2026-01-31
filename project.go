@@ -41,7 +41,8 @@ func NewProjectService(opts ...option.RequestOption) (r ProjectService) {
 // default Chunkify storage settings.
 func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ...option.RequestOption) (res *Project, err error) {
 	var env ProjectNewResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/projects"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
@@ -54,7 +55,8 @@ func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ..
 // Retrieve details of a specific project by its slug
 func (r *ProjectService) Get(ctx context.Context, projectID string, opts ...option.RequestOption) (res *Project, err error) {
 	var env ProjectGetResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return
@@ -71,7 +73,8 @@ func (r *ProjectService) Get(ctx context.Context, projectID string, opts ...opti
 // Update a project's name or storage settings. Only team owners can update
 // projects.
 func (r *ProjectService) Update(ctx context.Context, projectID string, body ProjectUpdateParams, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
@@ -84,7 +87,8 @@ func (r *ProjectService) Update(ctx context.Context, projectID string, body Proj
 
 // Retrieve a list of all projects for a team
 func (r *ProjectService) List(ctx context.Context, opts ...option.RequestOption) (res *ProjectListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/projects"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -93,7 +97,8 @@ func (r *ProjectService) List(ctx context.Context, opts ...option.RequestOption)
 // Delete a project and revoke all associated access tokens. Only team owners can
 // delete projects.
 func (r *ProjectService) Delete(ctx context.Context, projectID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if projectID == "" {
 		err = errors.New("missing required projectId parameter")

@@ -37,7 +37,8 @@ func NewJobFileService(opts ...option.RequestOption) (r JobFileService) {
 
 // Retrieve all files associated with a specific job
 func (r *JobFileService) List(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobFileListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
 		return

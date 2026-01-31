@@ -41,7 +41,8 @@ func NewJobLogService(opts ...option.RequestOption) (r JobLogService) {
 
 // Retrieve logs for a specific job, either from the transcoder or manager service
 func (r *JobLogService) List(ctx context.Context, jobID string, query JobLogListParams, opts ...option.RequestOption) (res *JobLogListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
 		return
