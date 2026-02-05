@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.12.1 (2026-02-05)
+
+Full Changelog: [v0.12.0...v0.12.1](https://github.com/chunkifydev/chunkify-go/compare/v0.12.0...v0.12.1)
+
+### Bug Fixes
+
+* **client:** send correct authentication methods ([56ff2c4](https://github.com/chunkifydev/chunkify-go/commit/56ff2c4cc21832d66f6f1f4d7f89dc4f15732fac))
+
+
+### Chores
+
+* **internal:** codegen related update ([08e2c75](https://github.com/chunkifydev/chunkify-go/commit/08e2c75ccb9604a627682a0103a4d4db153edcca))
+
 ## 0.12.0 (2026-01-24)
 
 Full Changelog: [v0.11.0...v0.12.0](https://github.com/chunkifydev/chunkify-go/compare/v0.11.0...v0.12.0)
