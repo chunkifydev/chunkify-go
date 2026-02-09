@@ -43,7 +43,8 @@ func NewNotificationService(opts ...option.RequestOption) (r NotificationService
 // Create a new notification for a job event
 func (r *NotificationService) New(ctx context.Context, body NotificationNewParams, opts ...option.RequestOption) (res *Notification, err error) {
 	var env NotificationNewResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/notifications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
@@ -56,7 +57,8 @@ func (r *NotificationService) New(ctx context.Context, body NotificationNewParam
 // Retrieve details of a specific notification
 func (r *NotificationService) Get(ctx context.Context, notificationID string, opts ...option.RequestOption) (res *Notification, err error) {
 	var env NotificationGetResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if notificationID == "" {
 		err = errors.New("missing required notificationId parameter")
 		return
@@ -73,7 +75,8 @@ func (r *NotificationService) Get(ctx context.Context, notificationID string, op
 // Retrieve a list of notifications with optional filtering and pagination
 func (r *NotificationService) List(ctx context.Context, query NotificationListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Notification], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "api/notifications"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -95,7 +98,8 @@ func (r *NotificationService) ListAutoPaging(ctx context.Context, query Notifica
 
 // Delete a notification.
 func (r *NotificationService) Delete(ctx context.Context, notificationID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if notificationID == "" {
 		err = errors.New("missing required notificationId parameter")

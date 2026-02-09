@@ -45,7 +45,8 @@ func NewSourceService(opts ...option.RequestOption) (r SourceService) {
 // after the data retention period.
 func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...option.RequestOption) (res *Source, err error) {
 	var env SourceNewResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/sources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
@@ -59,7 +60,8 @@ func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...o
 // properties, and associated jobs.
 func (r *SourceService) Get(ctx context.Context, sourceID string, opts ...option.RequestOption) (res *Source, err error) {
 	var env SourceGetResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if sourceID == "" {
 		err = errors.New("missing required sourceId parameter")
 		return
@@ -77,7 +79,8 @@ func (r *SourceService) Get(ctx context.Context, sourceID string, opts ...option
 // filtering by various media properties like duration, dimensions, codecs, etc.
 func (r *SourceService) List(ctx context.Context, query SourceListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Source], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "api/sources"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -100,7 +103,8 @@ func (r *SourceService) ListAutoPaging(ctx context.Context, query SourceListPara
 
 // Delete a source. It will fail if there are processing jobs using this source.
 func (r *SourceService) Delete(ctx context.Context, sourceID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if sourceID == "" {
 		err = errors.New("missing required sourceId parameter")

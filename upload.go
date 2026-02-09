@@ -44,7 +44,8 @@ func NewUploadService(opts ...option.RequestOption) (r UploadService) {
 // Create a new upload with the specified name.
 func (r *UploadService) New(ctx context.Context, body UploadNewParams, opts ...option.RequestOption) (res *Upload, err error) {
 	var env UploadNewResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/uploads"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
@@ -58,7 +59,8 @@ func (r *UploadService) New(ctx context.Context, body UploadNewParams, opts ...o
 // associated source.
 func (r *UploadService) Get(ctx context.Context, uploadID string, opts ...option.RequestOption) (res *Upload, err error) {
 	var env UploadGetResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if uploadID == "" {
 		err = errors.New("missing required uploadId parameter")
 		return
@@ -75,7 +77,8 @@ func (r *UploadService) Get(ctx context.Context, uploadID string, opts ...option
 // Retrieve a list of all uploads with optional filtering and pagination.
 func (r *UploadService) List(ctx context.Context, query UploadListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Upload], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "api/uploads"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -97,7 +100,8 @@ func (r *UploadService) ListAutoPaging(ctx context.Context, query UploadListPara
 
 // Delete an upload.
 func (r *UploadService) Delete(ctx context.Context, uploadID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if uploadID == "" {
 		err = errors.New("missing required uploadId parameter")

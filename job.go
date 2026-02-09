@@ -51,7 +51,8 @@ func NewJobService(opts ...option.RequestOption) (r JobService) {
 // Create a new video processing job with specified parameters
 func (r *JobService) New(ctx context.Context, body JobNewParams, opts ...option.RequestOption) (res *Job, err error) {
 	var env JobNewResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
@@ -64,7 +65,8 @@ func (r *JobService) New(ctx context.Context, body JobNewParams, opts ...option.
 // Retrieve details of a specific job
 func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *Job, err error) {
 	var env JobGetResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
 		return
@@ -81,7 +83,8 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 // Retrieve a list of jobs with optional filtering and pagination
 func (r *JobService) List(ctx context.Context, query JobListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Job], err error) {
 	var raw *http.Response
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
 	path := "api/jobs"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
@@ -103,7 +106,8 @@ func (r *JobService) ListAutoPaging(ctx context.Context, query JobListParams, op
 
 // Delete a job.
 func (r *JobService) Delete(ctx context.Context, jobID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
@@ -116,7 +120,8 @@ func (r *JobService) Delete(ctx context.Context, jobID string, opts ...option.Re
 
 // Cancel a job.
 func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")

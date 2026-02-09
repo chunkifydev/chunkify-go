@@ -42,7 +42,8 @@ func NewStorageService(opts ...option.RequestOption) (r StorageService) {
 // Cloudflare R2, etc. The storage credentials will be validated before saving.
 func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ...option.RequestOption) (res *StorageUnion, err error) {
 	var env StorageNewResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/storages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
@@ -55,7 +56,8 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 // Retrieve details of a specific storage configuration by its id.
 func (r *StorageService) Get(ctx context.Context, storageID string, opts ...option.RequestOption) (res *StorageUnion, err error) {
 	var env StorageGetResponseEnvelope
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if storageID == "" {
 		err = errors.New("missing required storageId parameter")
 		return
@@ -71,7 +73,8 @@ func (r *StorageService) Get(ctx context.Context, storageID string, opts ...opti
 
 // Retrieve a list of all storage configurations for the current project.
 func (r *StorageService) List(ctx context.Context, opts ...option.RequestOption) (res *StorageListResponse, err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/storages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
@@ -80,7 +83,8 @@ func (r *StorageService) List(ctx context.Context, opts ...option.RequestOption)
 // Delete a storage configuration. The storage must not be currently attached to
 // the project.
 func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...option.RequestOption) (err error) {
-	opts = slices.Concat(r.Options, opts)
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if storageID == "" {
 		err = errors.New("missing required storageId parameter")
