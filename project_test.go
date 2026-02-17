@@ -81,7 +81,7 @@ func TestProjectUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"projectId",
 		chunkify.ProjectUpdateParams{
-			Name:      chunkify.String("xxxx"),
+			Name:      chunkify.String("name"),
 			StorageID: chunkify.String("xxxx"),
 		},
 	)
