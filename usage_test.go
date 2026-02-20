@@ -25,7 +25,7 @@ func TestUsage(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	t.Skip("Prism tests are disabled")
+	t.Skip("Mock server tests are disabled")
 	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
 		Format: chunkify.JobNewParamsFormatUnion{
 			OfMP4H264: &chunkify.MP4H264Param{
