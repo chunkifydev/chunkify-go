@@ -133,7 +133,7 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 }
 
 type HlsAv1 struct {
-	ID constant.HlsAv1 `json:"id,required"`
+	ID constant.HlsAv1 `json:"id" api:"required"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -470,7 +470,7 @@ type HlsAv1Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev HlsAv1Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "hls_av1".
-	ID constant.HlsAv1 `json:"id,required"`
+	ID constant.HlsAv1 `json:"id" api:"required"`
 	paramObj
 }
 
@@ -492,7 +492,7 @@ func init() {
 }
 
 type HlsH264 struct {
-	ID constant.HlsH264 `json:"id,required"`
+	ID constant.HlsH264 `json:"id" api:"required"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -845,7 +845,7 @@ type HlsH264Param struct {
 	// Any of "baseline", "main", "high", "high10", "high422", "high444".
 	Profilev HlsH264Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "hls_h264".
-	ID constant.HlsH264 `json:"id,required"`
+	ID constant.HlsH264 `json:"id" api:"required"`
 	paramObj
 }
 
@@ -867,7 +867,7 @@ func init() {
 }
 
 type HlsH265 struct {
-	ID constant.HlsH265 `json:"id,required"`
+	ID constant.HlsH265 `json:"id" api:"required"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -1208,7 +1208,7 @@ type HlsH265Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev HlsH265Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "hls_h265".
-	ID constant.HlsH265 `json:"id,required"`
+	ID constant.HlsH265 `json:"id" api:"required"`
 	paramObj
 }
 
@@ -1231,29 +1231,29 @@ func init() {
 
 type Job struct {
 	// Unique identifier for the job
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Billable time in seconds
-	BillableTime int64 `json:"billable_time,required"`
+	BillableTime int64 `json:"billable_time" api:"required"`
 	// Creation timestamp
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// A template defines the transcoding parameters and settings for a job
-	Format JobFormatUnion `json:"format,required"`
+	Format JobFormatUnion `json:"format" api:"required"`
 	// Progress percentage of the job (0-100)
-	Progress float64 `json:"progress,required"`
+	Progress float64 `json:"progress" api:"required"`
 	// ID of the source video being transcoded
-	SourceID string `json:"source_id,required"`
+	SourceID string `json:"source_id" api:"required"`
 	// Current status of the job
 	//
 	// Any of "queued", "ingesting", "transcoding", "downloading", "merging",
 	// "uploading", "failed", "completed", "cancelled", "merged", "downloaded",
 	// "transcoded", "waiting".
-	Status JobStatus `json:"status,required"`
+	Status JobStatus `json:"status" api:"required"`
 	// Storage settings for where the job output will be saved
-	Storage JobStorage `json:"storage,required"`
+	Storage JobStorage `json:"storage" api:"required"`
 	// The transcoder configuration for a job
-	Transcoder JobTranscoder `json:"transcoder,required"`
+	Transcoder JobTranscoder `json:"transcoder" api:"required"`
 	// Last update timestamp
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Error message for the job
 	Error shared.ChunkifyError `json:"error"`
 	// HLS manifest ID
@@ -1484,7 +1484,7 @@ type JobFormatMP4Av1 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1506,7 +1506,7 @@ type JobFormatMP4H264 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1528,7 +1528,7 @@ type JobFormatMP4H265 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1550,7 +1550,7 @@ type JobFormatWebmVp9 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1572,7 +1572,7 @@ type JobFormatHlsAv1 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1594,7 +1594,7 @@ type JobFormatHlsH264 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1616,7 +1616,7 @@ type JobFormatHlsH265 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1638,7 +1638,7 @@ type JobFormatJpg struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1676,9 +1676,9 @@ const (
 // Storage settings for where the job output will be saved
 type JobStorage struct {
 	// ID of the storage
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Path where the output will be stored
-	Path string `json:"path,required"`
+	Path string `json:"path" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1697,13 +1697,13 @@ func (r *JobStorage) UnmarshalJSON(data []byte) error {
 // The transcoder configuration for a job
 type JobTranscoder struct {
 	// Whether the transcoder configuration is automatically set by Chunkify
-	Auto bool `json:"auto,required"`
+	Auto bool `json:"auto" api:"required"`
 	// Number of instances allocated
-	Quantity int64 `json:"quantity,required"`
+	Quantity int64 `json:"quantity" api:"required"`
 	// Type of transcoder instance
 	//
 	// Any of "4vCPU", "8vCPU", "16vCPU".
-	Type string `json:"type,required"`
+	Type string `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Auto        respjson.Field
@@ -1722,11 +1722,11 @@ func (r *JobTranscoder) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to JPEG image extraction.
 type Jpg struct {
-	ID constant.Jpg `json:"id,required"`
+	ID constant.Jpg `json:"id" api:"required"`
 	// Time interval in seconds at which frames are extracted from the video (e.g.,
 	// interval=10 extracts frames at 0s, 10s, 20s, etc.). Must be between 1 and 60
 	// seconds.
-	Interval      int64 `json:"interval,required"`
+	Interval      int64 `json:"interval" api:"required"`
 	ChunkDuration int64 `json:"chunk_duration"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration int64 `json:"duration"`
@@ -1775,7 +1775,7 @@ type JpgParam struct {
 	// Time interval in seconds at which frames are extracted from the video (e.g.,
 	// interval=10 extracts frames at 0s, 10s, 20s, etc.). Must be between 1 and 60
 	// seconds.
-	Interval      int64            `json:"interval,required"`
+	Interval      int64            `json:"interval" api:"required"`
 	ChunkDuration param.Opt[int64] `json:"chunk_duration,omitzero"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration param.Opt[int64] `json:"duration,omitzero"`
@@ -1787,7 +1787,7 @@ type JpgParam struct {
 	Sprite param.Opt[bool]  `json:"sprite,omitzero"`
 	Width  param.Opt[int64] `json:"width,omitzero"`
 	// This field can be elided, and will marshal its zero value as "jpg".
-	ID constant.Jpg `json:"id,required"`
+	ID constant.Jpg `json:"id" api:"required"`
 	paramObj
 }
 
@@ -1800,7 +1800,7 @@ func (r *JpgParam) UnmarshalJSON(data []byte) error {
 }
 
 type MP4Av1 struct {
-	ID constant.MP4Av1 `json:"id,required"`
+	ID constant.MP4Av1 `json:"id" api:"required"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -2076,7 +2076,7 @@ type MP4Av1Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev MP4Av1Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "mp4_av1".
-	ID constant.MP4Av1 `json:"id,required"`
+	ID constant.MP4Av1 `json:"id" api:"required"`
 	paramObj
 }
 
@@ -2098,7 +2098,7 @@ func init() {
 }
 
 type MP4H264 struct {
-	ID constant.MP4H264 `json:"id,required"`
+	ID constant.MP4H264 `json:"id" api:"required"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -2390,7 +2390,7 @@ type MP4H264Param struct {
 	// Any of "baseline", "main", "high", "high10", "high422", "high444".
 	Profilev MP4H264Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "mp4_h264".
-	ID constant.MP4H264 `json:"id,required"`
+	ID constant.MP4H264 `json:"id" api:"required"`
 	paramObj
 }
 
@@ -2412,7 +2412,7 @@ func init() {
 }
 
 type MP4H265 struct {
-	ID constant.MP4H265 `json:"id,required"`
+	ID constant.MP4H265 `json:"id" api:"required"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -2692,7 +2692,7 @@ type MP4H265Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev MP4H265Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "mp4_h265".
-	ID constant.MP4H265 `json:"id,required"`
+	ID constant.MP4H265 `json:"id" api:"required"`
 	paramObj
 }
 
@@ -2714,7 +2714,7 @@ func init() {
 }
 
 type WebmVp9 struct {
-	ID constant.WebmVp9 `json:"id,required"`
+	ID constant.WebmVp9 `json:"id" api:"required"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -2957,7 +2957,7 @@ type WebmVp9Param struct {
 	// Any of "good", "best", "realtime".
 	Quality WebmVp9Quality `json:"quality,omitzero"`
 	// This field can be elided, and will marshal its zero value as "webm_vp9".
-	ID constant.WebmVp9 `json:"id,required"`
+	ID constant.WebmVp9 `json:"id" api:"required"`
 	paramObj
 }
 
@@ -2979,9 +2979,9 @@ type JobNewParams struct {
 	// Required format configuration, one and only one valid format configuration must
 	// be provided. If you want to use a format without specifying any configuration,
 	// use an empty object in the corresponding field.
-	Format JobNewParamsFormatUnion `json:"format,omitzero,required"`
+	Format JobNewParamsFormatUnion `json:"format,omitzero" api:"required"`
 	// The ID of the source file to transcode
-	SourceID string `json:"source_id,required"`
+	SourceID string `json:"source_id" api:"required"`
 	// Optional HLS manifest configuration Use the same hls manifest ID to group
 	// multiple jobs into a single HLS manifest By default, it's automatically
 	// generated if no set for HLS jobs
@@ -3684,9 +3684,9 @@ func init() {
 
 type JobNewResponseEnvelope struct {
 	// Data contains the response object
-	Data Job `json:"data,required"`
+	Data Job `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -3704,9 +3704,9 @@ func (r *JobNewResponseEnvelope) UnmarshalJSON(data []byte) error {
 
 type JobGetResponseEnvelope struct {
 	// Data contains the response object
-	Data Job `json:"data,required"`
+	Data Job `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

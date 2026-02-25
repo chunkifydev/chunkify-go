@@ -81,19 +81,19 @@ func (r *TokenService) Revoke(ctx context.Context, tokenID string, opts ...optio
 
 type Token struct {
 	// Unique identifier of the token
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The actual token value (only returned on creation)
-	Token string `json:"token,required"`
+	Token string `json:"token" api:"required"`
 	// Timestamp when the token was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Name given to the token
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// ID of the project this token belongs to
-	ProjectID string `json:"project_id,required"`
+	ProjectID string `json:"project_id" api:"required"`
 	// Access scope of the token
 	//
 	// Any of "project", "team".
-	Scope TokenScope `json:"scope,required"`
+	Scope TokenScope `json:"scope" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -125,9 +125,9 @@ const (
 // team tokens.
 type TokenListResponse struct {
 	// Data contains the token items
-	Data []Token `json:"data,required"`
+	Data []Token `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -148,7 +148,7 @@ type TokenNewParams struct {
 	// "project".
 	//
 	// Any of "project", "team".
-	Scope TokenNewParamsScope `json:"scope,omitzero,required"`
+	Scope TokenNewParamsScope `json:"scope,omitzero" api:"required"`
 	// Name is the name of the token, which can be up to 64 characters long.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// ProjectId is required if the scope is set to "project".
@@ -175,9 +175,9 @@ const (
 
 type TokenNewResponseEnvelope struct {
 	// Data contains the response object
-	Data Token `json:"data,required"`
+	Data Token `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

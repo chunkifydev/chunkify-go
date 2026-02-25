@@ -117,33 +117,33 @@ func (r *SourceService) Delete(ctx context.Context, sourceID string, opts ...opt
 
 type Source struct {
 	// Unique identifier of the source
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Audio bitrate in bits per second
-	AudioBitrate int64 `json:"audio_bitrate,required"`
+	AudioBitrate int64 `json:"audio_bitrate" api:"required"`
 	// Audio codec used
-	AudioCodec string `json:"audio_codec,required"`
+	AudioCodec string `json:"audio_codec" api:"required"`
 	// Timestamp when the source was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Device used to record the video
-	Device string `json:"device,required"`
+	Device string `json:"device" api:"required"`
 	// Duration of the video in seconds
-	Duration int64 `json:"duration,required"`
+	Duration int64 `json:"duration" api:"required"`
 	// Height of the video in pixels
-	Height int64 `json:"height,required"`
+	Height int64 `json:"height" api:"required"`
 	// Additional metadata for the source
-	Metadata map[string]string `json:"metadata,required"`
+	Metadata map[string]string `json:"metadata" api:"required"`
 	// Size of the source file in bytes
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// URL where the source video can be accessed
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Video bitrate in bits per second
-	VideoBitrate int64 `json:"video_bitrate,required"`
+	VideoBitrate int64 `json:"video_bitrate" api:"required"`
 	// Video codec used
-	VideoCodec string `json:"video_codec,required"`
+	VideoCodec string `json:"video_codec" api:"required"`
 	// Video framerate in frames per second
-	VideoFramerate float64 `json:"video_framerate,required"`
+	VideoFramerate float64 `json:"video_framerate" api:"required"`
 	// Width of the video in pixels
-	Width int64 `json:"width,required"`
+	Width int64 `json:"width" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -173,7 +173,7 @@ func (r *Source) UnmarshalJSON(data []byte) error {
 
 type SourceNewParams struct {
 	// Url is the URL of the source, which must be a valid HTTP URL.
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Metadata allows for additional information to be attached to the source, with a
 	// maximum size of 2048 bytes.
 	Metadata map[string]string `json:"metadata,omitzero"`
@@ -190,9 +190,9 @@ func (r *SourceNewParams) UnmarshalJSON(data []byte) error {
 
 type SourceNewResponseEnvelope struct {
 	// Data contains the response object
-	Data Source `json:"data,required"`
+	Data Source `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -210,9 +210,9 @@ func (r *SourceNewResponseEnvelope) UnmarshalJSON(data []byte) error {
 
 type SourceGetResponseEnvelope struct {
 	// Data contains the response object
-	Data Source `json:"data,required"`
+	Data Source `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
