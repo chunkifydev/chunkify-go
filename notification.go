@@ -112,20 +112,20 @@ func (r *NotificationService) Delete(ctx context.Context, notificationID string,
 
 type Notification struct {
 	// Unique identifier of the notification
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Timestamp when the notification was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Type of event that triggered this notification
 	//
 	// Any of "job.completed", "job.failed", "job.cancelled", "upload.completed",
 	// "upload.failed", "upload.expired".
-	Event NotificationEvent `json:"event,required"`
+	Event NotificationEvent `json:"event" api:"required"`
 	// ID of the object that triggered this notification
-	ObjectID string `json:"object_id,required"`
+	ObjectID string `json:"object_id" api:"required"`
 	// JSON payload that was sent to the webhook endpoint
-	Payload string `json:"payload,required"`
+	Payload string `json:"payload" api:"required"`
 	// Webhook endpoint configuration that received this notification
-	Webhook Webhook `json:"webhook,required"`
+	Webhook Webhook `json:"webhook" api:"required"`
 	// HTTP status code received from the webhook endpoint
 	ResponseStatusCode int64 `json:"response_status_code"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -165,11 +165,11 @@ type NotificationNewParams struct {
 	//
 	// Any of "job.completed", "job.failed", "job.cancelled", "upload.completed",
 	// "upload.failed", "upload.expired".
-	Event NotificationNewParamsEvent `json:"event,omitzero,required"`
+	Event NotificationNewParamsEvent `json:"event,omitzero" api:"required"`
 	// ObjectId specifies the object that triggered this notification.
-	ObjectID string `json:"object_id,required"`
+	ObjectID string `json:"object_id" api:"required"`
 	// WebhookId specifies the webhook endpoint that will receive the notification.
-	WebhookID string `json:"webhook_id,required"`
+	WebhookID string `json:"webhook_id" api:"required"`
 	paramObj
 }
 
@@ -195,9 +195,9 @@ const (
 
 type NotificationNewResponseEnvelope struct {
 	// Data contains the response object
-	Data Notification `json:"data,required"`
+	Data Notification `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -215,9 +215,9 @@ func (r *NotificationNewResponseEnvelope) UnmarshalJSON(data []byte) error {
 
 type NotificationGetResponseEnvelope struct {
 	// Data contains the response object
-	Data Notification `json:"data,required"`
+	Data Notification `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

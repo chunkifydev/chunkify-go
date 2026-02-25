@@ -114,19 +114,19 @@ func (r *UploadService) Delete(ctx context.Context, uploadID string, opts ...opt
 
 type Upload struct {
 	// Unique identifier of the upload
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Timestamp when the upload was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Timestamp when the upload will expire
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// Current status of the upload
 	//
 	// Any of "waiting", "completed", "failed", "expired".
-	Status UploadStatus `json:"status,required"`
+	Status UploadStatus `json:"status" api:"required"`
 	// Timestamp when the upload was updated
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Pre-signed URL where the file should be uploaded to
-	UploadURL string `json:"upload_url,required"`
+	UploadURL string `json:"upload_url" api:"required"`
 	// Error message of the upload
 	Error shared.ChunkifyError `json:"error"`
 	// Additional metadata for the upload
@@ -184,9 +184,9 @@ func (r *UploadNewParams) UnmarshalJSON(data []byte) error {
 
 type UploadNewResponseEnvelope struct {
 	// Data contains the response object
-	Data Upload `json:"data,required"`
+	Data Upload `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -204,9 +204,9 @@ func (r *UploadNewResponseEnvelope) UnmarshalJSON(data []byte) error {
 
 type UploadGetResponseEnvelope struct {
 	// Data contains the response object
-	Data Upload `json:"data,required"`
+	Data Upload `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

@@ -111,15 +111,15 @@ func (r *ProjectService) Delete(ctx context.Context, projectID string, opts ...o
 
 type Project struct {
 	// Id is the unique identifier for the project.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Timestamp when the project was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Name of the project
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// Slug is the slug for the project.
-	Slug string `json:"slug,required"`
+	Slug string `json:"slug" api:"required"`
 	// StorageId identifier where project files are stored
-	StorageID string `json:"storage_id,required"`
+	StorageID string `json:"storage_id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -141,9 +141,9 @@ func (r *Project) UnmarshalJSON(data []byte) error {
 // Response containing the list of projects for a team
 type ProjectListResponse struct {
 	// Data contains the project items
-	Data []Project `json:"data,required"`
+	Data []Project `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -161,7 +161,7 @@ func (r *ProjectListResponse) UnmarshalJSON(data []byte) error {
 
 type ProjectNewParams struct {
 	// Name is the name of the project, which must be between 4 and 32 characters.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	paramObj
 }
 
@@ -175,9 +175,9 @@ func (r *ProjectNewParams) UnmarshalJSON(data []byte) error {
 
 type ProjectNewResponseEnvelope struct {
 	// Data contains the response object
-	Data Project `json:"data,required"`
+	Data Project `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -195,9 +195,9 @@ func (r *ProjectNewResponseEnvelope) UnmarshalJSON(data []byte) error {
 
 type ProjectGetResponseEnvelope struct {
 	// Data contains the response object
-	Data Project `json:"data,required"`
+	Data Project `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

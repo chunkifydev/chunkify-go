@@ -99,37 +99,37 @@ func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.
 
 type JobFile struct {
 	// Unique identifier of the file
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Audio bitrate in bits per second
-	AudioBitrate int64 `json:"audio_bitrate,required"`
+	AudioBitrate int64 `json:"audio_bitrate" api:"required"`
 	// Audio codec used
-	AudioCodec string `json:"audio_codec,required"`
+	AudioCodec string `json:"audio_codec" api:"required"`
 	// Timestamp when the file was created
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Duration of the video in seconds
-	Duration int64 `json:"duration,required"`
+	Duration int64 `json:"duration" api:"required"`
 	// Height of the video in pixels
-	Height int64 `json:"height,required"`
+	Height int64 `json:"height" api:"required"`
 	// ID of the job that created this file
-	JobID string `json:"job_id,required"`
+	JobID string `json:"job_id" api:"required"`
 	// MIME type of the file
-	MimeType string `json:"mime_type,required"`
+	MimeType string `json:"mime_type" api:"required"`
 	// Path to the file in storage
-	Path string `json:"path,required"`
+	Path string `json:"path" api:"required"`
 	// Size of the file in bytes
-	Size int64 `json:"size,required"`
+	Size int64 `json:"size" api:"required"`
 	// StorageId identifier where the file is stored
-	StorageID string `json:"storage_id,required"`
+	StorageID string `json:"storage_id" api:"required"`
 	// Pre-signed URL to directly access the file (only included when available)
-	URL string `json:"url,required"`
+	URL string `json:"url" api:"required"`
 	// Video bitrate in bits per second
-	VideoBitrate int64 `json:"video_bitrate,required"`
+	VideoBitrate int64 `json:"video_bitrate" api:"required"`
 	// Video codec used
-	VideoCodec string `json:"video_codec,required"`
+	VideoCodec string `json:"video_codec" api:"required"`
 	// Video framerate in frames per second
-	VideoFramerate float64 `json:"video_framerate,required"`
+	VideoFramerate float64 `json:"video_framerate" api:"required"`
 	// Width of the video in pixels
-	Width int64 `json:"width,required"`
+	Width int64 `json:"width" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -162,9 +162,9 @@ func (r *JobFile) UnmarshalJSON(data []byte) error {
 // Successful response
 type FileGetResponseEnvelope struct {
 	// Data contains the response object
-	Data JobFile `json:"data,required"`
+	Data JobFile `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

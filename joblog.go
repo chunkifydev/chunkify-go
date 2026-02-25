@@ -54,9 +54,9 @@ func (r *JobLogService) List(ctx context.Context, jobID string, query JobLogList
 
 // Response containing a list of logs for a job
 type JobLogListResponse struct {
-	Data []JobLogListResponseData `json:"data,required"`
+	Data []JobLogListResponseData `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -74,19 +74,19 @@ func (r *JobLogListResponse) UnmarshalJSON(data []byte) error {
 
 type JobLogListResponseData struct {
 	// Additional structured data attached to the log
-	Attributes map[string]any `json:"attributes,required"`
+	Attributes map[string]any `json:"attributes" api:"required"`
 	// Log level
 	//
 	// Any of "info", "error", "debug".
-	Level string `json:"level,required"`
+	Level string `json:"level" api:"required"`
 	// The log message content
-	Msg string `json:"msg,required"`
+	Msg string `json:"msg" api:"required"`
 	// Name of the service that generated the log
 	//
 	// Any of "transcoder", "manager".
-	Service string `json:"service,required"`
+	Service string `json:"service" api:"required"`
 	// Timestamp when the log was created
-	Time time.Time `json:"time,required" format:"date-time"`
+	Time time.Time `json:"time" api:"required" format:"date-time"`
 	// Optional ID of the job this log is associated with
 	JobID string `json:"job_id"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -112,7 +112,7 @@ type JobLogListParams struct {
 	// Service type (transcoder or manager)
 	//
 	// Any of "transcoder", "manager".
-	Service JobLogListParamsService `query:"service,omitzero,required" json:"-"`
+	Service JobLogListParamsService `query:"service,omitzero" api:"required" json:"-"`
 	// Transcoder ID (required if service is transcoder)
 	TranscoderID param.Opt[int64] `query:"transcoder_id,omitzero" json:"-"`
 	paramObj
