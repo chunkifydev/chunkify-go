@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.13.0 (2026-02-25)
+
+Full Changelog: [v0.12.1...v0.13.0](https://github.com/chunkifydev/chunkify-go/compare/v0.12.1...v0.13.0)
+
+### Features
+
+* **api:** api update ([7c7529c](https://github.com/chunkifydev/chunkify-go/commit/7c7529c58b276597f7789d3b06e5b3e4ab7337e2))
+
+
+### Bug Fixes
+
+* allow canceling a request while it is waiting to retry ([67a792e](https://github.com/chunkifydev/chunkify-go/commit/67a792ec0cf8fee9a1262c9655b9b1cf3ab02136))
+* **encoder:** correctly serialize NullStruct ([9c568f1](https://github.com/chunkifydev/chunkify-go/commit/9c568f1e98d4bb576ecbdaa1156c12c6eb4aa7be))
+* **internal:** skip tests that depend on mock server ([1bbe749](https://github.com/chunkifydev/chunkify-go/commit/1bbe7495afd77f83e4b7a1999b8499f2fd18ffd9))
+
+
+### Chores
+
+* **internal:** codegen related update ([d46dd67](https://github.com/chunkifydev/chunkify-go/commit/d46dd67058a10781590a741f163adad16a866156))
+* **internal:** move custom custom `json` tags to `api` ([e184500](https://github.com/chunkifydev/chunkify-go/commit/e184500a32441b158f694b26c212d3998884cbaa))
+* **internal:** remove mock server code ([cc0e255](https://github.com/chunkifydev/chunkify-go/commit/cc0e25579cb531d0085bc29ab200623283418248))
+* update mock server docs ([eb35856](https://github.com/chunkifydev/chunkify-go/commit/eb35856e1c0dd3fdf1e3db616fdd5f349e91f11c))
+
 ## 0.12.1 (2026-02-05)
 
 Full Changelog: [v0.12.0...v0.12.1](https://github.com/chunkifydev/chunkify-go/compare/v0.12.0...v0.12.1)
