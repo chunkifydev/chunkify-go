@@ -183,18 +183,18 @@ func (r *StorageUnion) UnmarshalJSON(data []byte) error {
 
 type StorageChunkify struct {
 	// Unique identifier of the storage configuration
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Created at timestamp
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Provider specifies the storage provider.
-	Provider constant.Chunkify `json:"provider,required"`
+	Provider constant.Chunkify `json:"provider" api:"required"`
 	// Region specifies the region of the storage provider.
 	//
 	// Any of "us-east-1", "us-east-2", "us-west-1", "us-west-2", "eu-west-1",
 	// "eu-west-2", "ap-northeast-1", "ap-southeast-1".
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Unique identifier of the storage configuration
-	Slug string `json:"slug,required"`
+	Slug string `json:"slug" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -215,25 +215,25 @@ func (r *StorageChunkify) UnmarshalJSON(data []byte) error {
 
 type StorageCloudflare struct {
 	// Unique identifier of the storage configuration
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Bucket is the name of the storage bucket.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Created at timestamp
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Endpoint is the endpoint of the storage provider.
-	Endpoint string `json:"endpoint,required" format:"uri"`
+	Endpoint string `json:"endpoint" api:"required" format:"uri"`
 	// Location specifies the location of the storage provider.
 	//
 	// Any of "US", "EU", "ASIA".
-	Location string `json:"location,required"`
+	Location string `json:"location" api:"required"`
 	// Provider specifies the storage provider.
-	Provider constant.Cloudflare `json:"provider,required"`
+	Provider constant.Cloudflare `json:"provider" api:"required"`
 	// Public indicates whether the storage is publicly accessible.
-	Public bool `json:"public,required"`
+	Public bool `json:"public" api:"required"`
 	// Region specifies the region of the storage provider.
-	Region constant.Auto `json:"region,required"`
+	Region constant.Auto `json:"region" api:"required"`
 	// Unique identifier of the storage configuration
-	Slug string `json:"slug,required"`
+	Slug string `json:"slug" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -258,24 +258,24 @@ func (r *StorageCloudflare) UnmarshalJSON(data []byte) error {
 
 type StorageAws struct {
 	// Unique identifier of the storage configuration
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// Bucket is the name of the storage bucket.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Created at timestamp
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Provider specifies the storage provider.
-	Provider constant.Aws `json:"provider,required"`
+	Provider constant.Aws `json:"provider" api:"required"`
 	// Public indicates whether the storage is publicly accessible.
-	Public bool `json:"public,required"`
+	Public bool `json:"public" api:"required"`
 	// Region specifies the region of the storage provider.
 	//
 	// Any of "us-east-1", "us-east-2", "us-central-1", "us-west-1", "us-west-2",
 	// "eu-west-1", "eu-west-2", "eu-west-3", "eu-central-1", "eu-north-1",
 	// "ap-east-1", "ap-east-2", "ap-northeast-1", "ap-northeast-2", "ap-south-1",
 	// "ap-southeast-1", "ap-southeast-2".
-	Region string `json:"region,required"`
+	Region string `json:"region" api:"required"`
 	// Unique identifier of the storage configuration
-	Slug string `json:"slug,required"`
+	Slug string `json:"slug" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -299,9 +299,9 @@ func (r *StorageAws) UnmarshalJSON(data []byte) error {
 // Response containing the list of storages configurations for a project
 type StorageListResponse struct {
 	// Data contains the storage items
-	Data []StorageUnion `json:"data,required"`
+	Data []StorageUnion `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -350,25 +350,25 @@ func (r *StorageNewParams) UnmarshalJSON(data []byte) error {
 type StorageNewParamsStorageAws struct {
 	// AccessKeyId is the access key for the storage provider. Required if not using
 	// Chunkify storage.
-	AccessKeyID string `json:"access_key_id,required"`
+	AccessKeyID string `json:"access_key_id" api:"required"`
 	// Bucket is the name of the storage bucket.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Region specifies the region of the storage provider.
 	//
 	// Any of "us-east-1", "us-east-2", "us-central-1", "us-west-1", "us-west-2",
 	// "eu-west-1", "eu-west-2", "eu-west-3", "eu-central-1", "eu-north-1",
 	// "ap-east-1", "ap-east-2", "ap-northeast-1", "ap-northeast-2", "ap-south-1",
 	// "ap-southeast-1", "ap-southeast-2".
-	Region string `json:"region,omitzero,required"`
+	Region string `json:"region,omitzero" api:"required"`
 	// SecretAccessKey is the secret key for the storage provider. Required if not
 	// using Chunkify storage.
-	SecretAccessKey string `json:"secret_access_key,required"`
+	SecretAccessKey string `json:"secret_access_key" api:"required"`
 	// Public indicates whether the storage is publicly accessible.
 	Public param.Opt[bool] `json:"public,omitzero"`
 	// Provider specifies the storage provider.
 	//
 	// This field can be elided, and will marshal its zero value as "aws".
-	Provider constant.Aws `json:"provider,required"`
+	Provider constant.Aws `json:"provider" api:"required"`
 	paramObj
 }
 
@@ -394,11 +394,11 @@ type StorageNewParamsStorageChunkify struct {
 	//
 	// Any of "us-east-1", "us-east-2", "us-west-1", "us-west-2", "eu-west-1",
 	// "eu-west-2", "ap-northeast-1", "ap-southeast-1".
-	Region string `json:"region,omitzero,required"`
+	Region string `json:"region,omitzero" api:"required"`
 	// Provider specifies the storage provider.
 	//
 	// This field can be elided, and will marshal its zero value as "chunkify".
-	Provider constant.Chunkify `json:"provider,required"`
+	Provider constant.Chunkify `json:"provider" api:"required"`
 	paramObj
 }
 
@@ -422,27 +422,27 @@ func init() {
 // SecretAccessKey are required.
 type StorageNewParamsStorageCloudflare struct {
 	// AccessKeyId is the access key for the storage provider.
-	AccessKeyID string `json:"access_key_id,required"`
+	AccessKeyID string `json:"access_key_id" api:"required"`
 	// Bucket is the name of the storage bucket.
-	Bucket string `json:"bucket,required"`
+	Bucket string `json:"bucket" api:"required"`
 	// Endpoint is the endpoint of the storage provider.
-	Endpoint string `json:"endpoint,required" format:"uri"`
+	Endpoint string `json:"endpoint" api:"required" format:"uri"`
 	// Location specifies the location of the storage provider.
 	//
 	// Any of "US", "EU", "ASIA".
-	Location string `json:"location,omitzero,required"`
+	Location string `json:"location,omitzero" api:"required"`
 	// SecretAccessKey is the secret key for the storage provider.
-	SecretAccessKey string `json:"secret_access_key,required"`
+	SecretAccessKey string `json:"secret_access_key" api:"required"`
 	// Public indicates whether the storage is publicly accessible.
 	Public param.Opt[bool] `json:"public,omitzero"`
 	// Provider specifies the storage provider.
 	//
 	// This field can be elided, and will marshal its zero value as "cloudflare".
-	Provider constant.Cloudflare `json:"provider,required"`
+	Provider constant.Cloudflare `json:"provider" api:"required"`
 	// Region must be set to 'auto'.
 	//
 	// This field can be elided, and will marshal its zero value as "auto".
-	Region constant.Auto `json:"region,required"`
+	Region constant.Auto `json:"region" api:"required"`
 	paramObj
 }
 
@@ -462,9 +462,9 @@ func init() {
 
 type StorageNewResponseEnvelope struct {
 	// Data contains the response object
-	Data StorageUnion `json:"data,required"`
+	Data StorageUnion `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -482,9 +482,9 @@ func (r *StorageNewResponseEnvelope) UnmarshalJSON(data []byte) error {
 
 type StorageGetResponseEnvelope struct {
 	// Data contains the response object
-	Data StorageUnion `json:"data,required"`
+	Data StorageUnion `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status,required"`
+	Status constant.Success `json:"status" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

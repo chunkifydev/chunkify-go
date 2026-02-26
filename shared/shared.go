@@ -16,14 +16,14 @@ type paramObj = param.APIObject
 
 type ChunkifyError struct {
 	// Additional error details or output
-	Detail string `json:"detail,required"`
+	Detail string `json:"detail" api:"required"`
 	// Main error message
-	Message string `json:"message,required"`
+	Message string `json:"message" api:"required"`
 	// Type of error
 	//
 	// Any of "setup", "ffmpeg", "source", "upload", "download", "ingest", "job",
 	// "unexpected", "permission", "timeout", "cancelled".
-	Type ChunkifyErrorType `json:"type,required"`
+	Type ChunkifyErrorType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Detail      respjson.Field
