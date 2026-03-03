@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.1 (2026-03-03)
+
+Full Changelog: [v0.13.0...v0.13.1](https://github.com/chunkifydev/chunkify-go/compare/v0.13.0...v0.13.1)
+
+### Chores
+
+* **internal:** codegen related update ([38831c5](https://github.com/chunkifydev/chunkify-go/commit/38831c5b2c4973ff03aab3ade358bdbf9d8de079))
+* **tests:** update webhook tests ([890485b](https://github.com/chunkifydev/chunkify-go/commit/890485bde76c883039b70fee7d3e712e10c0606d))
+
 ## 0.13.0 (2026-02-25)
 
 Full Changelog: [v0.12.1...v0.13.0](https://github.com/chunkifydev/chunkify-go/compare/v0.12.1...v0.13.0)
