@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.2 (2026-03-07)
+
+Full Changelog: [v0.13.1...v0.13.2](https://github.com/chunkifydev/chunkify-go/compare/v0.13.1...v0.13.2)
+
+### Chores
+
+* **ci:** skip uploading artifacts on stainless-internal branches ([ccacefd](https://github.com/chunkifydev/chunkify-go/commit/ccacefd40348a3c8ac3e59717336ff32eae2405d))
+* **internal:** codegen related update ([38a77ef](https://github.com/chunkifydev/chunkify-go/commit/38a77efca721c315fdba620179bc6e806f992abe))
+
 ## 0.13.1 (2026-03-03)
 
 Full Changelog: [v0.13.0...v0.13.1](https://github.com/chunkifydev/chunkify-go/compare/v0.13.0...v0.13.1)
