@@ -48,10 +48,10 @@ func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ..
 	path := "api/webhooks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve details of a specific webhook configuration by its ID. The webhook must
@@ -62,15 +62,15 @@ func (r *WebhookService) Get(ctx context.Context, webhookID string, opts ...opti
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if webhookID == "" {
 		err = errors.New("missing required webhookId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/webhooks/%s", webhookID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Update the enabled status of a webhook. The webhook must belong to the current
@@ -81,11 +81,11 @@ func (r *WebhookService) Update(ctx context.Context, webhookID string, body Webh
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if webhookID == "" {
 		err = errors.New("missing required webhookId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/webhooks/%s", webhookID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve a list of all webhooks configured for the current project. Each webhook
@@ -95,7 +95,7 @@ func (r *WebhookService) List(ctx context.Context, opts ...option.RequestOption)
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/webhooks"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Permanently delete a webhook configuration. The webhook must belong to the
@@ -106,11 +106,11 @@ func (r *WebhookService) Delete(ctx context.Context, webhookID string, opts ...o
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if webhookID == "" {
 		err = errors.New("missing required webhookId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/webhooks/%s", webhookID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 func (r *WebhookService) Unwrap(payload []byte, headers http.Header, opts ...option.RequestOption) (*UnwrapWebhookEvent, error) {

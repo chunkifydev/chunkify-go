@@ -43,11 +43,11 @@ func (r *JobTranscoderService) List(ctx context.Context, jobID string, opts ...o
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/jobs/%s/transcoders", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Response containing a list of transcoders for a job

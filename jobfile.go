@@ -41,11 +41,11 @@ func (r *JobFileService) List(ctx context.Context, jobID string, opts ...option.
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/jobs/%s/files", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Response containing a list of files for a job

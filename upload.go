@@ -49,10 +49,10 @@ func (r *UploadService) New(ctx context.Context, body UploadNewParams, opts ...o
 	path := "api/uploads"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve details of a specific upload by its ID, including metadata, status, and
@@ -63,15 +63,15 @@ func (r *UploadService) Get(ctx context.Context, uploadID string, opts ...option
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if uploadID == "" {
 		err = errors.New("missing required uploadId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/uploads/%s", uploadID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve a list of all uploads with optional filtering and pagination.
@@ -105,11 +105,11 @@ func (r *UploadService) Delete(ctx context.Context, uploadID string, opts ...opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if uploadID == "" {
 		err = errors.New("missing required uploadId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/uploads/%s", uploadID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Upload struct {
