@@ -48,15 +48,15 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/files/%s", fileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve a list of files with optional filtering and pagination
@@ -90,11 +90,11 @@ func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if fileID == "" {
 		err = errors.New("missing required fileId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/files/%s", fileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type JobFile struct {

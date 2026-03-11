@@ -47,10 +47,10 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 	path := "api/storages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve details of a specific storage configuration by its id.
@@ -60,15 +60,15 @@ func (r *StorageService) Get(ctx context.Context, storageID string, opts ...opti
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if storageID == "" {
 		err = errors.New("missing required storageId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/storages/%s", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve a list of all storage configurations for the current project.
@@ -77,7 +77,7 @@ func (r *StorageService) List(ctx context.Context, opts ...option.RequestOption)
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/storages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a storage configuration. The storage must not be currently attached to
@@ -88,11 +88,11 @@ func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...o
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if storageID == "" {
 		err = errors.New("missing required storageId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/storages/%s", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // StorageUnion contains all possible properties and values from [StorageChunkify],

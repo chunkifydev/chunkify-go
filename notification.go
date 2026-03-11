@@ -48,10 +48,10 @@ func (r *NotificationService) New(ctx context.Context, body NotificationNewParam
 	path := "api/notifications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve details of a specific notification
@@ -61,15 +61,15 @@ func (r *NotificationService) Get(ctx context.Context, notificationID string, op
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if notificationID == "" {
 		err = errors.New("missing required notificationId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/notifications/%s", notificationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve a list of notifications with optional filtering and pagination
@@ -103,11 +103,11 @@ func (r *NotificationService) Delete(ctx context.Context, notificationID string,
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if notificationID == "" {
 		err = errors.New("missing required notificationId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/notifications/%s", notificationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Notification struct {
