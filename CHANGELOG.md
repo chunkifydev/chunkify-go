@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.13.3 (2026-03-11)
+
+Full Changelog: [v0.13.2...v0.13.3](https://github.com/chunkifydev/chunkify-go/compare/v0.13.2...v0.13.3)
+
+### Chores
+
+* **internal:** codegen related update ([542479c](https://github.com/chunkifydev/chunkify-go/commit/542479c8f63e5cf767347c42c14167469be53a03))
+* **internal:** minor cleanup ([d15a5bc](https://github.com/chunkifydev/chunkify-go/commit/d15a5bcc9e757df653a76bf9e1b28dbc96cb24dc))
+* **internal:** use explicit returns ([199b41e](https://github.com/chunkifydev/chunkify-go/commit/199b41e21e9336ed69b4ea92ff7c18d7de079580))
+* **internal:** use explicit returns in more places ([e10d8e6](https://github.com/chunkifydev/chunkify-go/commit/e10d8e6bb0988ab4867ade587c66ff59a8c88945))
+
 ## 0.13.2 (2026-03-07)
 
 Full Changelog: [v0.13.1...v0.13.2](https://github.com/chunkifydev/chunkify-go/compare/v0.13.1...v0.13.2)
