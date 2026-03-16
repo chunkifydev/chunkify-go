@@ -56,10 +56,10 @@ func (r *JobService) New(ctx context.Context, body JobNewParams, opts ...option.
 	path := "api/jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve details of a specific job
@@ -69,15 +69,15 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/jobs/%s", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve a list of jobs with optional filtering and pagination
@@ -111,11 +111,11 @@ func (r *JobService) Delete(ctx context.Context, jobID string, opts ...option.Re
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/jobs/%s", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 // Cancel a job.
@@ -125,11 +125,11 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/jobs/%s/cancel", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type HlsAv1 struct {

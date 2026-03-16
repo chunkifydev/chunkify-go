@@ -50,10 +50,10 @@ func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...o
 	path := "api/sources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve details of a specific source by its ID, including metadata, media
@@ -64,15 +64,15 @@ func (r *SourceService) Get(ctx context.Context, sourceID string, opts ...option
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if sourceID == "" {
 		err = errors.New("missing required sourceId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/sources/%s", sourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve a list of all sources with optional filtering and pagination. Supports
@@ -108,11 +108,11 @@ func (r *SourceService) Delete(ctx context.Context, sourceID string, opts ...opt
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if sourceID == "" {
 		err = errors.New("missing required sourceId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/sources/%s", sourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Source struct {

@@ -39,7 +39,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Files.List(context.Background(), chunkify.FileListParams{})
+	_, _ = client.Files.List(context.Background(), chunkify.FileListParams{})
 	if userAgent != fmt.Sprintf("Chunkify/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
 	}

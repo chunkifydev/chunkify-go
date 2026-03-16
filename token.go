@@ -46,10 +46,10 @@ func (r *TokenService) New(ctx context.Context, body TokenNewParams, opts ...opt
 	path := "api/tokens"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve a list of all API tokens for your account, including both team-scoped
@@ -61,7 +61,7 @@ func (r *TokenService) List(ctx context.Context, opts ...option.RequestOption) (
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/tokens"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Revoke an access token by its ID. This action is irreversible and will
@@ -72,11 +72,11 @@ func (r *TokenService) Revoke(ctx context.Context, tokenID string, opts ...optio
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if tokenID == "" {
 		err = errors.New("missing required tokenId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/tokens/%s", tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Token struct {

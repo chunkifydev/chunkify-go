@@ -45,11 +45,11 @@ func (r *JobLogService) List(ctx context.Context, jobID string, query JobLogList
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if jobID == "" {
 		err = errors.New("missing required jobId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/jobs/%s/logs", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Response containing a list of logs for a job

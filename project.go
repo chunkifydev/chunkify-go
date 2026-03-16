@@ -46,10 +46,10 @@ func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ..
 	path := "api/projects"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Retrieve details of a specific project by its slug
@@ -59,15 +59,15 @@ func (r *ProjectService) Get(ctx context.Context, projectID string, opts ...opti
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("api/projects/%s", projectID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
-		return
+		return nil, err
 	}
 	res = &env.Data
-	return
+	return res, nil
 }
 
 // Update a project's name or storage settings. Only team owners can update
@@ -78,11 +78,11 @@ func (r *ProjectService) Update(ctx context.Context, projectID string, body Proj
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/projects/%s", projectID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
-	return
+	return err
 }
 
 // Retrieve a list of all projects for a team
@@ -91,7 +91,7 @@ func (r *ProjectService) List(ctx context.Context, opts ...option.RequestOption)
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	path := "api/projects"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Delete a project and revoke all associated access tokens. Only team owners can
@@ -102,11 +102,11 @@ func (r *ProjectService) Delete(ctx context.Context, projectID string, opts ...o
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
 	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
-		return
+		return err
 	}
 	path := fmt.Sprintf("api/projects/%s", projectID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
-	return
+	return err
 }
 
 type Project struct {
