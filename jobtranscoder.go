@@ -54,7 +54,7 @@ func (r *JobTranscoderService) List(ctx context.Context, jobID string, opts ...o
 type JobTranscoderListResponse struct {
 	Data []JobTranscoderListResponseData `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status" api:"required"`
+	Status constant.Success `json:"status" default:"success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

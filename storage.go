@@ -187,7 +187,7 @@ type StorageChunkify struct {
 	// Created at timestamp
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Provider specifies the storage provider.
-	Provider constant.Chunkify `json:"provider" api:"required"`
+	Provider constant.Chunkify `json:"provider" default:"chunkify"`
 	// Region specifies the region of the storage provider.
 	//
 	// Any of "us-east-1", "us-east-2", "us-west-1", "us-west-2", "eu-west-1",
@@ -227,11 +227,11 @@ type StorageCloudflare struct {
 	// Any of "US", "EU", "ASIA".
 	Location string `json:"location" api:"required"`
 	// Provider specifies the storage provider.
-	Provider constant.Cloudflare `json:"provider" api:"required"`
+	Provider constant.Cloudflare `json:"provider" default:"cloudflare"`
 	// Public indicates whether the storage is publicly accessible.
 	Public bool `json:"public" api:"required"`
 	// Region specifies the region of the storage provider.
-	Region constant.Auto `json:"region" api:"required"`
+	Region constant.Auto `json:"region" default:"auto"`
 	// Unique identifier of the storage configuration
 	Slug string `json:"slug" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -264,7 +264,7 @@ type StorageAws struct {
 	// Created at timestamp
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Provider specifies the storage provider.
-	Provider constant.Aws `json:"provider" api:"required"`
+	Provider constant.Aws `json:"provider" default:"aws"`
 	// Public indicates whether the storage is publicly accessible.
 	Public bool `json:"public" api:"required"`
 	// Region specifies the region of the storage provider.
@@ -301,7 +301,7 @@ type StorageListResponse struct {
 	// Data contains the storage items
 	Data []StorageUnion `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status" api:"required"`
+	Status constant.Success `json:"status" default:"success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -368,7 +368,7 @@ type StorageNewParamsStorageAws struct {
 	// Provider specifies the storage provider.
 	//
 	// This field can be elided, and will marshal its zero value as "aws".
-	Provider constant.Aws `json:"provider" api:"required"`
+	Provider constant.Aws `json:"provider" default:"aws"`
 	paramObj
 }
 
@@ -398,7 +398,7 @@ type StorageNewParamsStorageChunkify struct {
 	// Provider specifies the storage provider.
 	//
 	// This field can be elided, and will marshal its zero value as "chunkify".
-	Provider constant.Chunkify `json:"provider" api:"required"`
+	Provider constant.Chunkify `json:"provider" default:"chunkify"`
 	paramObj
 }
 
@@ -438,11 +438,11 @@ type StorageNewParamsStorageCloudflare struct {
 	// Provider specifies the storage provider.
 	//
 	// This field can be elided, and will marshal its zero value as "cloudflare".
-	Provider constant.Cloudflare `json:"provider" api:"required"`
+	Provider constant.Cloudflare `json:"provider" default:"cloudflare"`
 	// Region must be set to 'auto'.
 	//
 	// This field can be elided, and will marshal its zero value as "auto".
-	Region constant.Auto `json:"region" api:"required"`
+	Region constant.Auto `json:"region" default:"auto"`
 	paramObj
 }
 
@@ -464,7 +464,7 @@ type StorageNewResponseEnvelope struct {
 	// Data contains the response object
 	Data StorageUnion `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status" api:"required"`
+	Status constant.Success `json:"status" default:"success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -484,7 +484,7 @@ type StorageGetResponseEnvelope struct {
 	// Data contains the response object
 	Data StorageUnion `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status" api:"required"`
+	Status constant.Success `json:"status" default:"success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field

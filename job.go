@@ -133,7 +133,7 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 }
 
 type HlsAv1 struct {
-	ID constant.HlsAv1 `json:"id" api:"required"`
+	ID constant.HlsAv1 `json:"id" default:"hls_av1"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -470,7 +470,7 @@ type HlsAv1Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev HlsAv1Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "hls_av1".
-	ID constant.HlsAv1 `json:"id" api:"required"`
+	ID constant.HlsAv1 `json:"id" default:"hls_av1"`
 	paramObj
 }
 
@@ -492,7 +492,7 @@ func init() {
 }
 
 type HlsH264 struct {
-	ID constant.HlsH264 `json:"id" api:"required"`
+	ID constant.HlsH264 `json:"id" default:"hls_h264"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -845,7 +845,7 @@ type HlsH264Param struct {
 	// Any of "baseline", "main", "high", "high10", "high422", "high444".
 	Profilev HlsH264Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "hls_h264".
-	ID constant.HlsH264 `json:"id" api:"required"`
+	ID constant.HlsH264 `json:"id" default:"hls_h264"`
 	paramObj
 }
 
@@ -867,7 +867,7 @@ func init() {
 }
 
 type HlsH265 struct {
-	ID constant.HlsH265 `json:"id" api:"required"`
+	ID constant.HlsH265 `json:"id" default:"hls_h265"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -1208,7 +1208,7 @@ type HlsH265Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev HlsH265Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "hls_h265".
-	ID constant.HlsH265 `json:"id" api:"required"`
+	ID constant.HlsH265 `json:"id" default:"hls_h265"`
 	paramObj
 }
 
@@ -1722,7 +1722,7 @@ func (r *JobTranscoder) UnmarshalJSON(data []byte) error {
 
 // FFmpeg encoding parameters specific to JPEG image extraction.
 type Jpg struct {
-	ID constant.Jpg `json:"id" api:"required"`
+	ID constant.Jpg `json:"id" default:"jpg"`
 	// Time interval in seconds at which frames are extracted from the video (e.g.,
 	// interval=10 extracts frames at 0s, 10s, 20s, etc.). Must be between 1 and 60
 	// seconds.
@@ -1787,7 +1787,7 @@ type JpgParam struct {
 	Sprite param.Opt[bool]  `json:"sprite,omitzero"`
 	Width  param.Opt[int64] `json:"width,omitzero"`
 	// This field can be elided, and will marshal its zero value as "jpg".
-	ID constant.Jpg `json:"id" api:"required"`
+	ID constant.Jpg `json:"id" default:"jpg"`
 	paramObj
 }
 
@@ -1800,7 +1800,7 @@ func (r *JpgParam) UnmarshalJSON(data []byte) error {
 }
 
 type MP4Av1 struct {
-	ID constant.MP4Av1 `json:"id" api:"required"`
+	ID constant.MP4Av1 `json:"id" default:"mp4_av1"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -2076,7 +2076,7 @@ type MP4Av1Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev MP4Av1Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "mp4_av1".
-	ID constant.MP4Av1 `json:"id" api:"required"`
+	ID constant.MP4Av1 `json:"id" default:"mp4_av1"`
 	paramObj
 }
 
@@ -2098,7 +2098,7 @@ func init() {
 }
 
 type MP4H264 struct {
-	ID constant.MP4H264 `json:"id" api:"required"`
+	ID constant.MP4H264 `json:"id" default:"mp4_h264"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -2390,7 +2390,7 @@ type MP4H264Param struct {
 	// Any of "baseline", "main", "high", "high10", "high422", "high444".
 	Profilev MP4H264Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "mp4_h264".
-	ID constant.MP4H264 `json:"id" api:"required"`
+	ID constant.MP4H264 `json:"id" default:"mp4_h264"`
 	paramObj
 }
 
@@ -2412,7 +2412,7 @@ func init() {
 }
 
 type MP4H265 struct {
-	ID constant.MP4H265 `json:"id" api:"required"`
+	ID constant.MP4H265 `json:"id" default:"mp4_h265"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -2692,7 +2692,7 @@ type MP4H265Param struct {
 	// Any of "main", "main10", "mainstillpicture".
 	Profilev MP4H265Profilev `json:"profilev,omitzero"`
 	// This field can be elided, and will marshal its zero value as "mp4_h265".
-	ID constant.MP4H265 `json:"id" api:"required"`
+	ID constant.MP4H265 `json:"id" default:"mp4_h265"`
 	paramObj
 }
 
@@ -2714,7 +2714,7 @@ func init() {
 }
 
 type WebmVp9 struct {
-	ID constant.WebmVp9 `json:"id" api:"required"`
+	ID constant.WebmVp9 `json:"id" default:"webm_vp9"`
 	// AudioBitrate specifies the audio bitrate in bits per second. Must be between
 	// 32Kbps and 512Kbps.
 	AudioBitrate int64 `json:"audio_bitrate"`
@@ -2957,7 +2957,7 @@ type WebmVp9Param struct {
 	// Any of "good", "best", "realtime".
 	Quality WebmVp9Quality `json:"quality,omitzero"`
 	// This field can be elided, and will marshal its zero value as "webm_vp9".
-	ID constant.WebmVp9 `json:"id" api:"required"`
+	ID constant.WebmVp9 `json:"id" default:"webm_vp9"`
 	paramObj
 }
 
@@ -3686,7 +3686,7 @@ type JobNewResponseEnvelope struct {
 	// Data contains the response object
 	Data Job `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status" api:"required"`
+	Status constant.Success `json:"status" default:"success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
@@ -3706,7 +3706,7 @@ type JobGetResponseEnvelope struct {
 	// Data contains the response object
 	Data Job `json:"data" api:"required"`
 	// Status indicates the response status "success"
-	Status constant.Success `json:"status" api:"required"`
+	Status constant.Success `json:"status" default:"success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Data        respjson.Field
