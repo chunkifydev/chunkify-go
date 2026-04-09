@@ -216,9 +216,9 @@ func (r FileListParams) URLQuery() (v url.Values, err error) {
 
 type FileListParamsCreated struct {
 	// Filter by creation date greater than or equal (UNIX epoch time)
-	Gte param.Opt[int64] `query:"gte,omitzero" json:"-"`
+	Gte param.Opt[int64] `query:"gte,omitzero" format:"epoch" json:"-"`
 	// Filter by creation date less than or equal (UNIX epoch time)
-	Lte param.Opt[int64] `query:"lte,omitzero" json:"-"`
+	Lte param.Opt[int64] `query:"lte,omitzero" format:"epoch" json:"-"`
 	// Sort by creation date (asc/desc)
 	//
 	// Any of "asc", "desc".
