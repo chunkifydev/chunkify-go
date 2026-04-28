@@ -32,7 +32,7 @@ type Client struct {
 // CHUNKIFY_TEAM_TOKEN, CHUNKIFY_WEBHOOK_SECRET, CHUNKIFY_BASE_URL). This should be
 // used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
-	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
+	defaults := []option.RequestOption{option.WithHTTPClient(defaultHTTPClient()), option.WithEnvironmentProduction()}
 	if o, ok := os.LookupEnv("CHUNKIFY_BASE_URL"); ok {
 		defaults = append(defaults, option.WithBaseURL(o))
 	}
