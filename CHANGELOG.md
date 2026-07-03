@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.14.0 (2026-07-03)
+
+Full Changelog: [v0.13.3...v0.14.0](https://github.com/chunkifydev/chunkify-go/compare/v0.13.3...v0.14.0)
+
+### Features
+
+* **client:** optimize json encoder for internal types ([258c291](https://github.com/chunkifydev/chunkify-go/commit/258c291130327662d38710c7495f0fc9a53cc8df))
+* **go:** add default http client with timeout ([c243f27](https://github.com/chunkifydev/chunkify-go/commit/c243f273a978b25b53c50734a7aac63337569131))
+* **internal:** support comma format in multipart form encoding ([8fac06a](https://github.com/chunkifydev/chunkify-go/commit/8fac06a5b34c4d9e857e834d0cf2ee7d304b2c4a))
+* support setting headers via env ([286a9c6](https://github.com/chunkifydev/chunkify-go/commit/286a9c6e10dbc61647d0b885e1cf0b4be41f9034))
+
+
+### Bug Fixes
+
+* better respect format tags from the spec ([b3b5476](https://github.com/chunkifydev/chunkify-go/commit/b3b5476866a21bcd0561e2ae958ae289f9edbfc3))
+* **go:** avoid panic when http.DefaultTransport is wrapped ([ded89a3](https://github.com/chunkifydev/chunkify-go/commit/ded89a3ef0a662dc8d3090cbff4a2e05714f721d))
+* prevent duplicate ? in query params ([bded98f](https://github.com/chunkifydev/chunkify-go/commit/bded98f59de3247ae9797926bb28a2f9e56b74a6))
+
+
+### Chores
+
+* avoid embedding reflect.Type for dead code elimination ([69e7da2](https://github.com/chunkifydev/chunkify-go/commit/69e7da217b764778e2e8b3a213881c5203339c92))
+* **ci:** skip lint on metadata-only changes ([94c3a62](https://github.com/chunkifydev/chunkify-go/commit/94c3a62f0aaa590b55c620633b39d1ed3a047e3b))
+* **ci:** support opting out of skipping builds on metadata-only commits ([a2422af](https://github.com/chunkifydev/chunkify-go/commit/a2422af375258cc64b728897f30ab6195770bf93))
+* **client:** fix multipart serialisation of Default() fields ([dd4fe59](https://github.com/chunkifydev/chunkify-go/commit/dd4fe599d22e9187301b51090395b0d3da12240d))
+* **internal:** codegen related update ([e12eb6d](https://github.com/chunkifydev/chunkify-go/commit/e12eb6d71207d58e816313e05deec1abde67914c))
+* **internal:** codegen related update ([b975581](https://github.com/chunkifydev/chunkify-go/commit/b9755813e8aa321a797abcfbc13a785e8f5cd7b4))
+* **internal:** codegen related update ([bbdbad8](https://github.com/chunkifydev/chunkify-go/commit/bbdbad8a5bccbdf5e03cb465effe9a176d23c932))
+* **internal:** codegen related update ([5352666](https://github.com/chunkifydev/chunkify-go/commit/5352666f4f88933d075d67e4344dbd794eff8bf9))
+* **internal:** more robust bootstrap script ([b4ea570](https://github.com/chunkifydev/chunkify-go/commit/b4ea5701628f1d3369028b0dade5984074e7f60c))
+* **internal:** support default value struct tag ([0f533ff](https://github.com/chunkifydev/chunkify-go/commit/0f533ff3ba0ca7c8f41ebe5597d680c6b765fc75))
+* **internal:** tweak CI branches ([68ada7d](https://github.com/chunkifydev/chunkify-go/commit/68ada7d474fd05eb346f6249f5adfd46f07b6010))
+* **internal:** update gitignore ([dd39b9e](https://github.com/chunkifydev/chunkify-go/commit/dd39b9e825354e07a7b04f4f3ed1040986dcb0da))
+* redact api-key headers in debug logs ([fc37d82](https://github.com/chunkifydev/chunkify-go/commit/fc37d8286536fe51d2b7d412f09b739da626ab80))
+* remove unnecessary error check for url parsing ([4bb109f](https://github.com/chunkifydev/chunkify-go/commit/4bb109f8423d273a736ebaedc1295c569ec90858))
+* update docs for api:"required" ([d8ef05e](https://github.com/chunkifydev/chunkify-go/commit/d8ef05e4d214330a5335f6165b0140de434a5fd1))
+
 ## 0.13.3 (2026-03-11)
 
 Full Changelog: [v0.13.2...v0.13.3](https://github.com/chunkifydev/chunkify-go/compare/v0.13.2...v0.13.3)
