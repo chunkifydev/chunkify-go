@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.15.0 (2026-07-18)
+
+Full Changelog: [v0.14.0...v0.15.0](https://github.com/chunkifydev/chunkify-go/compare/v0.14.0...v0.15.0)
+
+### Features
+
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([cd9b8aa](https://github.com/chunkifydev/chunkify-go/commit/cd9b8aacafad2c2e8bd8229703aacfc1c8724e39))
+
 ## 0.14.0 (2026-07-03)
 
 Full Changelog: [v0.13.3...v0.14.0](https://github.com/chunkifydev/chunkify-go/compare/v0.13.3...v0.14.0)
