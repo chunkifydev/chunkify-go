@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.16.0 (2026-07-20)
+
+Full Changelog: [v0.15.0...v0.16.0](https://github.com/chunkifydev/chunkify-go/compare/v0.15.0...v0.16.0)
+
+### Features
+
+* initial stlc build ([6fae43c](https://github.com/chunkifydev/chunkify-go/commit/6fae43cc95bd306778368236192f15fa2f9f24f6))
+
+
+### Chores
+
+* add release automation ([ac41b6a](https://github.com/chunkifydev/chunkify-go/commit/ac41b6a54c3209b227300d26ac8eb5d644e8c8d7))
+
 ## 0.15.0 (2026-07-18)
 
 Full Changelog: [v0.14.0...v0.15.0](https://github.com/chunkifydev/chunkify-go/compare/v0.14.0...v0.15.0)
