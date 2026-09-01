@@ -198,6 +198,11 @@ type HlsAv1 struct {
 	// 100Kbps and 50Mbps.
 	Minrate  int64  `json:"minrate"`
 	Movflags string `json:"movflags"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle bool `json:"per_title"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
 	//
 	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
@@ -259,6 +264,7 @@ type HlsAv1 struct {
 		Maxrate        respjson.Field
 		Minrate        respjson.Field
 		Movflags       respjson.Field
+		PerTitle       respjson.Field
 		Pixfmt         respjson.Field
 		Preset         respjson.Field
 		Profilev       respjson.Field
@@ -413,6 +419,11 @@ type HlsAv1Param struct {
 	// 100Kbps and 50Mbps.
 	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
 	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
@@ -557,6 +568,11 @@ type HlsH264 struct {
 	// 100Kbps and 50Mbps.
 	Minrate  int64  `json:"minrate"`
 	Movflags string `json:"movflags"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle bool `json:"per_title"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
 	//
 	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
@@ -624,6 +640,7 @@ type HlsH264 struct {
 		Maxrate        respjson.Field
 		Minrate        respjson.Field
 		Movflags       respjson.Field
+		PerTitle       respjson.Field
 		Pixfmt         respjson.Field
 		Preset         respjson.Field
 		Profilev       respjson.Field
@@ -782,6 +799,11 @@ type HlsH264Param struct {
 	// 100Kbps and 50Mbps.
 	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
 	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
@@ -932,6 +954,11 @@ type HlsH265 struct {
 	// 100Kbps and 50Mbps.
 	Minrate  int64  `json:"minrate"`
 	Movflags string `json:"movflags"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle bool `json:"per_title"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
 	//
 	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
@@ -996,6 +1023,7 @@ type HlsH265 struct {
 		Maxrate        respjson.Field
 		Minrate        respjson.Field
 		Movflags       respjson.Field
+		PerTitle       respjson.Field
 		Pixfmt         respjson.Field
 		Preset         respjson.Field
 		Profilev       respjson.Field
@@ -1148,6 +1176,11 @@ type HlsH265Param struct {
 	// 100Kbps and 50Mbps.
 	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
 	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
@@ -1314,6 +1347,7 @@ type JobFormatUnion struct {
 	Maxrate      int64   `json:"maxrate"`
 	Minrate      int64   `json:"minrate"`
 	Movflags     string  `json:"movflags"`
+	PerTitle     bool    `json:"per_title"`
 	Pixfmt       string  `json:"pixfmt"`
 	Preset       string  `json:"preset"`
 	Profilev     string  `json:"profilev"`
@@ -1356,6 +1390,7 @@ type JobFormatUnion struct {
 		Maxrate        respjson.Field
 		Minrate        respjson.Field
 		Movflags       respjson.Field
+		PerTitle       respjson.Field
 		Pixfmt         respjson.Field
 		Preset         respjson.Field
 		Profilev       respjson.Field
@@ -1485,9 +1520,12 @@ type JobFormatMP4Av1 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
+	// Whether per-title optimization was enabled for this job.
+	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1507,9 +1545,12 @@ type JobFormatMP4H264 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
+	// Whether per-title optimization was enabled for this job.
+	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1529,9 +1570,12 @@ type JobFormatMP4H265 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
+	// Whether per-title optimization was enabled for this job.
+	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1551,9 +1595,12 @@ type JobFormatWebmVp9 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
+	// Whether per-title optimization was enabled for this job.
+	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1566,16 +1613,20 @@ func (r *JobFormatWebmVp9) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// FFmpeg encoding parameters specific to HLS with AV1 encoding.
+// FFmpeg encoding parameters specific to HLS with AV1 encoding. When per-title
+// optimization is disabled, either audio_bitrate or video_bitrate is required.
 type JobFormatHlsAv1 struct {
 	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
+	// Whether per-title optimization was enabled for this job.
+	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1588,16 +1639,20 @@ func (r *JobFormatHlsAv1) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// FFmpeg encoding parameters specific to HLS with H.264 encoding.
+// FFmpeg encoding parameters specific to HLS with H.264 encoding. When per-title
+// optimization is disabled, either audio_bitrate or video_bitrate is required.
 type JobFormatHlsH264 struct {
 	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
+	// Whether per-title optimization was enabled for this job.
+	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1610,16 +1665,20 @@ func (r *JobFormatHlsH264) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// FFmpeg encoding parameters specific to HLS with H.265 encoding.
+// FFmpeg encoding parameters specific to HLS with H.265 encoding. When per-title
+// optimization is disabled, either audio_bitrate or video_bitrate is required.
 type JobFormatHlsH265 struct {
 	// The format ID
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
+	// Whether per-title optimization was enabled for this job.
+	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1639,9 +1698,12 @@ type JobFormatJpg struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
+	// Whether per-title optimization was enabled for this job.
+	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1843,6 +1905,11 @@ type MP4Av1 struct {
 	// 100Kbps and 50Mbps.
 	Minrate  int64  `json:"minrate"`
 	Movflags string `json:"movflags"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle bool `json:"per_title"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
 	//
 	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
@@ -1898,6 +1965,7 @@ type MP4Av1 struct {
 		Maxrate      respjson.Field
 		Minrate      respjson.Field
 		Movflags     respjson.Field
+		PerTitle     respjson.Field
 		Pixfmt       respjson.Field
 		Preset       respjson.Field
 		Profilev     respjson.Field
@@ -2026,6 +2094,11 @@ type MP4Av1Param struct {
 	// 100Kbps and 50Mbps.
 	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
 	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
@@ -2141,6 +2214,11 @@ type MP4H264 struct {
 	// 100Kbps and 50Mbps.
 	Minrate  int64  `json:"minrate"`
 	Movflags string `json:"movflags"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle bool `json:"per_title"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
 	//
 	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
@@ -2202,6 +2280,7 @@ type MP4H264 struct {
 		Maxrate      respjson.Field
 		Minrate      respjson.Field
 		Movflags     respjson.Field
+		PerTitle     respjson.Field
 		Pixfmt       respjson.Field
 		Preset       respjson.Field
 		Profilev     respjson.Field
@@ -2334,6 +2413,11 @@ type MP4H264Param struct {
 	// 100Kbps and 50Mbps.
 	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
 	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
@@ -2455,6 +2539,11 @@ type MP4H265 struct {
 	// 100Kbps and 50Mbps.
 	Minrate  int64  `json:"minrate"`
 	Movflags string `json:"movflags"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle bool `json:"per_title"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
 	//
 	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
@@ -2513,6 +2602,7 @@ type MP4H265 struct {
 		Maxrate      respjson.Field
 		Minrate      respjson.Field
 		Movflags     respjson.Field
+		PerTitle     respjson.Field
 		Pixfmt       respjson.Field
 		Preset       respjson.Field
 		Profilev     respjson.Field
@@ -2639,6 +2729,11 @@ type MP4H265Param struct {
 	// 100Kbps and 50Mbps.
 	Minrate  param.Opt[int64]  `json:"minrate,omitzero"`
 	Movflags param.Opt[string] `json:"movflags,omitzero"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
@@ -2757,6 +2852,11 @@ type WebmVp9 struct {
 	// Minrate specifies the minimum video bitrate in bits per second. Must be between
 	// 100Kbps and 50Mbps.
 	Minrate int64 `json:"minrate"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle bool `json:"per_title"`
 	// PixFmt specifies the pixel format. Valid value: yuv420p
 	//
 	// Any of "yuv410p", "yuv411p", "yuv420p", "yuv422p", "yuv440p", "yuv444p",
@@ -2798,6 +2898,7 @@ type WebmVp9 struct {
 		Height       respjson.Field
 		Maxrate      respjson.Field
 		Minrate      respjson.Field
+		PerTitle     respjson.Field
 		Pixfmt       respjson.Field
 		Quality      respjson.Field
 		Seek         respjson.Field
@@ -2919,6 +3020,11 @@ type WebmVp9Param struct {
 	// Minrate specifies the minimum video bitrate in bits per second. Must be between
 	// 100Kbps and 50Mbps.
 	Minrate param.Opt[int64] `json:"minrate,omitzero"`
+	// Enables per-title optimization. Disabled by default. Set it to true to let
+	// Chunkify select rate control automatically. When enabled, explicit rate-control
+	// fields cannot be provided. For HLS outputs, either audio_bitrate or
+	// video_bitrate is required when per-title optimization is disabled or omitted.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
@@ -3402,6 +3508,26 @@ func (u JobNewParamsFormatUnion) GetMovflags() *string {
 		return &vt.Movflags.Value
 	} else if vt := u.OfHlsH265; vt != nil && vt.Movflags.Valid() {
 		return &vt.Movflags.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobNewParamsFormatUnion) GetPerTitle() *bool {
+	if vt := u.OfMP4Av1; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
 	}
 	return nil
 }
