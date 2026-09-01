@@ -44,6 +44,7 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 				Maxrate:      chunkify.Int(100000),
 				Minrate:      chunkify.Int(100000),
 				Movflags:     chunkify.String("movflags"),
+				PerTitle:     chunkify.Bool(true),
 				Pixfmt:       chunkify.MP4Av1PixfmtYuv410p,
 				Preset:       chunkify.MP4Av1Preset10,
 				Profilev:     chunkify.MP4Av1ProfilevMain10,
