@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.1](https://github.com/chunkifydev/chunkify-go/compare/v0.16.0...v0.16.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* **apiquery:** serialize float32 query parameters at the correct precision ([b6e8ea3](https://github.com/chunkifydev/chunkify-go/commit/b6e8ea3a4dac7cab01e8697cc9f42db509cbc48f))
+
 ## [0.16.0](https://github.com/chunkifydev/chunkify-go/compare/v0.15.0...v0.16.0) (2026-09-01)
 
 
