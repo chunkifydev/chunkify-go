@@ -71,6 +71,21 @@ func (r *StorageService) Get(ctx context.Context, storageID string, opts ...opti
 	return res, nil
 }
 
+// Update customer-owned storage settings. Prefix changes apply to final outputs
+// that have not been uploaded yet. Existing files keep their stored object keys.
+func (r *StorageService) Update(ctx context.Context, storageID string, body StorageUpdateParams, opts ...option.RequestOption) (err error) {
+	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if storageID == "" {
+		err = errors.New("missing required storageId parameter")
+		return err
+	}
+	path := fmt.Sprintf("api/storages/%s", storageID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
+	return err
+}
+
 // Retrieve a list of all storage configurations for the current project.
 func (r *StorageService) List(ctx context.Context, opts ...option.RequestOption) (res *StorageListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -105,26 +120,30 @@ type StorageUnion struct {
 	ID        string    `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
 	// Any of "chunkify", "cloudflare", "aws".
-	Provider string `json:"provider"`
-	Region   string `json:"region"`
-	Slug     string `json:"slug"`
-	Bucket   string `json:"bucket"`
+	Provider   string `json:"provider"`
+	Region     string `json:"region"`
+	Slug       string `json:"slug"`
+	BasePrefix string `json:"base_prefix"`
+	Bucket     string `json:"bucket"`
 	// This field is from variant [StorageCloudflare].
 	Endpoint string `json:"endpoint"`
 	// This field is from variant [StorageCloudflare].
-	Location string `json:"location"`
-	Public   bool   `json:"public"`
-	JSON     struct {
-		ID        respjson.Field
-		CreatedAt respjson.Field
-		Provider  respjson.Field
-		Region    respjson.Field
-		Slug      respjson.Field
-		Bucket    respjson.Field
-		Endpoint  respjson.Field
-		Location  respjson.Field
-		Public    respjson.Field
-		raw       string
+	Location   string `json:"location"`
+	Public     bool   `json:"public"`
+	CdnBaseURL string `json:"cdn_base_url"`
+	JSON       struct {
+		ID         respjson.Field
+		CreatedAt  respjson.Field
+		Provider   respjson.Field
+		Region     respjson.Field
+		Slug       respjson.Field
+		BasePrefix respjson.Field
+		Bucket     respjson.Field
+		Endpoint   respjson.Field
+		Location   respjson.Field
+		Public     respjson.Field
+		CdnBaseURL respjson.Field
+		raw        string
 	} `json:"-"`
 }
 
@@ -216,6 +235,9 @@ func (r *StorageChunkify) UnmarshalJSON(data []byte) error {
 type StorageCloudflare struct {
 	// Unique identifier of the storage configuration
 	ID string `json:"id" api:"required"`
+	// Canonical object-key prefix prepended to every final job output in this
+	// customer-owned storage. An empty string means the bucket root.
+	BasePrefix string `json:"base_prefix" api:"required"`
 	// Bucket is the name of the storage bucket.
 	Bucket string `json:"bucket" api:"required"`
 	// Created at timestamp
@@ -234,9 +256,13 @@ type StorageCloudflare struct {
 	Region constant.Auto `json:"region" default:"auto"`
 	// Unique identifier of the storage configuration
 	Slug string `json:"slug" api:"required"`
+	// Optional customer-managed HTTPS delivery origin used to build stable CDN URLs
+	// for objects in this storage.
+	CdnBaseURL string `json:"cdn_base_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		BasePrefix  respjson.Field
 		Bucket      respjson.Field
 		CreatedAt   respjson.Field
 		Endpoint    respjson.Field
@@ -245,6 +271,7 @@ type StorageCloudflare struct {
 		Public      respjson.Field
 		Region      respjson.Field
 		Slug        respjson.Field
+		CdnBaseURL  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -259,6 +286,9 @@ func (r *StorageCloudflare) UnmarshalJSON(data []byte) error {
 type StorageAws struct {
 	// Unique identifier of the storage configuration
 	ID string `json:"id" api:"required"`
+	// Canonical object-key prefix prepended to every final job output in this
+	// customer-owned storage. An empty string means the bucket root.
+	BasePrefix string `json:"base_prefix" api:"required"`
 	// Bucket is the name of the storage bucket.
 	Bucket string `json:"bucket" api:"required"`
 	// Created at timestamp
@@ -276,15 +306,20 @@ type StorageAws struct {
 	Region string `json:"region" api:"required"`
 	// Unique identifier of the storage configuration
 	Slug string `json:"slug" api:"required"`
+	// Optional customer-managed HTTPS delivery origin used to build stable CDN URLs
+	// for objects in this storage.
+	CdnBaseURL string `json:"cdn_base_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
+		BasePrefix  respjson.Field
 		Bucket      respjson.Field
 		CreatedAt   respjson.Field
 		Provider    respjson.Field
 		Public      respjson.Field
 		Region      respjson.Field
 		Slug        respjson.Field
+		CdnBaseURL  respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -363,6 +398,13 @@ type StorageNewParamsStorageAws struct {
 	// SecretAccessKey is the secret key for the storage provider. Required if not
 	// using Chunkify storage.
 	SecretAccessKey string `json:"secret_access_key" api:"required"`
+	// Optional customer-managed HTTPS delivery origin. It must not contain
+	// credentials, a path, query string, or fragment.
+	CdnBaseURL param.Opt[string] `json:"cdn_base_url,omitzero" format:"uri"`
+	// Object-key prefix for final job outputs. The API normalizes it without a leading
+	// slash and with one trailing slash. Omit it or send an empty string to use the
+	// bucket root.
+	BasePrefix param.Opt[string] `json:"base_prefix,omitzero"`
 	// Public indicates whether the storage is publicly accessible.
 	Public param.Opt[bool] `json:"public,omitzero"`
 	// Provider specifies the storage provider.
@@ -395,6 +437,9 @@ type StorageNewParamsStorageChunkify struct {
 	// Any of "us-east-1", "us-east-2", "us-west-1", "us-west-2", "eu-west-1",
 	// "eu-west-2", "ap-northeast-1", "ap-southeast-1".
 	Region string `json:"region,omitzero" api:"required"`
+	// Unsupported for Chunkify-managed temporary storage. Requests that provide this
+	// field are rejected.
+	CdnBaseURL param.Opt[string] `json:"cdn_base_url,omitzero" format:"uri"`
 	// Provider specifies the storage provider.
 	//
 	// This field can be elided, and will marshal its zero value as "chunkify".
@@ -433,6 +478,13 @@ type StorageNewParamsStorageCloudflare struct {
 	Location string `json:"location,omitzero" api:"required"`
 	// SecretAccessKey is the secret key for the storage provider.
 	SecretAccessKey string `json:"secret_access_key" api:"required"`
+	// Optional customer-managed HTTPS delivery origin. It must not contain
+	// credentials, a path, query string, or fragment.
+	CdnBaseURL param.Opt[string] `json:"cdn_base_url,omitzero" format:"uri"`
+	// Object-key prefix for final job outputs. The API normalizes it without a leading
+	// slash and with one trailing slash. Omit it or send an empty string to use the
+	// bucket root.
+	BasePrefix param.Opt[string] `json:"base_prefix,omitzero"`
 	// Public indicates whether the storage is publicly accessible.
 	Public param.Opt[bool] `json:"public,omitzero"`
 	// Provider specifies the storage provider.
@@ -497,5 +549,22 @@ type StorageGetResponseEnvelope struct {
 // Returns the unmodified JSON received from the API
 func (r StorageGetResponseEnvelope) RawJSON() string { return r.JSON.raw }
 func (r *StorageGetResponseEnvelope) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type StorageUpdateParams struct {
+	// Customer-managed HTTPS delivery origin, or null to remove the current value.
+	CdnBaseURL param.Opt[string] `json:"cdn_base_url,omitzero" format:"uri"`
+	// Object-key prefix for future final job outputs. Existing files keep their stored
+	// object keys. Send an empty string to use the bucket root.
+	BasePrefix param.Opt[string] `json:"base_prefix,omitzero"`
+	paramObj
+}
+
+func (r StorageUpdateParams) MarshalJSON() (data []byte, err error) {
+	type shadow StorageUpdateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *StorageUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
