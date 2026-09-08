@@ -61,7 +61,7 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 		},
 		Storage: chunkify.JobNewParamsStorage{
 			ID:   chunkify.String("aws-my-storage"),
-			Path: chunkify.String("/path/to/video.mp4"),
+			Path: chunkify.String("exports/video.mp4"),
 		},
 		Transcoder: chunkify.JobNewParamsTranscoder{
 			Quantity: chunkify.Int(2),

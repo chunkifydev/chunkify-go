@@ -130,6 +130,9 @@ type JobFile struct {
 	VideoFramerate float64 `json:"video_framerate" api:"required"`
 	// Width of the video in pixels
 	Width int64 `json:"width" api:"required"`
+	// Stable, unsigned CDN delivery URL derived from the file's current storage
+	// configuration. Omitted when no CDN base URL is configured.
+	CdnURL string `json:"cdn_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -148,6 +151,7 @@ type JobFile struct {
 		VideoCodec     respjson.Field
 		VideoFramerate respjson.Field
 		Width          respjson.Field
+		CdnURL         respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
