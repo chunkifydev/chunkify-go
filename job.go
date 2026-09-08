@@ -48,7 +48,10 @@ func NewJobService(opts ...option.RequestOption) (r JobService) {
 	return
 }
 
-// Create a new video processing job with specified parameters
+// Create a new video processing job with specified parameters. The job is created
+// with pending status and waits for scheduler admission before processing. Pending
+// jobs are admitted oldest first across all projects in the team as vCPU capacity
+// becomes available.
 func (r *JobService) New(ctx context.Context, body JobNewParams, opts ...option.RequestOption) (res *Job, err error) {
 	var env JobNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -1275,11 +1278,12 @@ type Job struct {
 	Progress float64 `json:"progress" api:"required"`
 	// ID of the source video being transcoded
 	SourceID string `json:"source_id" api:"required"`
-	// Current status of the job
+	// Current status of the job. New jobs start as pending while waiting for scheduler
+	// admission, then become queued when admitted for processing.
 	//
-	// Any of "queued", "ingesting", "transcoding", "downloading", "merging",
-	// "uploading", "failed", "completed", "cancelled", "merged", "downloaded",
-	// "transcoded", "waiting".
+	// Any of "pending", "queued", "ingesting", "transcoding", "downloading",
+	// "merging", "uploading", "failed", "completed", "cancelled", "merged",
+	// "downloaded", "transcoded", "waiting".
 	Status JobStatus `json:"status" api:"required"`
 	// Storage settings for where the job output will be saved
 	Storage JobStorage `json:"storage" api:"required"`
@@ -1716,10 +1720,12 @@ func (r *JobFormatJpg) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Current status of the job
+// Current status of the job. New jobs start as pending while waiting for scheduler
+// admission, then become queued when admitted for processing.
 type JobStatus string
 
 const (
+	JobStatusPending     JobStatus = "pending"
 	JobStatusQueued      JobStatus = "queued"
 	JobStatusIngesting   JobStatus = "ingesting"
 	JobStatusTranscoding JobStatus = "transcoding"
@@ -3764,9 +3770,11 @@ type JobNewParamsStorage struct {
 	// storage options. Must be 4-64 characters long and contain only alphanumeric
 	// characters, underscores and hyphens. Optional if Storage Path is provided.
 	ID param.Opt[string] `json:"id,omitzero"`
-	// Storage Path specifies a custom storage path where processed files will be
-	// stored. Must be a valid file path with max length of 1024 characters. Optional
-	// if Storage Id is provided.
+	// Storage Path specifies an object path relative to the selected storage
+	// connection's base_prefix. Do not include the base_prefix. Leading slashes are
+	// accepted for compatibility and removed before the path is stored. The
+	// base_prefix and normalized path may contain at most 1024 bytes combined.
+	// Optional if Storage Id is provided.
 	Path param.Opt[string] `json:"path,omitzero"`
 	paramObj
 }
@@ -3869,7 +3877,7 @@ type JobListParams struct {
 	Metadata [][]string `query:"metadata,omitzero" json:"-"`
 	// Filter by job status
 	//
-	// Any of "completed", "processing", "failed", "cancelled", "queued".
+	// Any of "completed", "processing", "failed", "cancelled", "queued", "pending".
 	Status JobListParamsStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
@@ -3925,4 +3933,5 @@ const (
 	JobListParamsStatusFailed     JobListParamsStatus = "failed"
 	JobListParamsStatusCancelled  JobListParamsStatus = "cancelled"
 	JobListParamsStatusQueued     JobListParamsStatus = "queued"
+	JobListParamsStatusPending    JobListParamsStatus = "pending"
 )
