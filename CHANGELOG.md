@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.16.2](https://github.com/chunkifydev/chunkify-go/compare/v0.16.1...v0.16.2) (2026-09-08)
+
+
+### Bug Fixes
+
+* add missing endpoint to stainless.yml ([658fbcb](https://github.com/chunkifydev/chunkify-go/commit/658fbcb27fa46713374f8db35216719fc254aa85))
+
 ## [0.16.1](https://github.com/chunkifydev/chunkify-go/compare/v0.16.0...v0.16.1) (2026-09-01)
 
 
