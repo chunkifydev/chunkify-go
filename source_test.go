@@ -28,11 +28,15 @@ func TestSourceNewWithOptionalParams(t *testing.T) {
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Sources.New(context.TODO(), chunkify.SourceNewParams{
-		URL: "https://example.com/video.mp4",
 		Metadata: map[string]string{
 			"key":  "value",
 			"key2": "value2",
 		},
+		Storage: chunkify.SourceNewParamsStorage{
+			Path: "x",
+			ID:   chunkify.String("x"),
+		},
+		URL: chunkify.String("https://example.com/video.mp4"),
 	})
 	if err != nil {
 		var apierr *chunkify.Error

@@ -32,7 +32,11 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 			"key":  "value",
 			"key2": "value2",
 		},
-		ValidityTimeout: chunkify.Int(3600),
+		Storage: chunkify.UploadNewParamsStorage{
+			ID:   chunkify.String("x"),
+			Path: chunkify.String("x"),
+		},
+		ValidityTimeout: chunkify.Int(7200),
 	})
 	if err != nil {
 		var apierr *chunkify.Error
@@ -118,6 +122,30 @@ func TestUploadDelete(t *testing.T) {
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	err := client.Uploads.Delete(context.TODO(), "uploadId")
+	if err != nil {
+		var apierr *chunkify.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
+func TestUploadComplete(t *testing.T) {
+	t.Skip("Mock server tests are disabled")
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := chunkify.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithProjectAccessToken("My Project Access Token"),
+		option.WithTeamAccessToken("My Team Access Token"),
+	)
+	err := client.Uploads.Complete(context.TODO(), "token")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
