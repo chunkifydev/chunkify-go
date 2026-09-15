@@ -112,6 +112,25 @@ func (r *UploadService) Delete(ctx context.Context, uploadID string, opts ...opt
 	return err
 }
 
+// After a successful PUT, POST the returned completion_url before expires_at. The
+// token authorizes only this Upload; no API key, cookies, or request body is
+// required. Verifies the stored object and commits one Source relationship. Valid
+// retries return 204 without duplicate side effects. Retry network errors, 429,
+// and 5xx responses with bounded backoff; never repeat the PUT just to retry
+// completion.
+func (r *UploadService) Complete(ctx context.Context, token string, opts ...option.RequestOption) (err error) {
+	var preClientOpts = []option.RequestOption{requestconfig.WithSecurity(requestconfig.Security{})}
+	opts = slices.Concat(preClientOpts, r.Options, opts)
+	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
+	if token == "" {
+		err = errors.New("missing required token parameter")
+		return err
+	}
+	path := fmt.Sprintf("api/uploads/completion/%s", token)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
+	return err
+}
+
 type Upload struct {
 	// Unique identifier of the upload
 	ID string `json:"id" api:"required"`
