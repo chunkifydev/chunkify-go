@@ -125,27 +125,37 @@ type Upload struct {
 	Status UploadStatus `json:"status" api:"required"`
 	// Timestamp when the upload was updated
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Pre-signed URL where the file should be uploaded to
-	UploadURL string `json:"upload_url" api:"required"`
+	// Short-lived completion capability, returned only on creation. POST after a
+	// successful PUT before expires_at. Requires no API key. Repeated valid calls are
+	// idempotent.
+	CompletionURL string `json:"completion_url"`
 	// Error message of the upload
 	Error shared.ChunkifyError `json:"error"`
 	// Additional metadata for the upload
 	Metadata map[string]string `json:"metadata"`
 	// SourceId is the id of the source that was created from the upload
 	SourceID string `json:"source_id"`
+	// Resolved Storage selected when the Upload was created. Absent for historical
+	// uploads.
+	StorageID string `json:"storage_id"`
+	// Presigned PUT URL, returned only when creating an Upload session. Call
+	// completion_url after the PUT succeeds.
+	UploadURL string `json:"upload_url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
-		ID          respjson.Field
-		CreatedAt   respjson.Field
-		ExpiresAt   respjson.Field
-		Status      respjson.Field
-		UpdatedAt   respjson.Field
-		UploadURL   respjson.Field
-		Error       respjson.Field
-		Metadata    respjson.Field
-		SourceID    respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
+		ID            respjson.Field
+		CreatedAt     respjson.Field
+		ExpiresAt     respjson.Field
+		Status        respjson.Field
+		UpdatedAt     respjson.Field
+		CompletionURL respjson.Field
+		Error         respjson.Field
+		Metadata      respjson.Field
+		SourceID      respjson.Field
+		StorageID     respjson.Field
+		UploadURL     respjson.Field
+		ExtraFields   map[string]respjson.Field
+		raw           string
 	} `json:"-"`
 }
 
@@ -166,11 +176,15 @@ const (
 )
 
 type UploadNewParams struct {
-	// The upload URL will be valid for the given timeout in seconds
+	// Both the file PUT and completion POST must finish within this timeout in seconds
 	ValidityTimeout param.Opt[int64] `json:"validity_timeout,omitzero"`
 	// Metadata allows for additional information to be attached to the upload, with a
 	// maximum size of 2048 bytes.
 	Metadata map[string]string `json:"metadata,omitzero"`
+	// Optional Storage override. Omit id to use the Project default.
+	// Customer-connected Storage requires path; Chunkify Storage generates its own
+	// path.
+	Storage UploadNewParamsStorage `json:"storage,omitzero"`
 	paramObj
 }
 
@@ -179,6 +193,27 @@ func (r UploadNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *UploadNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional Storage override. Omit id to use the Project default.
+// Customer-connected Storage requires path; Chunkify Storage generates its own
+// path.
+type UploadNewParamsStorage struct {
+	// Storage belonging to this Project. Omit to use the Project default.
+	ID param.Opt[string] `json:"id,omitzero"`
+	// Exact object key including filename, required for customer Storage and forbidden
+	// for Chunkify Storage. The output base_prefix is not added. Existing keys may be
+	// overwritten.
+	Path param.Opt[string] `json:"path,omitzero"`
+	paramObj
+}
+
+func (r UploadNewParamsStorage) MarshalJSON() (data []byte, err error) {
+	type shadow UploadNewParamsStorage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UploadNewParamsStorage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

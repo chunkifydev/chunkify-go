@@ -134,8 +134,6 @@ type Source struct {
 	Metadata map[string]string `json:"metadata" api:"required"`
 	// Size of the source file in bytes
 	Size int64 `json:"size" api:"required"`
-	// URL where the source video can be accessed
-	URL string `json:"url" api:"required"`
 	// Video bitrate in bits per second
 	VideoBitrate int64 `json:"video_bitrate" api:"required"`
 	// Video codec used
@@ -144,6 +142,13 @@ type Source struct {
 	VideoFramerate float64 `json:"video_framerate" api:"required"`
 	// Width of the video in pixels
 	Width int64 `json:"width" api:"required"`
+	// Exact object key in the configured bucket, 1 to 1024 UTF-8 bytes. The output
+	// base_prefix is not added.
+	Path string `json:"path"`
+	// Connected Storage belonging to this Project.
+	StorageID string `json:"storage_id"`
+	// URL where the source video can be accessed
+	URL string `json:"url"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -155,11 +160,13 @@ type Source struct {
 		Height         respjson.Field
 		Metadata       respjson.Field
 		Size           respjson.Field
-		URL            respjson.Field
 		VideoBitrate   respjson.Field
 		VideoCodec     respjson.Field
 		VideoFramerate respjson.Field
 		Width          respjson.Field
+		Path           respjson.Field
+		StorageID      respjson.Field
+		URL            respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`
@@ -173,10 +180,12 @@ func (r *Source) UnmarshalJSON(data []byte) error {
 
 type SourceNewParams struct {
 	// Url is the URL of the source, which must be a valid HTTP URL.
-	URL string `json:"url" api:"required"`
+	URL param.Opt[string] `json:"url,omitzero" format:"http-url"`
 	// Metadata allows for additional information to be attached to the source, with a
 	// maximum size of 2048 bytes.
 	Metadata map[string]string `json:"metadata,omitzero"`
+	// Storage input configuration. Provide this or url, never both.
+	Storage SourceNewParamsStorage `json:"storage,omitzero"`
 	paramObj
 }
 
@@ -185,6 +194,28 @@ func (r SourceNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *SourceNewParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Storage input configuration. Provide this or url, never both.
+//
+// The property Path is required.
+type SourceNewParamsStorage struct {
+	// Exact object key in the configured bucket, 1 to 1024 UTF-8 bytes. The output
+	// base_prefix is not added.
+	Path string `json:"path" api:"required"`
+	// Connected external storage belonging to this project. If omitted, uses the
+	// project default storage, which must be external. The resolved storage ID is
+	// saved on the source.
+	ID param.Opt[string] `json:"id,omitzero"`
+	paramObj
+}
+
+func (r SourceNewParamsStorage) MarshalJSON() (data []byte, err error) {
+	type shadow SourceNewParamsStorage
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SourceNewParamsStorage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
