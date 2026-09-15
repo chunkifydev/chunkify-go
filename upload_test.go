@@ -32,7 +32,11 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 			"key":  "value",
 			"key2": "value2",
 		},
-		ValidityTimeout: chunkify.Int(3600),
+		Storage: chunkify.UploadNewParamsStorage{
+			ID:   chunkify.String("x"),
+			Path: chunkify.String("x"),
+		},
+		ValidityTimeout: chunkify.Int(7200),
 	})
 	if err != nil {
 		var apierr *chunkify.Error

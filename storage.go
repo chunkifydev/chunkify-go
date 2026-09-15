@@ -111,7 +111,7 @@ func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...o
 }
 
 // StorageUnion contains all possible properties and values from [StorageChunkify],
-// [StorageCloudflare], [StorageAws].
+// [StorageCloudflare], [StorageAws], [StorageS3Compatible].
 //
 // Use the [StorageUnion.AsAny] method to switch on the variant.
 //
@@ -119,31 +119,32 @@ func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...o
 type StorageUnion struct {
 	ID        string    `json:"id"`
 	CreatedAt time.Time `json:"created_at"`
-	// Any of "chunkify", "cloudflare", "aws".
+	// Any of "chunkify", "cloudflare", "aws", "s3_compatible".
 	Provider   string `json:"provider"`
 	Region     string `json:"region"`
 	Slug       string `json:"slug"`
 	BasePrefix string `json:"base_prefix"`
 	Bucket     string `json:"bucket"`
-	// This field is from variant [StorageCloudflare].
-	Endpoint string `json:"endpoint"`
-	// This field is from variant [StorageCloudflare].
+	Endpoint   string `json:"endpoint"`
 	Location   string `json:"location"`
 	Public     bool   `json:"public"`
 	CdnBaseURL string `json:"cdn_base_url"`
-	JSON       struct {
-		ID         respjson.Field
-		CreatedAt  respjson.Field
-		Provider   respjson.Field
-		Region     respjson.Field
-		Slug       respjson.Field
-		BasePrefix respjson.Field
-		Bucket     respjson.Field
-		Endpoint   respjson.Field
-		Location   respjson.Field
-		Public     respjson.Field
-		CdnBaseURL respjson.Field
-		raw        string
+	// This field is from variant [StorageS3Compatible].
+	AddressingStyle string `json:"addressing_style"`
+	JSON            struct {
+		ID              respjson.Field
+		CreatedAt       respjson.Field
+		Provider        respjson.Field
+		Region          respjson.Field
+		Slug            respjson.Field
+		BasePrefix      respjson.Field
+		Bucket          respjson.Field
+		Endpoint        respjson.Field
+		Location        respjson.Field
+		Public          respjson.Field
+		CdnBaseURL      respjson.Field
+		AddressingStyle respjson.Field
+		raw             string
 	} `json:"-"`
 }
 
@@ -153,9 +154,10 @@ type anyStorage interface {
 	implStorageUnion()
 }
 
-func (StorageChunkify) implStorageUnion()   {}
-func (StorageCloudflare) implStorageUnion() {}
-func (StorageAws) implStorageUnion()        {}
+func (StorageChunkify) implStorageUnion()     {}
+func (StorageCloudflare) implStorageUnion()   {}
+func (StorageAws) implStorageUnion()          {}
+func (StorageS3Compatible) implStorageUnion() {}
 
 // Use the following switch statement to find the correct variant
 //
@@ -163,6 +165,7 @@ func (StorageAws) implStorageUnion()        {}
 //	case chunkify.StorageChunkify:
 //	case chunkify.StorageCloudflare:
 //	case chunkify.StorageAws:
+//	case chunkify.StorageS3Compatible:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -174,6 +177,8 @@ func (u StorageUnion) AsAny() anyStorage {
 		return u.AsCloudflare()
 	case "aws":
 		return u.AsAws()
+	case "s3_compatible":
+		return u.AsS3Compatible()
 	}
 	return nil
 }
@@ -189,6 +194,11 @@ func (u StorageUnion) AsCloudflare() (v StorageCloudflare) {
 }
 
 func (u StorageUnion) AsAws() (v StorageAws) {
+	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
+	return
+}
+
+func (u StorageUnion) AsS3Compatible() (v StorageS3Compatible) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -331,6 +341,67 @@ func (r *StorageAws) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// A customer-owned storage connection using the standard S3 API.
+type StorageS3Compatible struct {
+	// Unique identifier of the storage configuration
+	ID string `json:"id" api:"required"`
+	// Addressing style detected during connection validation and used for later S3
+	// operations.
+	//
+	// Any of "virtual", "path".
+	AddressingStyle string `json:"addressing_style" api:"required"`
+	// Canonical object-key prefix prepended to every final job output in this
+	// customer-owned storage. An empty string means the bucket root.
+	BasePrefix string `json:"base_prefix" api:"required"`
+	// Bucket is the name of the storage bucket.
+	Bucket string `json:"bucket" api:"required"`
+	// Created at timestamp
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// Public HTTPS origin for the S3-compatible service. Credentials, paths, queries,
+	// fragments, and non-public destinations are rejected.
+	Endpoint string `json:"endpoint" api:"required" format:"uri"`
+	// Chunkify workload location. This is independent from the provider signing
+	// region.
+	//
+	// Any of "US", "EU", "ASIA".
+	Location string `json:"location" api:"required"`
+	// Stable provider identifier for generic S3-compatible storage.
+	Provider constant.S3Compatible `json:"provider" default:"s3_compatible"`
+	// Public indicates whether the storage is publicly accessible.
+	Public bool `json:"public" api:"required"`
+	// Provider region used for S3 request signing. This is independent from the
+	// Chunkify workload location.
+	Region string `json:"region" api:"required"`
+	// Unique identifier of the storage configuration
+	Slug string `json:"slug" api:"required"`
+	// Optional customer-managed HTTPS delivery origin used to build stable CDN URLs
+	// for objects in this storage.
+	CdnBaseURL string `json:"cdn_base_url" api:"nullable" format:"uri"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID              respjson.Field
+		AddressingStyle respjson.Field
+		BasePrefix      respjson.Field
+		Bucket          respjson.Field
+		CreatedAt       respjson.Field
+		Endpoint        respjson.Field
+		Location        respjson.Field
+		Provider        respjson.Field
+		Public          respjson.Field
+		Region          respjson.Field
+		Slug            respjson.Field
+		CdnBaseURL      respjson.Field
+		ExtraFields     map[string]respjson.Field
+		raw             string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r StorageS3Compatible) RawJSON() string { return r.JSON.raw }
+func (r *StorageS3Compatible) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // Response containing the list of storages configurations for a project
 type StorageListResponse struct {
 	// Data contains the storage items
@@ -367,12 +438,16 @@ type StorageNewParams struct {
 	// This field is a request body variant, only one variant field can be set. Storage
 	// parameters for Cloudflare R2 storage.
 	OfCloudflare *StorageNewParamsStorageCloudflare `json:",inline"`
+	// This field is a request body variant, only one variant field can be set. Storage
+	// parameters for a public S3-compatible service such as MinIO, Wasabi, or
+	// Backblaze B2.
+	OfS3Compatible *StorageNewParamsStorageS3Compatible `json:",inline"`
 
 	paramObj
 }
 
 func (u StorageNewParams) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfAws, u.OfChunkify, u.OfCloudflare)
+	return param.MarshalUnion(u, u.OfAws, u.OfChunkify, u.OfCloudflare, u.OfS3Compatible)
 }
 func (r *StorageNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
@@ -508,6 +583,59 @@ func (r *StorageNewParamsStorageCloudflare) UnmarshalJSON(data []byte) error {
 
 func init() {
 	apijson.RegisterFieldValidator[StorageNewParamsStorageCloudflare](
+		"location", "US", "EU", "ASIA",
+	)
+}
+
+// Storage parameters for a public S3-compatible service such as MinIO, Wasabi, or
+// Backblaze B2.
+//
+// The properties AccessKeyID, Bucket, Endpoint, Location, Provider, Region,
+// SecretAccessKey are required.
+type StorageNewParamsStorageS3Compatible struct {
+	// Access key for the storage provider.
+	AccessKeyID string `json:"access_key_id" api:"required"`
+	// Bucket is the name of the storage bucket.
+	Bucket string `json:"bucket" api:"required"`
+	// Public HTTPS origin for the S3-compatible service. Credentials, paths, queries,
+	// fragments, and non-public destinations are rejected.
+	Endpoint string `json:"endpoint" api:"required" format:"uri"`
+	// Chunkify workload location. It controls where Chunkify processes the workload
+	// and is independent from the provider region.
+	//
+	// Any of "US", "EU", "ASIA".
+	Location string `json:"location,omitzero" api:"required"`
+	// Explicit provider region used for S3 request signing. Vendor-specific
+	// identifiers are accepted.
+	Region string `json:"region" api:"required"`
+	// Secret key for the storage provider.
+	SecretAccessKey string `json:"secret_access_key" api:"required"`
+	// Optional customer-managed HTTPS delivery origin. It must not contain
+	// credentials, a path, query string, or fragment.
+	CdnBaseURL param.Opt[string] `json:"cdn_base_url,omitzero" format:"uri"`
+	// Object-key prefix for final job outputs. The API normalizes it without a leading
+	// slash and with one trailing slash. Omit it or send an empty string to use the
+	// bucket root.
+	BasePrefix param.Opt[string] `json:"base_prefix,omitzero"`
+	// Whether the bucket is publicly readable.
+	Public param.Opt[bool] `json:"public,omitzero"`
+	// Stable provider identifier for generic S3-compatible storage.
+	//
+	// This field can be elided, and will marshal its zero value as "s3_compatible".
+	Provider constant.S3Compatible `json:"provider" default:"s3_compatible"`
+	paramObj
+}
+
+func (r StorageNewParamsStorageS3Compatible) MarshalJSON() (data []byte, err error) {
+	type shadow StorageNewParamsStorageS3Compatible
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *StorageNewParamsStorageS3Compatible) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[StorageNewParamsStorageS3Compatible](
 		"location", "US", "EU", "ASIA",
 	)
 }
