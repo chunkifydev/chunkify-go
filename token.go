@@ -43,7 +43,7 @@ func (r *TokenService) New(ctx context.Context, body TokenNewParams, opts ...opt
 	var env TokenNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	path := "api/tokens"
+	path := "tokens"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (r *TokenService) New(ctx context.Context, body TokenNewParams, opts ...opt
 func (r *TokenService) List(ctx context.Context, opts ...option.RequestOption) (res *TokenListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	path := "api/tokens"
+	path := "tokens"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -74,7 +74,7 @@ func (r *TokenService) Revoke(ctx context.Context, tokenID string, opts ...optio
 		err = errors.New("missing required tokenId parameter")
 		return err
 	}
-	path := fmt.Sprintf("api/tokens/%s", tokenID)
+	path := fmt.Sprintf("tokens/%s", tokenID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

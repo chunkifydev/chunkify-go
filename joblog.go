@@ -39,7 +39,11 @@ func NewJobLogService(opts ...option.RequestOption) (r JobLogService) {
 	return
 }
 
-// Retrieve logs for a specific job, either from the transcoder or manager service
+// Retrieve logs for a specific job, either from the transcoder or manager service.
+// Deprecated: Jobs are a legacy resource. Use Assets, Transcodings or Thumbnails
+// instead.
+//
+// Deprecated: deprecated
 func (r *JobLogService) List(ctx context.Context, jobID string, query JobLogListParams, opts ...option.RequestOption) (res *JobLogListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
@@ -47,7 +51,7 @@ func (r *JobLogService) List(ctx context.Context, jobID string, query JobLogList
 		err = errors.New("missing required jobId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("api/jobs/%s/logs", jobID)
+	path := fmt.Sprintf("jobs/%s/logs", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
 	return res, err
 }

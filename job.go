@@ -51,12 +51,15 @@ func NewJobService(opts ...option.RequestOption) (r JobService) {
 // Create a new video processing job with specified parameters. The job is created
 // with pending status and waits for scheduler admission before processing. Pending
 // jobs are admitted oldest first across all projects in the team as vCPU capacity
-// becomes available.
+// becomes available. Deprecated: Jobs are a legacy resource. Use Assets,
+// Transcodings or Thumbnails instead.
+//
+// Deprecated: deprecated
 func (r *JobService) New(ctx context.Context, body JobNewParams, opts ...option.RequestOption) (res *Job, err error) {
 	var env JobNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	path := "api/jobs"
+	path := "jobs"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -65,7 +68,10 @@ func (r *JobService) New(ctx context.Context, body JobNewParams, opts ...option.
 	return res, nil
 }
 
-// Retrieve details of a specific job
+// Retrieve details of a specific job. Deprecated: Jobs are a legacy resource. Use
+// Assets, Transcodings or Thumbnails instead.
+//
+// Deprecated: deprecated
 func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.RequestOption) (res *Job, err error) {
 	var env JobGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -74,7 +80,7 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 		err = errors.New("missing required jobId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("api/jobs/%s", jobID)
+	path := fmt.Sprintf("jobs/%s", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -83,13 +89,16 @@ func (r *JobService) Get(ctx context.Context, jobID string, opts ...option.Reque
 	return res, nil
 }
 
-// Retrieve a list of jobs with optional filtering and pagination
+// Retrieve a list of jobs with optional filtering and pagination. Deprecated: Jobs
+// are a legacy resource. Use Assets, Transcodings or Thumbnails instead.
+//
+// Deprecated: deprecated
 func (r *JobService) List(ctx context.Context, query JobListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Job], err error) {
 	var raw *http.Response
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "api/jobs"
+	path := "jobs"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -102,12 +111,18 @@ func (r *JobService) List(ctx context.Context, query JobListParams, opts ...opti
 	return res, nil
 }
 
-// Retrieve a list of jobs with optional filtering and pagination
+// Retrieve a list of jobs with optional filtering and pagination. Deprecated: Jobs
+// are a legacy resource. Use Assets, Transcodings or Thumbnails instead.
+//
+// Deprecated: deprecated
 func (r *JobService) ListAutoPaging(ctx context.Context, query JobListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Job] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a job.
+// Delete a job. Deprecated: Jobs are a legacy resource. Use Assets, Transcodings
+// or Thumbnails instead.
+//
+// Deprecated: deprecated
 func (r *JobService) Delete(ctx context.Context, jobID string, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
@@ -116,12 +131,15 @@ func (r *JobService) Delete(ctx context.Context, jobID string, opts ...option.Re
 		err = errors.New("missing required jobId parameter")
 		return err
 	}
-	path := fmt.Sprintf("api/jobs/%s", jobID)
+	path := fmt.Sprintf("jobs/%s", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
 
-// Cancel a job.
+// Cancel a job. Deprecated: Jobs are a legacy resource. Use Assets, Transcodings
+// or Thumbnails instead.
+//
+// Deprecated: deprecated
 func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
@@ -130,7 +148,7 @@ func (r *JobService) Cancel(ctx context.Context, jobID string, opts ...option.Re
 		err = errors.New("missing required jobId parameter")
 		return err
 	}
-	path := fmt.Sprintf("api/jobs/%s/cancel", jobID)
+	path := fmt.Sprintf("jobs/%s/cancel", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, nil, opts...)
 	return err
 }
@@ -159,9 +177,11 @@ type HlsAv1 struct {
 	DisableVideo bool `json:"disable_video"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration int64 `json:"duration"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate float64 `json:"framerate"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop int64 `json:"gop"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -184,6 +204,9 @@ type HlsAv1 struct {
 	//
 	// Any of "mpegts", "fmp4".
 	HlsSegmentType HlsAv1HlsSegmentType `json:"hls_segment_type"`
+	// HlsSingleFile specifies whether to store HLS segments in one file using byte
+	// ranges. Defaults to true. Set to false to create separate segment files.
+	HlsSingleFile bool `json:"hls_single_file"`
 	// HlsTime specifies the duration of each HLS segment in seconds. Range: 1 to 10.
 	// Shorter segments provide faster startup but more overhead, longer segments are
 	// more efficient.
@@ -238,8 +261,8 @@ type HlsAv1 struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek int64 `json:"seek"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate int64 `json:"video_bitrate"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -262,6 +285,7 @@ type HlsAv1 struct {
 		HlsEncKey      respjson.Field
 		HlsEncKeyURL   respjson.Field
 		HlsSegmentType respjson.Field
+		HlsSingleFile  respjson.Field
 		HlsTime        respjson.Field
 		Level          respjson.Field
 		Maxrate        respjson.Field
@@ -393,9 +417,11 @@ type HlsAv1Param struct {
 	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration param.Opt[int64] `json:"duration,omitzero"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate param.Opt[float64] `json:"framerate,omitzero"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop param.Opt[int64] `json:"gop,omitzero"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -411,6 +437,9 @@ type HlsAv1Param struct {
 	// HlsEncKeyUrl specifies the URL where clients can fetch the encryption key.
 	// Required when HlsEnc is true.
 	HlsEncKeyURL param.Opt[string] `json:"hls_enc_key_url,omitzero"`
+	// HlsSingleFile specifies whether to store HLS segments in one file using byte
+	// ranges. Defaults to true. Set to false to create separate segment files.
+	HlsSingleFile param.Opt[bool] `json:"hls_single_file,omitzero"`
 	// HlsTime specifies the duration of each HLS segment in seconds. Range: 1 to 10.
 	// Shorter segments provide faster startup but more overhead, longer segments are
 	// more efficient.
@@ -430,8 +459,8 @@ type HlsAv1Param struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -529,9 +558,11 @@ type HlsH264 struct {
 	DisableVideo bool `json:"disable_video"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration int64 `json:"duration"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate float64 `json:"framerate"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop int64 `json:"gop"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -554,6 +585,9 @@ type HlsH264 struct {
 	//
 	// Any of "mpegts", "fmp4".
 	HlsSegmentType HlsH264HlsSegmentType `json:"hls_segment_type"`
+	// HlsSingleFile specifies whether to store HLS segments in one file using byte
+	// ranges. Defaults to true. Set to false to create separate segment files.
+	HlsSingleFile bool `json:"hls_single_file"`
 	// HlsTime specifies the duration of each HLS segment in seconds. Range: 1 to 10.
 	// Shorter segments provide faster startup but more overhead, longer segments are
 	// more efficient.
@@ -610,14 +644,14 @@ type HlsH264 struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek int64 `json:"seek"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate int64 `json:"video_bitrate"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
 	Width int64 `json:"width"`
 	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
-	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
+	// encoding. Range: 1 to 960. Higher values can improve compression but may affect
 	// seeking.
 	X264Keyint int64 `json:"x264_keyint"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -638,6 +672,7 @@ type HlsH264 struct {
 		HlsEncKey      respjson.Field
 		HlsEncKeyURL   respjson.Field
 		HlsSegmentType respjson.Field
+		HlsSingleFile  respjson.Field
 		HlsTime        respjson.Field
 		Level          respjson.Field
 		Maxrate        respjson.Field
@@ -773,9 +808,11 @@ type HlsH264Param struct {
 	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration param.Opt[int64] `json:"duration,omitzero"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate param.Opt[float64] `json:"framerate,omitzero"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop param.Opt[int64] `json:"gop,omitzero"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -791,6 +828,9 @@ type HlsH264Param struct {
 	// HlsEncKeyUrl specifies the URL where clients can fetch the encryption key.
 	// Required when HlsEnc is true.
 	HlsEncKeyURL param.Opt[string] `json:"hls_enc_key_url,omitzero"`
+	// HlsSingleFile specifies whether to store HLS segments in one file using byte
+	// ranges. Defaults to true. Set to false to create separate segment files.
+	HlsSingleFile param.Opt[bool] `json:"hls_single_file,omitzero"`
 	// HlsTime specifies the duration of each HLS segment in seconds. Range: 1 to 10.
 	// Shorter segments provide faster startup but more overhead, longer segments are
 	// more efficient.
@@ -810,14 +850,14 @@ type HlsH264Param struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
 	Width param.Opt[int64] `json:"width,omitzero"`
 	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
-	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
+	// encoding. Range: 1 to 960. Higher values can improve compression but may affect
 	// seeking.
 	X264Keyint param.Opt[int64] `json:"x264_keyint,omitzero"`
 	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
@@ -915,9 +955,11 @@ type HlsH265 struct {
 	DisableVideo bool `json:"disable_video"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration int64 `json:"duration"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate float64 `json:"framerate"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop int64 `json:"gop"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -940,6 +982,9 @@ type HlsH265 struct {
 	//
 	// Any of "mpegts", "fmp4".
 	HlsSegmentType HlsH265HlsSegmentType `json:"hls_segment_type"`
+	// HlsSingleFile specifies whether to store HLS segments in one file using byte
+	// ranges. Defaults to true. Set to false to create separate segment files.
+	HlsSingleFile bool `json:"hls_single_file"`
 	// HlsTime specifies the duration of each HLS segment in seconds. Range: 1 to 10.
 	// Shorter segments provide faster startup but more overhead, longer segments are
 	// more efficient.
@@ -993,8 +1038,8 @@ type HlsH265 struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek int64 `json:"seek"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate int64 `json:"video_bitrate"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -1021,6 +1066,7 @@ type HlsH265 struct {
 		HlsEncKey      respjson.Field
 		HlsEncKeyURL   respjson.Field
 		HlsSegmentType respjson.Field
+		HlsSingleFile  respjson.Field
 		HlsTime        respjson.Field
 		Level          respjson.Field
 		Maxrate        respjson.Field
@@ -1150,9 +1196,11 @@ type HlsH265Param struct {
 	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration param.Opt[int64] `json:"duration,omitzero"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate param.Opt[float64] `json:"framerate,omitzero"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop param.Opt[int64] `json:"gop,omitzero"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -1168,6 +1216,9 @@ type HlsH265Param struct {
 	// HlsEncKeyUrl specifies the URL where clients can fetch the encryption key.
 	// Required when HlsEnc is true.
 	HlsEncKeyURL param.Opt[string] `json:"hls_enc_key_url,omitzero"`
+	// HlsSingleFile specifies whether to store HLS segments in one file using byte
+	// ranges. Defaults to true. Set to false to create separate segment files.
+	HlsSingleFile param.Opt[bool] `json:"hls_single_file,omitzero"`
 	// HlsTime specifies the duration of each HLS segment in seconds. Range: 1 to 10.
 	// Shorter segments provide faster startup but more overhead, longer segments are
 	// more efficient.
@@ -1187,8 +1238,8 @@ type HlsH265Param struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -1272,14 +1323,13 @@ type Job struct {
 	BillableTime int64 `json:"billable_time" api:"required"`
 	// Creation timestamp
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// A template defines the transcoding parameters and settings for a job
+	// The format parameters and settings for a job
 	Format JobFormatUnion `json:"format" api:"required"`
 	// Progress percentage of the job (0-100)
 	Progress float64 `json:"progress" api:"required"`
-	// ID of the source video being transcoded
+	// ID of the source media being processed
 	SourceID string `json:"source_id" api:"required"`
-	// Current status of the job. New jobs start as pending while waiting for scheduler
-	// admission, then become queued when admitted for processing.
+	// Current status of the job.
 	//
 	// Any of "pending", "queued", "ingesting", "transcoding", "downloading",
 	// "merging", "uploading", "failed", "completed", "cancelled", "merged",
@@ -1287,8 +1337,6 @@ type Job struct {
 	Status JobStatus `json:"status" api:"required"`
 	// Storage settings for where the job output will be saved
 	Storage JobStorage `json:"storage" api:"required"`
-	// The transcoder configuration for a job
-	Transcoder JobTranscoder `json:"transcoder" api:"required"`
 	// Last update timestamp
 	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Error message for the job
@@ -1299,6 +1347,8 @@ type Job struct {
 	Metadata map[string]string `json:"metadata"`
 	// When the job started processing
 	StartedAt time.Time `json:"started_at" format:"date-time"`
+	// The transcoder configuration for a job
+	Transcoder JobTranscoder `json:"transcoder"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID            respjson.Field
@@ -1309,12 +1359,12 @@ type Job struct {
 		SourceID      respjson.Field
 		Status        respjson.Field
 		Storage       respjson.Field
-		Transcoder    respjson.Field
 		UpdatedAt     respjson.Field
 		Error         respjson.Field
 		HlsManifestID respjson.Field
 		Metadata      respjson.Field
 		StartedAt     respjson.Field
+		Transcoder    respjson.Field
 		ExtraFields   map[string]respjson.Field
 		raw           string
 	} `json:"-"`
@@ -1369,6 +1419,7 @@ type JobFormatUnion struct {
 	HlsEncKey      string         `json:"hls_enc_key"`
 	HlsEncKeyURL   string         `json:"hls_enc_key_url"`
 	HlsSegmentType string         `json:"hls_segment_type"`
+	HlsSingleFile  bool           `json:"hls_single_file"`
 	HlsTime        int64          `json:"hls_time"`
 	// This field is from variant [JobFormatJpg].
 	Interval int64 `json:"interval"`
@@ -1410,6 +1461,7 @@ type JobFormatUnion struct {
 		HlsEncKey      respjson.Field
 		HlsEncKeyURL   respjson.Field
 		HlsSegmentType respjson.Field
+		HlsSingleFile  respjson.Field
 		HlsTime        respjson.Field
 		Interval       respjson.Field
 		ChunkDuration  respjson.Field
@@ -1524,12 +1576,9 @@ type JobFormatMP4Av1 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
-	// Whether per-title optimization was enabled for this job.
-	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1549,12 +1598,9 @@ type JobFormatMP4H264 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
-	// Whether per-title optimization was enabled for this job.
-	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1574,12 +1620,9 @@ type JobFormatMP4H265 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
-	// Whether per-title optimization was enabled for this job.
-	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1599,12 +1642,9 @@ type JobFormatWebmVp9 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
-	// Whether per-title optimization was enabled for this job.
-	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1625,12 +1665,9 @@ type JobFormatHlsAv1 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
-	// Whether per-title optimization was enabled for this job.
-	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1651,12 +1688,9 @@ type JobFormatHlsH264 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
-	// Whether per-title optimization was enabled for this job.
-	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1677,12 +1711,9 @@ type JobFormatHlsH265 struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
-	// Whether per-title optimization was enabled for this job.
-	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1702,12 +1733,9 @@ type JobFormatJpg struct {
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
 	ID string `json:"id" api:"required"`
-	// Whether per-title optimization was enabled for this job.
-	PerTitle bool `json:"per_title" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
-		PerTitle    respjson.Field
 		ExtraFields map[string]respjson.Field
 		raw         string
 	} `json:"-"`
@@ -1720,8 +1748,7 @@ func (r *JobFormatJpg) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Current status of the job. New jobs start as pending while waiting for scheduler
-// admission, then become queued when admitted for processing.
+// Current status of the job.
 type JobStatus string
 
 const (
@@ -1792,7 +1819,7 @@ func (r *JobTranscoder) UnmarshalJSON(data []byte) error {
 type Jpg struct {
 	ID constant.Jpg `json:"id" default:"jpg"`
 	// Time interval in seconds at which frames are extracted from the video (e.g.,
-	// interval=10 extracts frames at 0s, 10s, 20s, etc.). Must be between 1 and 60
+	// interval=10 extracts frames at 0s, 10s, 20s, etc.). Must be between 1 and 3600
 	// seconds.
 	Interval      int64 `json:"interval" api:"required"`
 	ChunkDuration int64 `json:"chunk_duration"`
@@ -1841,7 +1868,7 @@ func (r Jpg) ToParam() JpgParam {
 // The properties ID, Interval are required.
 type JpgParam struct {
 	// Time interval in seconds at which frames are extracted from the video (e.g.,
-	// interval=10 extracts frames at 0s, 10s, 20s, etc.). Must be between 1 and 60
+	// interval=10 extracts frames at 0s, 10s, 20s, etc.). Must be between 1 and 3600
 	// seconds.
 	Interval      int64            `json:"interval" api:"required"`
 	ChunkDuration param.Opt[int64] `json:"chunk_duration,omitzero"`
@@ -1891,9 +1918,11 @@ type MP4Av1 struct {
 	DisableVideo bool `json:"disable_video"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration int64 `json:"duration"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate float64 `json:"framerate"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop int64 `json:"gop"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -1948,8 +1977,8 @@ type MP4Av1 struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek int64 `json:"seek"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate int64 `json:"video_bitrate"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -2086,9 +2115,11 @@ type MP4Av1Param struct {
 	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration param.Opt[int64] `json:"duration,omitzero"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate param.Opt[float64] `json:"framerate,omitzero"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop param.Opt[int64] `json:"gop,omitzero"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -2108,8 +2139,8 @@ type MP4Av1Param struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -2200,9 +2231,11 @@ type MP4H264 struct {
 	DisableVideo bool `json:"disable_video"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration int64 `json:"duration"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate float64 `json:"framerate"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop int64 `json:"gop"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -2259,14 +2292,14 @@ type MP4H264 struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek int64 `json:"seek"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate int64 `json:"video_bitrate"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
 	Width int64 `json:"width"`
 	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
-	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
+	// encoding. Range: 1 to 960. Higher values can improve compression but may affect
 	// seeking.
 	X264Keyint int64 `json:"x264_keyint"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -2405,9 +2438,11 @@ type MP4H264Param struct {
 	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration param.Opt[int64] `json:"duration,omitzero"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate param.Opt[float64] `json:"framerate,omitzero"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop param.Opt[int64] `json:"gop,omitzero"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -2427,14 +2462,14 @@ type MP4H264Param struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
 	Width param.Opt[int64] `json:"width,omitzero"`
 	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
-	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
+	// encoding. Range: 1 to 960. Higher values can improve compression but may affect
 	// seeking.
 	X264Keyint param.Opt[int64] `json:"x264_keyint,omitzero"`
 	// Channels specifies the number of audio channels. Valid values: 1 (mono), 2
@@ -2525,9 +2560,11 @@ type MP4H265 struct {
 	DisableVideo bool `json:"disable_video"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration int64 `json:"duration"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate float64 `json:"framerate"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop int64 `json:"gop"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -2581,8 +2618,8 @@ type MP4H265 struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek int64 `json:"seek"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate int64 `json:"video_bitrate"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -2721,9 +2758,11 @@ type MP4H265Param struct {
 	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration param.Opt[int64] `json:"duration,omitzero"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate param.Opt[float64] `json:"framerate,omitzero"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop param.Opt[int64] `json:"gop,omitzero"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -2743,8 +2782,8 @@ type MP4H265Param struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -2845,9 +2884,11 @@ type WebmVp9 struct {
 	DisableVideo bool `json:"disable_video"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration int64 `json:"duration"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate float64 `json:"framerate"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop int64 `json:"gop"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -2882,8 +2923,8 @@ type WebmVp9 struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek int64 `json:"seek"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate int64 `json:"video_bitrate"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -3013,9 +3054,11 @@ type WebmVp9Param struct {
 	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
 	// Duration specifies the duration to process in seconds. Must be a positive value.
 	Duration param.Opt[int64] `json:"duration,omitzero"`
-	// Framerate specifies the output video frame rate. Must be between 15 and 120 fps.
+	// Framerate specifies the output video frame rate. Must be greater than zero and
+	// at most 240 fps.
 	Framerate param.Opt[float64] `json:"framerate,omitzero"`
-	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 300.
+	// Gop specifies the Group of Pictures (GOP) size. Must be between 1 and 960
+	// frames.
 	Gop param.Opt[int64] `json:"gop,omitzero"`
 	// Height specifies the output video height in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -3034,8 +3077,8 @@ type WebmVp9Param struct {
 	// Seek specifies the timestamp to start processing from (in seconds). Must be a
 	// positive value.
 	Seek param.Opt[int64] `json:"seek,omitzero"`
-	// VideoBitrate specifies the video bitrate in bits per second. Must be between
-	// 100Kbps and 50Mbps.
+	// VideoBitrate specifies the video bitrate in bits per second. Must be between 1
+	// bps and 100 Mbps.
 	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
 	// Width specifies the output video width in pixels. Must be between -2 and 7680.
 	// Use -2 for automatic calculation while maintaining aspect ratio.
@@ -3734,6 +3777,18 @@ func (u JobNewParamsFormatUnion) GetHlsSegmentType() *string {
 		return (*string)(&vt.HlsSegmentType)
 	} else if vt := u.OfHlsH265; vt != nil {
 		return (*string)(&vt.HlsSegmentType)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobNewParamsFormatUnion) GetHlsSingleFile() *bool {
+	if vt := u.OfHlsAv1; vt != nil && vt.HlsSingleFile.Valid() {
+		return &vt.HlsSingleFile.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.HlsSingleFile.Valid() {
+		return &vt.HlsSingleFile.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.HlsSingleFile.Valid() {
+		return &vt.HlsSingleFile.Value
 	}
 	return nil
 }
