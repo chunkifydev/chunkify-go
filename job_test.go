@@ -37,7 +37,7 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 				DisableAudio: chunkify.Bool(true),
 				DisableVideo: chunkify.Bool(true),
 				Duration:     chunkify.Int(1),
-				Framerate:    chunkify.Float(15),
+				Framerate:    chunkify.Float(1),
 				Gop:          chunkify.Int(1),
 				Height:       chunkify.Int(-2),
 				Level:        41,
@@ -49,7 +49,7 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 				Preset:       chunkify.MP4Av1Preset10,
 				Profilev:     chunkify.MP4Av1ProfilevMain10,
 				Seek:         chunkify.Int(1),
-				VideoBitrate: chunkify.Int(100000),
+				VideoBitrate: chunkify.Int(1),
 				Width:        chunkify.Int(-2),
 			},
 		},
@@ -60,7 +60,7 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 			"key2": "value2",
 		},
 		Storage: chunkify.JobNewParamsStorage{
-			ID:   chunkify.String("aws-my-storage"),
+			ID:   chunkify.String("stor_example"),
 			Path: chunkify.String("exports/video.mp4"),
 		},
 		Transcoder: chunkify.JobNewParamsTranscoder{

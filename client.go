@@ -17,16 +17,23 @@ import (
 // interacting with the chunkify API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options       []option.RequestOption
+	Options []option.RequestOption
+	// Automatic video-on-demand Assets and independent H.264 MP4 static renditions.
+	Assets        AssetService
+	Events        EventService
 	Files         FileService
 	Jobs          JobService
+	Metrics       MetricService
 	Notifications NotificationService
 	Projects      ProjectService
 	Sources       SourceService
 	Storages      StorageService
+	Thumbnails    ThumbnailService
 	Tokens        TokenService
+	Transcodings  TranscodingService
 	Uploads       UploadService
 	Webhooks      WebhookService
+	Workflows     WorkflowService
 }
 
 // DefaultClientOptions read from the environment (CHUNKIFY_TOKEN,
@@ -67,15 +74,21 @@ func NewClient(opts ...option.RequestOption) (r Client) {
 
 	r = Client{Options: opts}
 
+	r.Assets = NewAssetService(opts...)
+	r.Events = NewEventService(opts...)
 	r.Files = NewFileService(opts...)
 	r.Jobs = NewJobService(opts...)
+	r.Metrics = NewMetricService(opts...)
 	r.Notifications = NewNotificationService(opts...)
 	r.Projects = NewProjectService(opts...)
 	r.Sources = NewSourceService(opts...)
 	r.Storages = NewStorageService(opts...)
+	r.Thumbnails = NewThumbnailService(opts...)
 	r.Tokens = NewTokenService(opts...)
+	r.Transcodings = NewTranscodingService(opts...)
 	r.Uploads = NewUploadService(opts...)
 	r.Webhooks = NewWebhookService(opts...)
+	r.Workflows = NewWorkflowService(opts...)
 
 	return
 }

@@ -28,7 +28,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/chunkifydev/chunkify-go@v0.16.2'
+go get -u 'github.com/chunkifydev/chunkify-go@v0.16.3'
 ```
 
 <!-- x-release-please-end -->
@@ -346,7 +346,7 @@ if err != nil {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/api/files": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/files": 400 Bad Request { ... }
 }
 ```
 

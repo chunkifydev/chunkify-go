@@ -28,8 +28,8 @@ func TestNotificationNew(t *testing.T) {
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Notifications.New(context.TODO(), chunkify.NotificationNewParams{
-		Event:     chunkify.NotificationNewParamsEventJobCompleted,
-		ObjectID:  "job_A1cce6120E56e7Tu9ioP09Nhjk9",
+		Event:     chunkify.NotificationNewParamsEventAssetPlaybackReady,
+		ObjectID:  "ast_A1cce6120E56e7Tu9ioP09Nhjk9",
 		WebhookID: "wh_A1cce6120E56e7Tu9ioP09Nhjk9",
 	})
 	if err != nil {
@@ -85,7 +85,8 @@ func TestNotificationListWithOptionalParams(t *testing.T) {
 			Lte:  chunkify.Int(0),
 			Sort: "asc",
 		},
-		Events:   []string{"job.completed"},
+		EventID:  chunkify.String("event_id"),
+		Events:   []string{"asset.playback_ready"},
 		Limit:    chunkify.Int(1),
 		ObjectID: chunkify.String("object_id"),
 		Offset:   chunkify.Int(0),
