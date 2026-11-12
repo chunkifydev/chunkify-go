@@ -63,8 +63,10 @@ func TestProjectAnalyticsConnectionGet(t *testing.T) {
 	)
 	_, err := client.Projects.Analytics.Connections.Get(
 		context.TODO(),
-		"projectId",
 		"connectionId",
+		chunkify.ProjectAnalyticsConnectionGetParams{
+			ProjectID: "projectId",
+		},
 	)
 	if err != nil {
 		var apierr *chunkify.Error
@@ -91,9 +93,9 @@ func TestProjectAnalyticsConnectionUpdateWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Projects.Analytics.Connections.Update(
 		context.TODO(),
-		"projectId",
 		"connectionId",
 		chunkify.ProjectAnalyticsConnectionUpdateParams{
+			ProjectID:           "projectId",
 			AllowedOrigins:      []string{"string"},
 			DefaultForDashboard: chunkify.Bool(true),
 			Endpoint:            chunkify.String("endpoint"),
@@ -151,8 +153,10 @@ func TestProjectAnalyticsConnectionDelete(t *testing.T) {
 	)
 	err := client.Projects.Analytics.Connections.Delete(
 		context.TODO(),
-		"projectId",
 		"connectionId",
+		chunkify.ProjectAnalyticsConnectionDeleteParams{
+			ProjectID: "projectId",
+		},
 	)
 	if err != nil {
 		var apierr *chunkify.Error
