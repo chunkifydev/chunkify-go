@@ -876,17 +876,17 @@ type AssetOutputNewParams struct {
 
 	// This field is a request body variant, only one variant field can be set. Create
 	// an Asset-owned caption output.
-	OfCaption *AssetOutputNewParamsOutputCaption `json:",inline"`
+	OfCaption *AssetOutputNewParamsBodyCaption `json:",inline"`
 	// This field is a request body variant, only one variant field can be set. Create
 	// an Asset-owned static rendition output.
-	OfStaticRendition *AssetOutputNewParamsOutputStaticRendition `json:",inline"`
+	OfStaticRendition *AssetOutputNewParamsBodyStaticRendition `json:",inline"`
 	// This field is a request body variant, only one variant field can be set. Create
 	// an Asset-owned thumbnail output.
-	OfThumbnail *AssetOutputNewParamsOutputThumbnail `json:",inline"`
+	OfThumbnail *AssetOutputNewParamsBodyThumbnail `json:",inline"`
 	// This field is a request body variant, only one variant field can be set. Create
 	// or reuse the original-language transcript for an Asset. Caption generation
 	// shares this transcript and its speech-recognition charge.
-	OfTranscript *AssetOutputNewParamsOutputTranscript `json:",inline"`
+	OfTranscript *AssetOutputNewParamsBodyTranscript `json:",inline"`
 
 	paramObj
 }
@@ -901,9 +901,9 @@ func (r *AssetOutputNewParams) UnmarshalJSON(data []byte) error {
 // Create an Asset-owned caption output.
 //
 // The properties Params, Type are required.
-type AssetOutputNewParamsOutputCaption struct {
+type AssetOutputNewParamsBodyCaption struct {
 	// Params specifies the settings for this output type.
-	Params AssetOutputNewParamsOutputCaptionParams `json:"params,omitzero" api:"required"`
+	Params AssetOutputNewParamsBodyCaptionParams `json:"params,omitzero" api:"required"`
 	// Type specifies the output kind to create.
 	//
 	// This field can be elided, and will marshal its zero value as "caption".
@@ -911,16 +911,16 @@ type AssetOutputNewParamsOutputCaption struct {
 	paramObj
 }
 
-func (r AssetOutputNewParamsOutputCaption) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputCaption
+func (r AssetOutputNewParamsBodyCaption) MarshalJSON() (data []byte, err error) {
+	type shadow AssetOutputNewParamsBodyCaption
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssetOutputNewParamsOutputCaption) UnmarshalJSON(data []byte) error {
+func (r *AssetOutputNewParamsBodyCaption) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Params specifies the settings for this output type.
-type AssetOutputNewParamsOutputCaptionParams struct {
+type AssetOutputNewParamsBodyCaptionParams struct {
 	// SourceCaptionId specifies the caption on this Asset to translate. Supply
 	// language_code with this field. Omit both fields to generate original captions.
 	SourceCaptionID param.Opt[string] `json:"source_caption_id,omitzero"`
@@ -934,16 +934,16 @@ type AssetOutputNewParamsOutputCaptionParams struct {
 	paramObj
 }
 
-func (r AssetOutputNewParamsOutputCaptionParams) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputCaptionParams
+func (r AssetOutputNewParamsBodyCaptionParams) MarshalJSON() (data []byte, err error) {
+	type shadow AssetOutputNewParamsBodyCaptionParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssetOutputNewParamsOutputCaptionParams) UnmarshalJSON(data []byte) error {
+func (r *AssetOutputNewParamsBodyCaptionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AssetOutputNewParamsOutputCaptionParams](
+	apijson.RegisterFieldValidator[AssetOutputNewParamsBodyCaptionParams](
 		"language_code", "en", "fr", "es", "de", "it", "pt", "nl", "ja", "ko", "zh", "ar", "hi", "ru", "tr", "pl", "sv",
 	)
 }
@@ -951,9 +951,9 @@ func init() {
 // Create an Asset-owned static rendition output.
 //
 // The properties Params, Type are required.
-type AssetOutputNewParamsOutputStaticRendition struct {
+type AssetOutputNewParamsBodyStaticRendition struct {
 	// Params specifies the settings for this output type.
-	Params AssetOutputNewParamsOutputStaticRenditionParams `json:"params,omitzero" api:"required"`
+	Params AssetStaticRenditionCreateParams `json:"params,omitzero" api:"required"`
 	// Type specifies the output kind to create.
 	//
 	// This field can be elided, and will marshal its zero value as "static_rendition".
@@ -961,48 +961,20 @@ type AssetOutputNewParamsOutputStaticRendition struct {
 	paramObj
 }
 
-func (r AssetOutputNewParamsOutputStaticRendition) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputStaticRendition
+func (r AssetOutputNewParamsBodyStaticRendition) MarshalJSON() (data []byte, err error) {
+	type shadow AssetOutputNewParamsBodyStaticRendition
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssetOutputNewParamsOutputStaticRendition) UnmarshalJSON(data []byte) error {
+func (r *AssetOutputNewParamsBodyStaticRendition) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Params specifies the settings for this output type.
-//
-// The property Resolution is required.
-type AssetOutputNewParamsOutputStaticRenditionParams struct {
-	// H.264 MP4 resolution. highest selects the largest supported output without
-	// upscaling. Hobby supports up to 1080p; other plans support up to 2160p.
-	// Independent of the streaming resolution limits.
-	//
-	// Any of "highest", "240p", "360p", "480p", "540p", "720p", "1080p", "1440p",
-	// "2160p".
-	Resolution string `json:"resolution,omitzero" api:"required"`
-	paramObj
-}
-
-func (r AssetOutputNewParamsOutputStaticRenditionParams) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputStaticRenditionParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssetOutputNewParamsOutputStaticRenditionParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AssetOutputNewParamsOutputStaticRenditionParams](
-		"resolution", "highest", "240p", "360p", "480p", "540p", "720p", "1080p", "1440p", "2160p",
-	)
 }
 
 // Create an Asset-owned thumbnail output.
 //
 // The properties Params, Type are required.
-type AssetOutputNewParamsOutputThumbnail struct {
+type AssetOutputNewParamsBodyThumbnail struct {
 	// Params specifies the settings for this output type.
-	Params AssetOutputNewParamsOutputThumbnailParams `json:"params,omitzero" api:"required"`
+	Params AssetOutputNewParamsBodyThumbnailParams `json:"params,omitzero" api:"required"`
 	// Type specifies the output kind to create.
 	//
 	// This field can be elided, and will marshal its zero value as "thumbnail".
@@ -1010,16 +982,16 @@ type AssetOutputNewParamsOutputThumbnail struct {
 	paramObj
 }
 
-func (r AssetOutputNewParamsOutputThumbnail) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputThumbnail
+func (r AssetOutputNewParamsBodyThumbnail) MarshalJSON() (data []byte, err error) {
+	type shadow AssetOutputNewParamsBodyThumbnail
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssetOutputNewParamsOutputThumbnail) UnmarshalJSON(data []byte) error {
+func (r *AssetOutputNewParamsBodyThumbnail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 // Params specifies the settings for this output type.
-type AssetOutputNewParamsOutputThumbnailParams struct {
+type AssetOutputNewParamsBodyThumbnailParams struct {
 	// Count specifies 1 to 100 thumbnails at the middle of equal sections of the
 	// selected range.
 	Count param.Opt[int64] `json:"count,omitzero"`
@@ -1040,7 +1012,7 @@ type AssetOutputNewParamsOutputThumbnailParams struct {
 	Output string `json:"output,omitzero"`
 	// Range limits sampling to part of the Source. Defaults to the whole Source
 	// duration.
-	Range AssetOutputNewParamsOutputThumbnailParamsRange `json:"range,omitzero"`
+	Range AssetOutputNewParamsBodyThumbnailParamsRange `json:"range,omitzero"`
 	// Timestamps specifies 1 to 100 Source-relative target times in seconds. Every
 	// timestamp must be within the selected range, including its start and excluding
 	// its end. Repeated targets produce separate outputs.
@@ -1048,26 +1020,26 @@ type AssetOutputNewParamsOutputThumbnailParams struct {
 	paramObj
 }
 
-func (r AssetOutputNewParamsOutputThumbnailParams) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputThumbnailParams
+func (r AssetOutputNewParamsBodyThumbnailParams) MarshalJSON() (data []byte, err error) {
+	type shadow AssetOutputNewParamsBodyThumbnailParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssetOutputNewParamsOutputThumbnailParams) UnmarshalJSON(data []byte) error {
+func (r *AssetOutputNewParamsBodyThumbnailParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
 func init() {
-	apijson.RegisterFieldValidator[AssetOutputNewParamsOutputThumbnailParams](
+	apijson.RegisterFieldValidator[AssetOutputNewParamsBodyThumbnailParams](
 		"format", "jpeg", "webp",
 	)
-	apijson.RegisterFieldValidator[AssetOutputNewParamsOutputThumbnailParams](
+	apijson.RegisterFieldValidator[AssetOutputNewParamsBodyThumbnailParams](
 		"output", "images", "sprites",
 	)
 }
 
 // Range limits sampling to part of the Source. Defaults to the whole Source
 // duration.
-type AssetOutputNewParamsOutputThumbnailParamsRange struct {
+type AssetOutputNewParamsBodyThumbnailParamsRange struct {
 	// End specifies the exclusive upper bound in seconds. Defaults to the Source
 	// duration.
 	End param.Opt[float64] `json:"end,omitzero"`
@@ -1076,11 +1048,11 @@ type AssetOutputNewParamsOutputThumbnailParamsRange struct {
 	paramObj
 }
 
-func (r AssetOutputNewParamsOutputThumbnailParamsRange) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputThumbnailParamsRange
+func (r AssetOutputNewParamsBodyThumbnailParamsRange) MarshalJSON() (data []byte, err error) {
+	type shadow AssetOutputNewParamsBodyThumbnailParamsRange
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssetOutputNewParamsOutputThumbnailParamsRange) UnmarshalJSON(data []byte) error {
+func (r *AssetOutputNewParamsBodyThumbnailParamsRange) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1088,7 +1060,7 @@ func (r *AssetOutputNewParamsOutputThumbnailParamsRange) UnmarshalJSON(data []by
 // generation shares this transcript and its speech-recognition charge.
 //
 // The properties Params, Type are required.
-type AssetOutputNewParamsOutputTranscript struct {
+type AssetOutputNewParamsBodyTranscript struct {
 	// Parameters for an original-language transcript. Pass an empty object; the spoken
 	// language is detected automatically.
 	Params any `json:"params,omitzero" api:"required"`
@@ -1099,11 +1071,11 @@ type AssetOutputNewParamsOutputTranscript struct {
 	paramObj
 }
 
-func (r AssetOutputNewParamsOutputTranscript) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputTranscript
+func (r AssetOutputNewParamsBodyTranscript) MarshalJSON() (data []byte, err error) {
+	type shadow AssetOutputNewParamsBodyTranscript
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *AssetOutputNewParamsOutputTranscript) UnmarshalJSON(data []byte) error {
+func (r *AssetOutputNewParamsBodyTranscript) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

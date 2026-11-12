@@ -29,18 +29,28 @@ func TestTranscodingNewWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Transcodings.New(context.TODO(), chunkify.TranscodingNewParams{
 		Format: chunkify.TranscodingNewParamsFormatUnion{
-			OfMP4H264: &chunkify.TranscodingNewParamsFormatMP4H264{
+			OfMP4H264: &chunkify.TranscodingMP4H264Param{
 				AudioBitrate:    chunkify.Int(32000),
 				AudioSamplerate: 8000,
+				Bufsize:         chunkify.Int(100000),
 				Channels:        1,
 				Crf:             chunkify.Int(23),
+				DisableAudio:    chunkify.Bool(true),
+				DisableVideo:    chunkify.Bool(true),
 				Duration:        chunkify.Float(1),
+				Framerate:       chunkify.Float(0.001),
+				Gop:             chunkify.Int(1),
+				Height:          chunkify.Int(720),
 				Level:           41,
-				Movflags:        "faststart",
-				Pixfmt:          "yuv420p",
-				Preset:          "medium",
-				Profilev:        "high",
+				Maxrate:         chunkify.Int(100000),
+				Movflags:        chunkify.TranscodingMP4H264MovflagsFaststart,
+				PerTitle:        chunkify.Bool(true),
+				Pixfmt:          chunkify.TranscodingMP4H264PixfmtYuv420p,
+				Preset:          chunkify.TranscodingMP4H264PresetMedium,
+				Profilev:        chunkify.TranscodingMP4H264ProfilevHigh,
 				Seek:            chunkify.Float(0),
+				VideoBitrate:    chunkify.Int(1000),
+				Width:           chunkify.Int(-2),
 				X264Keyint:      chunkify.Int(60),
 			},
 		},
