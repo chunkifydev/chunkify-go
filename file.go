@@ -41,7 +41,11 @@ func NewFileService(opts ...option.RequestOption) (r FileService) {
 }
 
 // Retrieve details of a specific file by its ID, including metadata, media
-// properties, and associated jobs.
+// properties, and associated jobs. Deprecated: Files are a legacy resource.
+// Transcodings and Thumbnails include their output files, and List Asset outputs
+// returns an Asset's outputs.
+//
+// Deprecated: deprecated
 func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.RequestOption) (res *JobFile, err error) {
 	var env FileGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -50,7 +54,7 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 		err = errors.New("missing required fileId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("api/files/%s", fileID)
+	path := fmt.Sprintf("files/%s", fileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -59,13 +63,17 @@ func (r *FileService) Get(ctx context.Context, fileID string, opts ...option.Req
 	return res, nil
 }
 
-// Retrieve a list of files with optional filtering and pagination
+// Retrieve a list of files with optional filtering and pagination. Deprecated:
+// Files are a legacy resource. Transcodings and Thumbnails include their output
+// files, and List Asset outputs returns an Asset's outputs.
+//
+// Deprecated: deprecated
 func (r *FileService) List(ctx context.Context, query FileListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[JobFile], err error) {
 	var raw *http.Response
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "api/files"
+	path := "files"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -78,12 +86,20 @@ func (r *FileService) List(ctx context.Context, query FileListParams, opts ...op
 	return res, nil
 }
 
-// Retrieve a list of files with optional filtering and pagination
+// Retrieve a list of files with optional filtering and pagination. Deprecated:
+// Files are a legacy resource. Transcodings and Thumbnails include their output
+// files, and List Asset outputs returns an Asset's outputs.
+//
+// Deprecated: deprecated
 func (r *FileService) ListAutoPaging(ctx context.Context, query FileListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[JobFile] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
 // Delete a file. It will fail if there are processing jobs using this file.
+// Deprecated: Files are a legacy resource. Transcodings and Thumbnails include
+// their output files, and List Asset outputs returns an Asset's outputs.
+//
+// Deprecated: deprecated
 func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
@@ -92,7 +108,7 @@ func (r *FileService) Delete(ctx context.Context, fileID string, opts ...option.
 		err = errors.New("missing required fileId parameter")
 		return err
 	}
-	path := fmt.Sprintf("api/files/%s", fileID)
+	path := fmt.Sprintf("files/%s", fileID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -116,7 +132,7 @@ type JobFile struct {
 	MimeType string `json:"mime_type" api:"required"`
 	// Path to the file in storage
 	Path string `json:"path" api:"required"`
-	// Size of the file in bytes
+	// Size of the object at this File's path in bytes
 	Size int64 `json:"size" api:"required"`
 	// StorageId identifier where the file is stored
 	StorageID string `json:"storage_id" api:"required"`
@@ -133,6 +149,10 @@ type JobFile struct {
 	// Stable, unsigned CDN delivery URL derived from the file's current storage
 	// configuration. Omitted when no CDN base URL is configured.
 	CdnURL string `json:"cdn_url" api:"nullable" format:"uri"`
+	// PackageSize specifies the media playlist and every media object it references in
+	// bytes. Present only for HLS video media playlists; it excludes the shared master
+	// playlist.
+	PackageSize int64 `json:"package_size"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID             respjson.Field
@@ -152,6 +172,7 @@ type JobFile struct {
 		VideoFramerate respjson.Field
 		Width          respjson.Field
 		CdnURL         respjson.Field
+		PackageSize    respjson.Field
 		ExtraFields    map[string]respjson.Field
 		raw            string
 	} `json:"-"`

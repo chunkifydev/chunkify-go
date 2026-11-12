@@ -26,22 +26,12 @@ func TestUsage(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
-		Format: chunkify.JobNewParamsFormatUnion{
-			OfMP4H264: &chunkify.MP4H264Param{
-				Width:  chunkify.Int(1920),
-				Height: chunkify.Int(1080),
-				Crf:    chunkify.Int(21),
-			},
-		},
+	asset, err := client.Assets.New(context.TODO(), chunkify.AssetNewParams{
 		SourceID: "src_2G6MJiNz71bHQGNzGwKx5cJwPFS",
-		Transcoder: chunkify.JobNewParamsTranscoder{
-			Quantity: chunkify.Int(4),
-			Type:     "8vCPU",
-		},
+		Title:    chunkify.String("Launch video"),
 	})
 	if err != nil {
 		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", job.ID)
+	t.Logf("%+v\n", asset.ID)
 }

@@ -79,8 +79,10 @@ func TestStorageUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"storageId",
 		chunkify.StorageUpdateParams{
-			BasePrefix: chunkify.String("chunkify/"),
-			CdnBaseURL: chunkify.String("https://media.example.com"),
+			AccessKeyID:     chunkify.String("x"),
+			BasePrefix:      chunkify.String("chunkify/"),
+			CdnBaseURL:      chunkify.String("https://media.example.com"),
+			SecretAccessKey: chunkify.String("x"),
 		},
 	)
 	if err != nil {

@@ -81,8 +81,16 @@ func TestProjectUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"projectId",
 		chunkify.ProjectUpdateParams{
-			Name:      chunkify.String("name"),
-			StorageID: chunkify.String("xxxx"),
+			AssetDefaults: chunkify.ProjectUpdateParamsAssetDefaults{
+				DeleteFilesOnFailure: chunkify.Bool(true),
+				MaxResolution:        "1080p",
+				MinResolution:        "auto",
+				PathTemplate:         chunkify.String("videos/{metadata.VideoID}"),
+				PreviewEnabled:       chunkify.Bool(true),
+			},
+			DefaultWorkflowID: chunkify.String("x"),
+			Name:              chunkify.String("name"),
+			StorageID:         chunkify.String("xxxx"),
 		},
 	)
 	if err != nil {
