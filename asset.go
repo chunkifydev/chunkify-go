@@ -460,6 +460,45 @@ func (r *AssetTimelinePreviews) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Parameters for an independently processed H.264 MP4 rendition.
+//
+// The property Resolution is required.
+type AssetStaticRenditionCreateParams struct {
+	// H.264 MP4 resolution. highest selects the largest supported output without
+	// upscaling. Hobby supports up to 1080p; other plans support up to 2160p.
+	// Independent of the streaming resolution limits.
+	//
+	// Any of "highest", "240p", "360p", "480p", "540p", "720p", "1080p", "1440p",
+	// "2160p".
+	Resolution AssetStaticRenditionCreateParamsResolution `json:"resolution,omitzero" api:"required"`
+	paramObj
+}
+
+func (r AssetStaticRenditionCreateParams) MarshalJSON() (data []byte, err error) {
+	type shadow AssetStaticRenditionCreateParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssetStaticRenditionCreateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// H.264 MP4 resolution. highest selects the largest supported output without
+// upscaling. Hobby supports up to 1080p; other plans support up to 2160p.
+// Independent of the streaming resolution limits.
+type AssetStaticRenditionCreateParamsResolution string
+
+const (
+	AssetStaticRenditionCreateParamsResolutionHighest AssetStaticRenditionCreateParamsResolution = "highest"
+	AssetStaticRenditionCreateParamsResolution240p    AssetStaticRenditionCreateParamsResolution = "240p"
+	AssetStaticRenditionCreateParamsResolution360p    AssetStaticRenditionCreateParamsResolution = "360p"
+	AssetStaticRenditionCreateParamsResolution480p    AssetStaticRenditionCreateParamsResolution = "480p"
+	AssetStaticRenditionCreateParamsResolution540p    AssetStaticRenditionCreateParamsResolution = "540p"
+	AssetStaticRenditionCreateParamsResolution720p    AssetStaticRenditionCreateParamsResolution = "720p"
+	AssetStaticRenditionCreateParamsResolution1080p   AssetStaticRenditionCreateParamsResolution = "1080p"
+	AssetStaticRenditionCreateParamsResolution1440p   AssetStaticRenditionCreateParamsResolution = "1440p"
+	AssetStaticRenditionCreateParamsResolution2160p   AssetStaticRenditionCreateParamsResolution = "2160p"
+)
+
 type AssetStatus string
 
 const (

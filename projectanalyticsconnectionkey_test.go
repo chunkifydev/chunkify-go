@@ -27,12 +27,12 @@ func TestProjectAnalyticsConnectionKeyNew(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.Keys.New(
+	_, err := client.Projects.Analytics.Connections.Keys.New(
 		context.TODO(),
+		"projectId",
 		"connectionId",
 		chunkify.ProjectAnalyticsConnectionKeyNewParams{
-			ProjectID: "projectId",
-			Purpose:   chunkify.ProjectAnalyticsConnectionKeyNewParamsPurposePlayer,
+			Purpose: chunkify.ProjectAnalyticsConnectionKeyNewParamsPurposePlayer,
 		},
 	)
 	if err != nil {
@@ -58,12 +58,10 @@ func TestProjectAnalyticsConnectionKeyList(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.Keys.List(
+	_, err := client.Projects.Analytics.Connections.Keys.List(
 		context.TODO(),
+		"projectId",
 		"connectionId",
-		chunkify.ProjectAnalyticsConnectionKeyListParams{
-			ProjectID: "projectId",
-		},
 	)
 	if err != nil {
 		var apierr *chunkify.Error
@@ -88,13 +86,11 @@ func TestProjectAnalyticsConnectionKeyRotate(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.Keys.Rotate(
+	_, err := client.Projects.Analytics.Connections.Keys.Rotate(
 		context.TODO(),
+		"projectId",
+		"connectionId",
 		"keyId",
-		chunkify.ProjectAnalyticsConnectionKeyRotateParams{
-			ProjectID:    "projectId",
-			ConnectionID: "connectionId",
-		},
 	)
 	if err != nil {
 		var apierr *chunkify.Error
