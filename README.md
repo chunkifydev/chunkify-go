@@ -346,7 +346,7 @@ if err != nil {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/api/files": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/files": 400 Bad Request { ... }
 }
 ```
 

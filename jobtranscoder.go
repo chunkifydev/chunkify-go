@@ -37,7 +37,10 @@ func NewJobTranscoderService(opts ...option.RequestOption) (r JobTranscoderServi
 	return
 }
 
-// Retrieve all the transcoders statuses for a specific job
+// Retrieve all the transcoders statuses for a specific job. Deprecated: Jobs are a
+// legacy resource. Use Assets, Transcodings or Thumbnails instead.
+//
+// Deprecated: deprecated
 func (r *JobTranscoderService) List(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobTranscoderListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
@@ -45,7 +48,7 @@ func (r *JobTranscoderService) List(ctx context.Context, jobID string, opts ...o
 		err = errors.New("missing required jobId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("api/jobs/%s/transcoders", jobID)
+	path := fmt.Sprintf("jobs/%s/transcoders", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

@@ -40,12 +40,13 @@ func NewNotificationService(opts ...option.RequestOption) (r NotificationService
 	return
 }
 
-// Create a new notification for a job event
+// Send an event notification to a webhook endpoint. Recorded events replay their
+// original payload.
 func (r *NotificationService) New(ctx context.Context, body NotificationNewParams, opts ...option.RequestOption) (res *Notification, err error) {
 	var env NotificationNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	path := "api/notifications"
+	path := "notifications"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -63,7 +64,7 @@ func (r *NotificationService) Get(ctx context.Context, notificationID string, op
 		err = errors.New("missing required notificationId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("api/notifications/%s", notificationID)
+	path := fmt.Sprintf("notifications/%s", notificationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -78,7 +79,7 @@ func (r *NotificationService) List(ctx context.Context, query NotificationListPa
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "api/notifications"
+	path := "notifications"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -105,7 +106,7 @@ func (r *NotificationService) Delete(ctx context.Context, notificationID string,
 		err = errors.New("missing required notificationId parameter")
 		return err
 	}
-	path := fmt.Sprintf("api/notifications/%s", notificationID)
+	path := fmt.Sprintf("notifications/%s", notificationID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -117,8 +118,16 @@ type Notification struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Type of event that triggered this notification
 	//
-	// Any of "job.completed", "job.failed", "job.cancelled", "upload.completed",
-	// "upload.failed", "upload.expired".
+	// Any of "job.created", "job.completed", "job.failed", "job.cancelled",
+	// "source.created", "source.deleted", "upload.created", "upload.completed",
+	// "upload.failed", "upload.expired", "asset.created", "asset.ready",
+	// "asset.playback_ready", "asset.failed", "asset.expired", "asset.deleted",
+	// "asset.output.created", "asset.output.ready", "asset.output.failed",
+	// "asset.output.deleted", "workflow_run.created", "workflow_run.completed",
+	// "workflow_run.failed", "workflow_run.cancelled", "transcoding.created",
+	// "transcoding.ready", "transcoding.failed", "transcoding.cancelled",
+	// "transcoding.expired", "transcoding.deleted", "thumbnail.created",
+	// "thumbnail.ready", "thumbnail.failed", "thumbnail.expired", "thumbnail.deleted".
 	Event NotificationEvent `json:"event" api:"required"`
 	// ID of the object that triggered this notification
 	ObjectID string `json:"object_id" api:"required"`
@@ -126,6 +135,8 @@ type Notification struct {
 	Payload string `json:"payload" api:"required"`
 	// Webhook endpoint configuration that received this notification
 	Webhook Webhook `json:"webhook" api:"required"`
+	// Originating event ID, when recorded by the event log.
+	EventID string `json:"event_id"`
 	// HTTP status code received from the webhook endpoint
 	ResponseStatusCode int64 `json:"response_status_code"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -136,6 +147,7 @@ type Notification struct {
 		ObjectID           respjson.Field
 		Payload            respjson.Field
 		Webhook            respjson.Field
+		EventID            respjson.Field
 		ResponseStatusCode respjson.Field
 		ExtraFields        map[string]respjson.Field
 		raw                string
@@ -152,21 +164,61 @@ func (r *Notification) UnmarshalJSON(data []byte) error {
 type NotificationEvent string
 
 const (
-	NotificationEventJobCompleted    NotificationEvent = "job.completed"
-	NotificationEventJobFailed       NotificationEvent = "job.failed"
-	NotificationEventJobCancelled    NotificationEvent = "job.cancelled"
-	NotificationEventUploadCompleted NotificationEvent = "upload.completed"
-	NotificationEventUploadFailed    NotificationEvent = "upload.failed"
-	NotificationEventUploadExpired   NotificationEvent = "upload.expired"
+	NotificationEventJobCreated           NotificationEvent = "job.created"
+	NotificationEventJobCompleted         NotificationEvent = "job.completed"
+	NotificationEventJobFailed            NotificationEvent = "job.failed"
+	NotificationEventJobCancelled         NotificationEvent = "job.cancelled"
+	NotificationEventSourceCreated        NotificationEvent = "source.created"
+	NotificationEventSourceDeleted        NotificationEvent = "source.deleted"
+	NotificationEventUploadCreated        NotificationEvent = "upload.created"
+	NotificationEventUploadCompleted      NotificationEvent = "upload.completed"
+	NotificationEventUploadFailed         NotificationEvent = "upload.failed"
+	NotificationEventUploadExpired        NotificationEvent = "upload.expired"
+	NotificationEventAssetCreated         NotificationEvent = "asset.created"
+	NotificationEventAssetReady           NotificationEvent = "asset.ready"
+	NotificationEventAssetPlaybackReady   NotificationEvent = "asset.playback_ready"
+	NotificationEventAssetFailed          NotificationEvent = "asset.failed"
+	NotificationEventAssetExpired         NotificationEvent = "asset.expired"
+	NotificationEventAssetDeleted         NotificationEvent = "asset.deleted"
+	NotificationEventAssetOutputCreated   NotificationEvent = "asset.output.created"
+	NotificationEventAssetOutputReady     NotificationEvent = "asset.output.ready"
+	NotificationEventAssetOutputFailed    NotificationEvent = "asset.output.failed"
+	NotificationEventAssetOutputDeleted   NotificationEvent = "asset.output.deleted"
+	NotificationEventWorkflowRunCreated   NotificationEvent = "workflow_run.created"
+	NotificationEventWorkflowRunCompleted NotificationEvent = "workflow_run.completed"
+	NotificationEventWorkflowRunFailed    NotificationEvent = "workflow_run.failed"
+	NotificationEventWorkflowRunCancelled NotificationEvent = "workflow_run.cancelled"
+	NotificationEventTranscodingCreated   NotificationEvent = "transcoding.created"
+	NotificationEventTranscodingReady     NotificationEvent = "transcoding.ready"
+	NotificationEventTranscodingFailed    NotificationEvent = "transcoding.failed"
+	NotificationEventTranscodingCancelled NotificationEvent = "transcoding.cancelled"
+	NotificationEventTranscodingExpired   NotificationEvent = "transcoding.expired"
+	NotificationEventTranscodingDeleted   NotificationEvent = "transcoding.deleted"
+	NotificationEventThumbnailCreated     NotificationEvent = "thumbnail.created"
+	NotificationEventThumbnailReady       NotificationEvent = "thumbnail.ready"
+	NotificationEventThumbnailFailed      NotificationEvent = "thumbnail.failed"
+	NotificationEventThumbnailExpired     NotificationEvent = "thumbnail.expired"
+	NotificationEventThumbnailDeleted     NotificationEvent = "thumbnail.deleted"
 )
 
 type NotificationNewParams struct {
 	// Event specifies the type of event that triggered the notification.
 	//
-	// Any of "job.completed", "job.failed", "job.cancelled", "upload.completed",
-	// "upload.failed", "upload.expired".
+	// Any of "job.created", "job.completed", "job.failed", "job.cancelled",
+	// "source.created", "source.deleted", "upload.created", "upload.completed",
+	// "upload.failed", "upload.expired", "asset.created", "asset.ready",
+	// "asset.playback_ready", "asset.failed", "asset.expired", "asset.deleted",
+	// "asset.output.created", "asset.output.ready", "asset.output.failed",
+	// "asset.output.deleted", "workflow_run.created", "workflow_run.completed",
+	// "workflow_run.failed", "workflow_run.cancelled", "transcoding.created",
+	// "transcoding.ready", "transcoding.failed", "transcoding.cancelled",
+	// "transcoding.expired", "transcoding.deleted", "thumbnail.created",
+	// "thumbnail.ready", "thumbnail.failed", "thumbnail.expired", "thumbnail.deleted".
 	Event NotificationNewParamsEvent `json:"event,omitzero" api:"required"`
-	// ObjectId specifies the object that triggered this notification.
+	// ID of the resource that triggered the event. Use the caption, static rendition,
+	// or thumbnail ID for their Asset child events. Replaying asset events,
+	// job.created, or source.created requires a retained snapshot. Resource deletion
+	// does not prevent replay.
 	ObjectID string `json:"object_id" api:"required"`
 	// WebhookId specifies the webhook endpoint that will receive the notification.
 	WebhookID string `json:"webhook_id" api:"required"`
@@ -185,12 +237,41 @@ func (r *NotificationNewParams) UnmarshalJSON(data []byte) error {
 type NotificationNewParamsEvent string
 
 const (
-	NotificationNewParamsEventJobCompleted    NotificationNewParamsEvent = "job.completed"
-	NotificationNewParamsEventJobFailed       NotificationNewParamsEvent = "job.failed"
-	NotificationNewParamsEventJobCancelled    NotificationNewParamsEvent = "job.cancelled"
-	NotificationNewParamsEventUploadCompleted NotificationNewParamsEvent = "upload.completed"
-	NotificationNewParamsEventUploadFailed    NotificationNewParamsEvent = "upload.failed"
-	NotificationNewParamsEventUploadExpired   NotificationNewParamsEvent = "upload.expired"
+	NotificationNewParamsEventJobCreated           NotificationNewParamsEvent = "job.created"
+	NotificationNewParamsEventJobCompleted         NotificationNewParamsEvent = "job.completed"
+	NotificationNewParamsEventJobFailed            NotificationNewParamsEvent = "job.failed"
+	NotificationNewParamsEventJobCancelled         NotificationNewParamsEvent = "job.cancelled"
+	NotificationNewParamsEventSourceCreated        NotificationNewParamsEvent = "source.created"
+	NotificationNewParamsEventSourceDeleted        NotificationNewParamsEvent = "source.deleted"
+	NotificationNewParamsEventUploadCreated        NotificationNewParamsEvent = "upload.created"
+	NotificationNewParamsEventUploadCompleted      NotificationNewParamsEvent = "upload.completed"
+	NotificationNewParamsEventUploadFailed         NotificationNewParamsEvent = "upload.failed"
+	NotificationNewParamsEventUploadExpired        NotificationNewParamsEvent = "upload.expired"
+	NotificationNewParamsEventAssetCreated         NotificationNewParamsEvent = "asset.created"
+	NotificationNewParamsEventAssetReady           NotificationNewParamsEvent = "asset.ready"
+	NotificationNewParamsEventAssetPlaybackReady   NotificationNewParamsEvent = "asset.playback_ready"
+	NotificationNewParamsEventAssetFailed          NotificationNewParamsEvent = "asset.failed"
+	NotificationNewParamsEventAssetExpired         NotificationNewParamsEvent = "asset.expired"
+	NotificationNewParamsEventAssetDeleted         NotificationNewParamsEvent = "asset.deleted"
+	NotificationNewParamsEventAssetOutputCreated   NotificationNewParamsEvent = "asset.output.created"
+	NotificationNewParamsEventAssetOutputReady     NotificationNewParamsEvent = "asset.output.ready"
+	NotificationNewParamsEventAssetOutputFailed    NotificationNewParamsEvent = "asset.output.failed"
+	NotificationNewParamsEventAssetOutputDeleted   NotificationNewParamsEvent = "asset.output.deleted"
+	NotificationNewParamsEventWorkflowRunCreated   NotificationNewParamsEvent = "workflow_run.created"
+	NotificationNewParamsEventWorkflowRunCompleted NotificationNewParamsEvent = "workflow_run.completed"
+	NotificationNewParamsEventWorkflowRunFailed    NotificationNewParamsEvent = "workflow_run.failed"
+	NotificationNewParamsEventWorkflowRunCancelled NotificationNewParamsEvent = "workflow_run.cancelled"
+	NotificationNewParamsEventTranscodingCreated   NotificationNewParamsEvent = "transcoding.created"
+	NotificationNewParamsEventTranscodingReady     NotificationNewParamsEvent = "transcoding.ready"
+	NotificationNewParamsEventTranscodingFailed    NotificationNewParamsEvent = "transcoding.failed"
+	NotificationNewParamsEventTranscodingCancelled NotificationNewParamsEvent = "transcoding.cancelled"
+	NotificationNewParamsEventTranscodingExpired   NotificationNewParamsEvent = "transcoding.expired"
+	NotificationNewParamsEventTranscodingDeleted   NotificationNewParamsEvent = "transcoding.deleted"
+	NotificationNewParamsEventThumbnailCreated     NotificationNewParamsEvent = "thumbnail.created"
+	NotificationNewParamsEventThumbnailReady       NotificationNewParamsEvent = "thumbnail.ready"
+	NotificationNewParamsEventThumbnailFailed      NotificationNewParamsEvent = "thumbnail.failed"
+	NotificationNewParamsEventThumbnailExpired     NotificationNewParamsEvent = "thumbnail.expired"
+	NotificationNewParamsEventThumbnailDeleted     NotificationNewParamsEvent = "thumbnail.deleted"
 )
 
 type NotificationNewResponseEnvelope struct {
@@ -234,6 +315,8 @@ func (r *NotificationGetResponseEnvelope) UnmarshalJSON(data []byte) error {
 }
 
 type NotificationListParams struct {
+	// Filter deliveries by their originating event ID.
+	EventID param.Opt[string] `query:"event_id,omitzero" json:"-"`
 	// Pagination limit (max 100)
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Filter by object ID
@@ -245,8 +328,16 @@ type NotificationListParams struct {
 	Created   NotificationListParamsCreated `query:"created,omitzero" json:"-"`
 	// Filter by events
 	//
-	// Any of "job.completed", "job.failed", "job.cancelled", "upload.completed",
-	// "upload.failed", "upload.expired".
+	// Any of "job.created", "job.completed", "job.failed", "job.cancelled",
+	// "source.created", "source.deleted", "upload.created", "upload.completed",
+	// "upload.failed", "upload.expired", "asset.created", "asset.ready",
+	// "asset.playback_ready", "asset.failed", "asset.expired", "asset.deleted",
+	// "asset.output.created", "asset.output.ready", "asset.output.failed",
+	// "asset.output.deleted", "workflow_run.created", "workflow_run.completed",
+	// "workflow_run.failed", "workflow_run.cancelled", "transcoding.created",
+	// "transcoding.ready", "transcoding.failed", "transcoding.cancelled",
+	// "transcoding.expired", "transcoding.deleted", "thumbnail.created",
+	// "thumbnail.ready", "thumbnail.failed", "thumbnail.expired", "thumbnail.deleted".
 	Events             []string                                 `query:"events,omitzero" json:"-"`
 	ResponseStatusCode NotificationListParamsResponseStatusCode `query:"response_status_code,omitzero" json:"-"`
 	paramObj
