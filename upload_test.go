@@ -28,6 +28,8 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Uploads.New(context.TODO(), chunkify.UploadNewParams{
+		CreateAsset:   chunkify.Bool(true),
+		FileSizeBytes: chunkify.Int(1),
 		Metadata: map[string]string{
 			"key":  "value",
 			"key2": "value2",
@@ -36,7 +38,9 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 			ID:   chunkify.String("x"),
 			Path: chunkify.String("x"),
 		},
+		UploadMode:      chunkify.UploadNewParamsUploadModeSingle,
 		ValidityTimeout: chunkify.Int(7200),
+		WorkflowID:      chunkify.String("x"),
 	})
 	if err != nil {
 		var apierr *chunkify.Error
@@ -145,7 +149,16 @@ func TestUploadComplete(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	err := client.Uploads.Complete(context.TODO(), "token")
+	err := client.Uploads.Complete(
+		context.TODO(),
+		"token",
+		chunkify.UploadCompleteParams{
+			Parts: []chunkify.UploadCompleteParamsPart{{
+				Etag:       `"abc123"`,
+				PartNumber: 1,
+			}},
+		},
+	)
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {

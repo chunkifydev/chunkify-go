@@ -35,7 +35,11 @@ func NewJobFileService(opts ...option.RequestOption) (r JobFileService) {
 	return
 }
 
-// Retrieve all files associated with a specific job
+// Retrieve all files associated with a specific job. Deprecated: Job files are a
+// legacy resource. Transcodings and Thumbnails include their output files, and
+// List Asset outputs returns an Asset's outputs.
+//
+// Deprecated: deprecated
 func (r *JobFileService) List(ctx context.Context, jobID string, opts ...option.RequestOption) (res *JobFileListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
@@ -43,7 +47,7 @@ func (r *JobFileService) List(ctx context.Context, jobID string, opts ...option.
 		err = errors.New("missing required jobId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("api/jobs/%s/files", jobID)
+	path := fmt.Sprintf("jobs/%s/files", jobID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }

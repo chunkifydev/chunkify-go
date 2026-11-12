@@ -47,7 +47,7 @@ func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...o
 	var env SourceNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	path := "api/sources"
+	path := "sources"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -66,7 +66,7 @@ func (r *SourceService) Get(ctx context.Context, sourceID string, opts ...option
 		err = errors.New("missing required sourceId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("api/sources/%s", sourceID)
+	path := fmt.Sprintf("sources/%s", sourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func (r *SourceService) List(ctx context.Context, query SourceListParams, opts .
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithResponseInto(&raw)}, opts...)
-	path := "api/sources"
+	path := "sources"
 	cfg, err := requestconfig.NewRequestConfig(ctx, http.MethodGet, path, query, &res, opts...)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (r *SourceService) Delete(ctx context.Context, sourceID string, opts ...opt
 		err = errors.New("missing required sourceId parameter")
 		return err
 	}
-	path := fmt.Sprintf("api/sources/%s", sourceID)
+	path := fmt.Sprintf("sources/%s", sourceID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }

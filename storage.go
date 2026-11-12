@@ -44,7 +44,7 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 	var env StorageNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	path := "api/storages"
+	path := "storages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -62,7 +62,7 @@ func (r *StorageService) Get(ctx context.Context, storageID string, opts ...opti
 		err = errors.New("missing required storageId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("api/storages/%s", storageID)
+	path := fmt.Sprintf("storages/%s", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -71,8 +71,20 @@ func (r *StorageService) Get(ctx context.Context, storageID string, opts ...opti
 	return res, nil
 }
 
-// Update customer-owned storage settings. Prefix changes apply to final outputs
-// that have not been uploaded yet. Existing files keep their stored object keys.
+// Update customer-owned storage settings. Send access_key_id and secret_access_key
+// together to rotate credentials for AWS S3, Cloudflare R2, or S3-compatible
+// storage. Both values must be non-empty and non-null. Omitting both preserves the
+// saved pair and skips connection validation. Replacement credentials are checked
+// against the saved bucket, endpoint, region, and addressing style using the
+// creation upload, metadata, and download checks with best-effort probe cleanup. A
+// prefix changed in the same request is used for validation. Both credentials are
+// encrypted and saved atomically with other settings; a failed update preserves
+// the previous values. Credential-only updates keep the Storage ID, resource
+// associations, object paths, and Project default. Subsequent storage lookups use
+// the new pair; running work may retain an existing client or signed URL. Rotation
+// does not renew issued URLs, and revoking old keys can invalidate them. Prefix
+// changes apply to final outputs that have not been uploaded yet. Existing files
+// keep their stored object keys.
 func (r *StorageService) Update(ctx context.Context, storageID string, body StorageUpdateParams, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
@@ -81,7 +93,7 @@ func (r *StorageService) Update(ctx context.Context, storageID string, body Stor
 		err = errors.New("missing required storageId parameter")
 		return err
 	}
-	path := fmt.Sprintf("api/storages/%s", storageID)
+	path := fmt.Sprintf("storages/%s", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, nil, opts...)
 	return err
 }
@@ -90,7 +102,7 @@ func (r *StorageService) Update(ctx context.Context, storageID string, body Stor
 func (r *StorageService) List(ctx context.Context, opts ...option.RequestOption) (res *StorageListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	path := "api/storages"
+	path := "storages"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -105,7 +117,7 @@ func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...o
 		err = errors.New("missing required storageId parameter")
 		return err
 	}
-	path := fmt.Sprintf("api/storages/%s", storageID)
+	path := fmt.Sprintf("storages/%s", storageID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -683,9 +695,18 @@ func (r *StorageGetResponseEnvelope) UnmarshalJSON(data []byte) error {
 type StorageUpdateParams struct {
 	// Customer-managed HTTPS delivery origin, or null to remove the current value.
 	CdnBaseURL param.Opt[string] `json:"cdn_base_url,omitzero" format:"uri"`
+	// Replacement access key ID for customer-managed storage. Send with a non-empty
+	// secret_access_key. Omit both credential fields to keep the saved pair. Null and
+	// empty values are rejected. Credentials are validated before either value is
+	// saved and are never returned.
+	AccessKeyID param.Opt[string] `json:"access_key_id,omitzero"`
 	// Object-key prefix for future final job outputs. Existing files keep their stored
 	// object keys. Send an empty string to use the bucket root.
 	BasePrefix param.Opt[string] `json:"base_prefix,omitzero"`
+	// Replacement secret access key. Required with access_key_id; cannot be null or
+	// empty. The pair is encrypted and saved atomically only after validation
+	// succeeds.
+	SecretAccessKey param.Opt[string] `json:"secret_access_key,omitzero"`
 	paramObj
 }
 
