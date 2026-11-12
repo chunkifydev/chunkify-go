@@ -56,11 +56,11 @@ func (r *ProjectAnalyticsConnectionService) New(ctx context.Context, projectID s
 }
 
 // Retrieve non-secret connection metadata within its owning project.
-func (r *ProjectAnalyticsConnectionService) Get(ctx context.Context, connectionID string, query ProjectAnalyticsConnectionGetParams, opts ...option.RequestOption) (res *AnalyticsConnection, err error) {
+func (r *ProjectAnalyticsConnectionService) Get(ctx context.Context, projectID string, connectionID string, opts ...option.RequestOption) (res *AnalyticsConnection, err error) {
 	var env ProjectAnalyticsConnectionGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	if query.ProjectID == "" {
+	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (r *ProjectAnalyticsConnectionService) Get(ctx context.Context, connectionI
 		err = errors.New("missing required connectionId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("projects/%s/analytics/connections/%s", query.ProjectID, connectionID)
+	path := fmt.Sprintf("projects/%s/analytics/connections/%s", projectID, connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &env, opts...)
 	if err != nil {
 		return nil, err
@@ -79,11 +79,11 @@ func (r *ProjectAnalyticsConnectionService) Get(ctx context.Context, connectionI
 
 // Rename a connection or validate replacement custom credentials. Only team owners
 // can update connections. Existing settings remain unchanged if validation fails.
-func (r *ProjectAnalyticsConnectionService) Update(ctx context.Context, connectionID string, params ProjectAnalyticsConnectionUpdateParams, opts ...option.RequestOption) (res *AnalyticsConnection, err error) {
+func (r *ProjectAnalyticsConnectionService) Update(ctx context.Context, projectID string, connectionID string, body ProjectAnalyticsConnectionUpdateParams, opts ...option.RequestOption) (res *AnalyticsConnection, err error) {
 	var env ProjectAnalyticsConnectionUpdateResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	if params.ProjectID == "" {
+	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return nil, err
 	}
@@ -91,8 +91,8 @@ func (r *ProjectAnalyticsConnectionService) Update(ctx context.Context, connecti
 		err = errors.New("missing required connectionId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("projects/%s/analytics/connections/%s", params.ProjectID, connectionID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, params, &env, opts...)
+	path := fmt.Sprintf("projects/%s/analytics/connections/%s", projectID, connectionID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPatch, path, body, &env, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -120,11 +120,11 @@ func (r *ProjectAnalyticsConnectionService) List(ctx context.Context, projectID 
 // credentials and connection; the remote server, project and data remain
 // unchanged. Only team owners can delete connections. An uncertain remote result
 // preserves the connection for reconciliation.
-func (r *ProjectAnalyticsConnectionService) Delete(ctx context.Context, connectionID string, body ProjectAnalyticsConnectionDeleteParams, opts ...option.RequestOption) (err error) {
+func (r *ProjectAnalyticsConnectionService) Delete(ctx context.Context, projectID string, connectionID string, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
 	opts = append([]option.RequestOption{option.WithHeader("Accept", "*/*")}, opts...)
-	if body.ProjectID == "" {
+	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return err
 	}
@@ -132,7 +132,7 @@ func (r *ProjectAnalyticsConnectionService) Delete(ctx context.Context, connecti
 		err = errors.New("missing required connectionId parameter")
 		return err
 	}
-	path := fmt.Sprintf("projects/%s/analytics/connections/%s", body.ProjectID, connectionID)
+	path := fmt.Sprintf("projects/%s/analytics/connections/%s", projectID, connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, nil, nil, opts...)
 	return err
 }
@@ -309,11 +309,6 @@ const (
 	ProjectAnalyticsConnectionNewParamsTypeCustom ProjectAnalyticsConnectionNewParamsType = "custom"
 )
 
-type ProjectAnalyticsConnectionGetParams struct {
-	ProjectID string `path:"projectId" api:"required" json:"-"`
-	paramObj
-}
-
 type ProjectAnalyticsConnectionGetResponseEnvelope struct {
 	// A saved source for analytics reports. The dashboard player default is
 	// independent of the connection selected in reports. External players keep their
@@ -337,7 +332,6 @@ func (r *ProjectAnalyticsConnectionGetResponseEnvelope) UnmarshalJSON(data []byt
 }
 
 type ProjectAnalyticsConnectionUpdateParams struct {
-	ProjectID string `path:"projectId" api:"required" json:"-"`
 	// DefaultForDashboard selects this ready connection for Chunkify dashboard
 	// players, public previews, the playground and newly generated snippets. Requires
 	// a public ingest key. Setting true replaces the previous default atomically.
@@ -395,9 +389,4 @@ type ProjectAnalyticsConnectionUpdateResponseEnvelope struct {
 func (r ProjectAnalyticsConnectionUpdateResponseEnvelope) RawJSON() string { return r.JSON.raw }
 func (r *ProjectAnalyticsConnectionUpdateResponseEnvelope) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-type ProjectAnalyticsConnectionDeleteParams struct {
-	ProjectID string `path:"projectId" api:"required" json:"-"`
-	paramObj
 }

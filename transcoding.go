@@ -541,6 +541,774 @@ const (
 	TranscodingProcessingStageUploading  TranscodingProcessingStage = "uploading"
 )
 
+// The property ID is required.
+type TranscodingM4aAacParam struct {
+	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
+	// to 128000.
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Duration specifies the requested output length in seconds. Defaults to the
+	// remaining source duration and is capped at the source end. Audio-only output
+	// must resolve to at least 0.001 seconds after trimming and sample rounding. The
+	// accepted interval determines the fixed price.
+	Duration param.Opt[float64] `json:"duration,omitzero"`
+	// Seek specifies the start in source seconds. Defaults to zero and must precede
+	// the source end. The accepted interval uses the output frame or sample timeline.
+	// Audio-only output must retain at least 0.001 seconds after sample rounding.
+	Seek param.Opt[float64] `json:"seek,omitzero"`
+	// AudioSamplerate specifies the output sample rate in Hz. Defaults to 48000. WebM
+	// Opus audio uses 48000.
+	//
+	// Any of 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000,
+	// 88200, 96000.
+	AudioSamplerate int64 `json:"audio_samplerate,omitzero"`
+	// Channels specifies the output channel count. Defaults to stereo. Six channels
+	// means 5.1; eight means 7.1.
+	//
+	// Any of 1, 2, 6, 8.
+	Channels int64 `json:"channels,omitzero"`
+	// Id specifies an AAC M4A export.
+	//
+	// This field can be elided, and will marshal its zero value as "m4a_aac".
+	ID constant.M4aAac `json:"id" default:"m4a_aac"`
+	paramObj
+}
+
+func (r TranscodingM4aAacParam) MarshalJSON() (data []byte, err error) {
+	type shadow TranscodingM4aAacParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscodingM4aAacParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscodingM4aAacParam](
+		"audio_samplerate", 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000,
+	)
+	apijson.RegisterFieldValidator[TranscodingM4aAacParam](
+		"channels", 1, 2, 6, 8,
+	)
+}
+
+// The property ID is required.
+type TranscodingMP4Av1Param struct {
+	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
+	// to 128000.
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits, from 100000 through 50000000.
+	// H.264 and H.265 require maxrate. AV1 and VP9 require a bitrate-controlled mode.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 16 to 63. Recommended
+	// values: 16-35 for high quality, 35-45 for good quality, 45-63 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio omits the audio stream. Defaults to false. A source without audio
+	// produces video only.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo selects an audio-only AAC M4A export. Defaults to false. The source
+	// must contain audio.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the requested output length in seconds. Defaults to the
+	// remaining source duration and is capped at the source end. Audio-only output
+	// must resolve to at least 0.001 seconds after trimming and sample rounding. The
+	// accepted interval determines the fixed price.
+	Duration param.Opt[float64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Defaults to the source rate and
+	// must be between 0.001 and 240 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the maximum keyframe interval in frames. Defaults to four seconds
+	// at the accepted frame rate, capped at 960 frames.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output dimension in pixels. Use -2 or omit one dimension to
+	// preserve the source aspect ratio. Explicit dimensions must be 2 to 7680 and
+	// even. Omitting both preserves the source dimensions rounded down to even pixels.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// Maxrate specifies the video buffer maximum rate in bits per second, from 100000
+	// through 50000000. H.264 and H.265 require bufsize. VP9 requires video_bitrate;
+	// AV1 requires CRF mode.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// PerTitle enables independent content-based bitrate prediction for each part of
+	// the video. Analysis uses only the selected trim interval. Defaults to false.
+	// Explicit rate-control settings cannot be combined with it.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
+	// Seek specifies the start in source seconds. Defaults to zero and must precede
+	// the source end. The accepted interval uses the output frame or sample timeline.
+	// Audio-only output must retain at least 0.001 seconds after sample rounding.
+	Seek param.Opt[float64] `json:"seek,omitzero"`
+	// VideoBitrate specifies the target video bitrate in bits per second, from 1000
+	// through 100000000. Omit it for CRF or per-title encoding.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
+	// Width specifies the output dimension in pixels. Use -2 or omit one dimension to
+	// preserve the source aspect ratio. Explicit dimensions must be 2 to 7680 and
+	// even. Omitting both preserves the source dimensions rounded down to even pixels.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// AudioSamplerate specifies the output sample rate in Hz. Defaults to 48000. WebM
+	// Opus audio uses 48000.
+	//
+	// Any of 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000,
+	// 88200, 96000.
+	AudioSamplerate int64 `json:"audio_samplerate,omitzero"`
+	// Channels specifies the output channel count. Defaults to stereo. Six channels
+	// means 5.1; eight means 7.1.
+	//
+	// Any of 1, 2, 6, 8.
+	Channels int64 `json:"channels,omitzero"`
+	// Level specifies the AV1 level using its two-digit representation, such as 31 for
+	// level 3.1. The dimensions, frame rate and rate controls must fit this level.
+	// Omitted rate limits resolve to level-compatible defaults.
+	//
+	// Any of 30, 31, 41.
+	Level int64 `json:"level,omitzero"`
+	// Movflags specifies MP4 packaging. Defaults to faststart, which places playback
+	// metadata before the media.
+	//
+	// Any of "faststart".
+	Movflags TranscodingMP4Av1Movflags `json:"movflags,omitzero"`
+	// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
+	// profile must support it.
+	//
+	// Any of "yuv420p", "yuv420p10le".
+	Pixfmt TranscodingMP4Av1Pixfmt `json:"pixfmt,omitzero"`
+	// Preset controls the encoding efficiency and processing intensity. Lower presets
+	// use more optimization features, creating smaller files with better quality but
+	// requiring more compute time. Higher presets encode faster but produce larger
+	// files.
+	//
+	// Preset ranges:
+	//
+	// - 6-7: Fast encoding for real-time applications (smaller files)
+	// - 8-10: Balanced efficiency and speed for general use
+	// - 11-13: Fastest encoding for real-time applications (larger files)
+	//
+	// Any of "6", "7", "8", "9", "10", "11", "12", "13".
+	Preset TranscodingMP4Av1Preset `json:"preset,omitzero"`
+	// Profilev selects the AV1 Main profile. Use pixfmt to select 8-bit or 10-bit
+	// output.
+	//
+	// Any of "main".
+	Profilev TranscodingMP4Av1Profilev `json:"profilev,omitzero"`
+	// Id specifies the output format.
+	//
+	// This field can be elided, and will marshal its zero value as "mp4_av1".
+	ID constant.MP4Av1 `json:"id" default:"mp4_av1"`
+	paramObj
+}
+
+func (r TranscodingMP4Av1Param) MarshalJSON() (data []byte, err error) {
+	type shadow TranscodingMP4Av1Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscodingMP4Av1Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscodingMP4Av1Param](
+		"audio_samplerate", 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000,
+	)
+	apijson.RegisterFieldValidator[TranscodingMP4Av1Param](
+		"channels", 1, 2, 6, 8,
+	)
+	apijson.RegisterFieldValidator[TranscodingMP4Av1Param](
+		"level", 30, 31, 41,
+	)
+}
+
+// Movflags specifies MP4 packaging. Defaults to faststart, which places playback
+// metadata before the media.
+type TranscodingMP4Av1Movflags string
+
+const (
+	TranscodingMP4Av1MovflagsFaststart TranscodingMP4Av1Movflags = "faststart"
+)
+
+// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
+// profile must support it.
+type TranscodingMP4Av1Pixfmt string
+
+const (
+	TranscodingMP4Av1PixfmtYuv420p     TranscodingMP4Av1Pixfmt = "yuv420p"
+	TranscodingMP4Av1PixfmtYuv420p10le TranscodingMP4Av1Pixfmt = "yuv420p10le"
+)
+
+// Preset controls the encoding efficiency and processing intensity. Lower presets
+// use more optimization features, creating smaller files with better quality but
+// requiring more compute time. Higher presets encode faster but produce larger
+// files.
+//
+// Preset ranges:
+//
+// - 6-7: Fast encoding for real-time applications (smaller files)
+// - 8-10: Balanced efficiency and speed for general use
+// - 11-13: Fastest encoding for real-time applications (larger files)
+type TranscodingMP4Av1Preset string
+
+const (
+	TranscodingMP4Av1Preset6  TranscodingMP4Av1Preset = "6"
+	TranscodingMP4Av1Preset7  TranscodingMP4Av1Preset = "7"
+	TranscodingMP4Av1Preset8  TranscodingMP4Av1Preset = "8"
+	TranscodingMP4Av1Preset9  TranscodingMP4Av1Preset = "9"
+	TranscodingMP4Av1Preset10 TranscodingMP4Av1Preset = "10"
+	TranscodingMP4Av1Preset11 TranscodingMP4Av1Preset = "11"
+	TranscodingMP4Av1Preset12 TranscodingMP4Av1Preset = "12"
+	TranscodingMP4Av1Preset13 TranscodingMP4Av1Preset = "13"
+)
+
+// Profilev selects the AV1 Main profile. Use pixfmt to select 8-bit or 10-bit
+// output.
+type TranscodingMP4Av1Profilev string
+
+const (
+	TranscodingMP4Av1ProfilevMain TranscodingMP4Av1Profilev = "main"
+)
+
+// The property ID is required.
+type TranscodingMP4H264Param struct {
+	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
+	// to 128000.
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits, from 100000 through 50000000.
+	// H.264 and H.265 require maxrate. AV1 and VP9 require a bitrate-controlled mode.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 16 to 35. Recommended
+	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio omits the audio stream. Defaults to false. A source without audio
+	// produces video only.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo selects an audio-only AAC M4A export. Defaults to false. The source
+	// must contain audio.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the requested output length in seconds. Defaults to the
+	// remaining source duration and is capped at the source end. Audio-only output
+	// must resolve to at least 0.001 seconds after trimming and sample rounding. The
+	// accepted interval determines the fixed price.
+	Duration param.Opt[float64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Defaults to the source rate and
+	// must be between 0.001 and 240 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the maximum keyframe interval in frames. Defaults to four seconds
+	// at the accepted frame rate, capped at 960 frames.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output dimension in pixels. Use -2 or omit one dimension to
+	// preserve the source aspect ratio. Explicit dimensions must be 2 to 7680 and
+	// even. Omitting both preserves the source dimensions rounded down to even pixels.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// Maxrate specifies the video buffer maximum rate in bits per second, from 100000
+	// through 50000000. H.264 and H.265 require bufsize. VP9 requires video_bitrate;
+	// AV1 requires CRF mode.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// PerTitle enables independent content-based bitrate prediction for each part of
+	// the video. Analysis uses only the selected trim interval. Defaults to false.
+	// Explicit rate-control settings cannot be combined with it.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
+	// Seek specifies the start in source seconds. Defaults to zero and must precede
+	// the source end. The accepted interval uses the output frame or sample timeline.
+	// Audio-only output must retain at least 0.001 seconds after sample rounding.
+	Seek param.Opt[float64] `json:"seek,omitzero"`
+	// VideoBitrate specifies the target video bitrate in bits per second, from 1000
+	// through 100000000. Omit it for CRF or per-title encoding.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
+	// Width specifies the output dimension in pixels. Use -2 or omit one dimension to
+	// preserve the source aspect ratio. Explicit dimensions must be 2 to 7680 and
+	// even. Omitting both preserves the source dimensions rounded down to even pixels.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
+	// encoding. Range: 1 to 960. Higher values can improve compression but may affect
+	// seeking.
+	X264Keyint param.Opt[int64] `json:"x264_keyint,omitzero"`
+	// AudioSamplerate specifies the output sample rate in Hz. Defaults to 48000. WebM
+	// Opus audio uses 48000.
+	//
+	// Any of 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000,
+	// 88200, 96000.
+	AudioSamplerate int64 `json:"audio_samplerate,omitzero"`
+	// Channels specifies the output channel count. Defaults to stereo. Six channels
+	// means 5.1; eight means 7.1.
+	//
+	// Any of 1, 2, 6, 8.
+	Channels int64 `json:"channels,omitzero"`
+	// Level specifies the H.264 decoder level using its two-digit representation, such
+	// as 41 for level 4.1. The dimensions, frame rate and rate controls must fit this
+	// level and the effective profile. Omitted rate limits resolve to level-compatible
+	// defaults.
+	//
+	// Any of 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51.
+	Level int64 `json:"level,omitzero"`
+	// Movflags specifies MP4 packaging. Defaults to faststart, which places playback
+	// metadata before the media.
+	//
+	// Any of "faststart".
+	Movflags TranscodingMP4H264Movflags `json:"movflags,omitzero"`
+	// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
+	// profile must support it.
+	//
+	// Any of "yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le",
+	// "yuv444p10le".
+	Pixfmt TranscodingMP4H264Pixfmt `json:"pixfmt,omitzero"`
+	// Preset specifies the encoding speed preset. Valid values (from fastest to
+	// slowest):
+	//
+	// - ultrafast: Fastest encoding, lowest quality
+	// - superfast: Very fast encoding, lower quality
+	// - veryfast: Fast encoding, moderate quality
+	// - faster: Faster encoding, good quality
+	// - fast: Fast encoding, better quality
+	// - medium: Balanced preset, best quality
+	//
+	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
+	Preset TranscodingMP4H264Preset `json:"preset,omitzero"`
+	// Profilev specifies the H.264 profile. Valid values:
+	//
+	// - baseline: Basic profile, good for mobile devices
+	// - main: Main profile, good for most applications
+	// - high: High profile, best quality but requires more processing
+	// - high10: High 10-bit profile, supports 10-bit color
+	// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
+	// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
+	//
+	// Any of "baseline", "main", "high", "high10", "high422", "high444".
+	Profilev TranscodingMP4H264Profilev `json:"profilev,omitzero"`
+	// Id specifies the output format.
+	//
+	// This field can be elided, and will marshal its zero value as "mp4_h264".
+	ID constant.MP4H264 `json:"id" default:"mp4_h264"`
+	paramObj
+}
+
+func (r TranscodingMP4H264Param) MarshalJSON() (data []byte, err error) {
+	type shadow TranscodingMP4H264Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscodingMP4H264Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscodingMP4H264Param](
+		"audio_samplerate", 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000,
+	)
+	apijson.RegisterFieldValidator[TranscodingMP4H264Param](
+		"channels", 1, 2, 6, 8,
+	)
+	apijson.RegisterFieldValidator[TranscodingMP4H264Param](
+		"level", 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51,
+	)
+}
+
+// Movflags specifies MP4 packaging. Defaults to faststart, which places playback
+// metadata before the media.
+type TranscodingMP4H264Movflags string
+
+const (
+	TranscodingMP4H264MovflagsFaststart TranscodingMP4H264Movflags = "faststart"
+)
+
+// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
+// profile must support it.
+type TranscodingMP4H264Pixfmt string
+
+const (
+	TranscodingMP4H264PixfmtYuv420p     TranscodingMP4H264Pixfmt = "yuv420p"
+	TranscodingMP4H264PixfmtYuv422p     TranscodingMP4H264Pixfmt = "yuv422p"
+	TranscodingMP4H264PixfmtYuv444p     TranscodingMP4H264Pixfmt = "yuv444p"
+	TranscodingMP4H264PixfmtYuv420p10le TranscodingMP4H264Pixfmt = "yuv420p10le"
+	TranscodingMP4H264PixfmtYuv422p10le TranscodingMP4H264Pixfmt = "yuv422p10le"
+	TranscodingMP4H264PixfmtYuv444p10le TranscodingMP4H264Pixfmt = "yuv444p10le"
+)
+
+// Preset specifies the encoding speed preset. Valid values (from fastest to
+// slowest):
+//
+// - ultrafast: Fastest encoding, lowest quality
+// - superfast: Very fast encoding, lower quality
+// - veryfast: Fast encoding, moderate quality
+// - faster: Faster encoding, good quality
+// - fast: Fast encoding, better quality
+// - medium: Balanced preset, best quality
+type TranscodingMP4H264Preset string
+
+const (
+	TranscodingMP4H264PresetUltrafast TranscodingMP4H264Preset = "ultrafast"
+	TranscodingMP4H264PresetSuperfast TranscodingMP4H264Preset = "superfast"
+	TranscodingMP4H264PresetVeryfast  TranscodingMP4H264Preset = "veryfast"
+	TranscodingMP4H264PresetFaster    TranscodingMP4H264Preset = "faster"
+	TranscodingMP4H264PresetFast      TranscodingMP4H264Preset = "fast"
+	TranscodingMP4H264PresetMedium    TranscodingMP4H264Preset = "medium"
+)
+
+// Profilev specifies the H.264 profile. Valid values:
+//
+// - baseline: Basic profile, good for mobile devices
+// - main: Main profile, good for most applications
+// - high: High profile, best quality but requires more processing
+// - high10: High 10-bit profile, supports 10-bit color
+// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
+// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
+type TranscodingMP4H264Profilev string
+
+const (
+	TranscodingMP4H264ProfilevBaseline TranscodingMP4H264Profilev = "baseline"
+	TranscodingMP4H264ProfilevMain     TranscodingMP4H264Profilev = "main"
+	TranscodingMP4H264ProfilevHigh     TranscodingMP4H264Profilev = "high"
+	TranscodingMP4H264ProfilevHigh10   TranscodingMP4H264Profilev = "high10"
+	TranscodingMP4H264ProfilevHigh422  TranscodingMP4H264Profilev = "high422"
+	TranscodingMP4H264ProfilevHigh444  TranscodingMP4H264Profilev = "high444"
+)
+
+// The property ID is required.
+type TranscodingMP4H265Param struct {
+	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
+	// to 128000.
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits, from 100000 through 50000000.
+	// H.264 and H.265 require maxrate. AV1 and VP9 require a bitrate-controlled mode.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 16 to 35. Recommended
+	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio omits the audio stream. Defaults to false. A source without audio
+	// produces video only.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo selects an audio-only AAC M4A export. Defaults to false. The source
+	// must contain audio.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the requested output length in seconds. Defaults to the
+	// remaining source duration and is capped at the source end. Audio-only output
+	// must resolve to at least 0.001 seconds after trimming and sample rounding. The
+	// accepted interval determines the fixed price.
+	Duration param.Opt[float64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Defaults to the source rate and
+	// must be between 0.001 and 240 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the maximum keyframe interval in frames. Defaults to four seconds
+	// at the accepted frame rate, capped at 960 frames.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output dimension in pixels. Use -2 or omit one dimension to
+	// preserve the source aspect ratio. Explicit dimensions must be 2 to 7680 and
+	// even. Omitting both preserves the source dimensions rounded down to even pixels.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// Maxrate specifies the video buffer maximum rate in bits per second, from 100000
+	// through 50000000. H.264 and H.265 require bufsize. VP9 requires video_bitrate;
+	// AV1 requires CRF mode.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// PerTitle enables independent content-based bitrate prediction for each part of
+	// the video. Analysis uses only the selected trim interval. Defaults to false.
+	// Explicit rate-control settings cannot be combined with it.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
+	// Seek specifies the start in source seconds. Defaults to zero and must precede
+	// the source end. The accepted interval uses the output frame or sample timeline.
+	// Audio-only output must retain at least 0.001 seconds after sample rounding.
+	Seek param.Opt[float64] `json:"seek,omitzero"`
+	// VideoBitrate specifies the target video bitrate in bits per second, from 1000
+	// through 100000000. Omit it for CRF or per-title encoding.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
+	// Width specifies the output dimension in pixels. Use -2 or omit one dimension to
+	// preserve the source aspect ratio. Explicit dimensions must be 2 to 7680 and
+	// even. Omitting both preserves the source dimensions rounded down to even pixels.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// X265KeyInt specifies the maximum number of frames between keyframes for H.265
+	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
+	// seeking.
+	X265Keyint param.Opt[int64] `json:"x265_keyint,omitzero"`
+	// AudioSamplerate specifies the output sample rate in Hz. Defaults to 48000. WebM
+	// Opus audio uses 48000.
+	//
+	// Any of 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000,
+	// 88200, 96000.
+	AudioSamplerate int64 `json:"audio_samplerate,omitzero"`
+	// Channels specifies the output channel count. Defaults to stereo. Six channels
+	// means 5.1; eight means 7.1.
+	//
+	// Any of 1, 2, 6, 8.
+	Channels int64 `json:"channels,omitzero"`
+	// Level specifies the HEVC level using its two-digit representation, such as 31
+	// for level 3.1. The dimensions, frame rate and rate controls must fit this level.
+	// Omitted rate limits resolve to level-compatible defaults.
+	//
+	// Any of 30, 31, 41.
+	Level int64 `json:"level,omitzero"`
+	// Movflags specifies MP4 packaging. Defaults to faststart, which places playback
+	// metadata before the media.
+	//
+	// Any of "faststart".
+	Movflags TranscodingMP4H265Movflags `json:"movflags,omitzero"`
+	// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
+	// profile must support it.
+	//
+	// Any of "yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le",
+	// "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv444p12le".
+	Pixfmt TranscodingMP4H265Pixfmt `json:"pixfmt,omitzero"`
+	// Preset specifies the encoding speed preset. Valid values (from fastest to
+	// slowest):
+	//
+	// - ultrafast: Fastest encoding, lowest quality
+	// - superfast: Very fast encoding, lower quality
+	// - veryfast: Fast encoding, moderate quality
+	// - faster: Faster encoding, good quality
+	// - fast: Fast encoding, better quality
+	// - medium: Balanced preset, best quality
+	//
+	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
+	Preset TranscodingMP4H265Preset `json:"preset,omitzero"`
+	// Profilev selects the HEVC profile. It must support the requested pixel format.
+	//
+	// Any of "main", "main10", "main12", "main422-10", "main422-12", "main444-8",
+	// "main444-10", "main444-12".
+	Profilev TranscodingMP4H265Profilev `json:"profilev,omitzero"`
+	// Id specifies the output format.
+	//
+	// This field can be elided, and will marshal its zero value as "mp4_h265".
+	ID constant.MP4H265 `json:"id" default:"mp4_h265"`
+	paramObj
+}
+
+func (r TranscodingMP4H265Param) MarshalJSON() (data []byte, err error) {
+	type shadow TranscodingMP4H265Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscodingMP4H265Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscodingMP4H265Param](
+		"audio_samplerate", 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000,
+	)
+	apijson.RegisterFieldValidator[TranscodingMP4H265Param](
+		"channels", 1, 2, 6, 8,
+	)
+	apijson.RegisterFieldValidator[TranscodingMP4H265Param](
+		"level", 30, 31, 41,
+	)
+}
+
+// Movflags specifies MP4 packaging. Defaults to faststart, which places playback
+// metadata before the media.
+type TranscodingMP4H265Movflags string
+
+const (
+	TranscodingMP4H265MovflagsFaststart TranscodingMP4H265Movflags = "faststart"
+)
+
+// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
+// profile must support it.
+type TranscodingMP4H265Pixfmt string
+
+const (
+	TranscodingMP4H265PixfmtYuv420p     TranscodingMP4H265Pixfmt = "yuv420p"
+	TranscodingMP4H265PixfmtYuv422p     TranscodingMP4H265Pixfmt = "yuv422p"
+	TranscodingMP4H265PixfmtYuv444p     TranscodingMP4H265Pixfmt = "yuv444p"
+	TranscodingMP4H265PixfmtYuv420p10le TranscodingMP4H265Pixfmt = "yuv420p10le"
+	TranscodingMP4H265PixfmtYuv422p10le TranscodingMP4H265Pixfmt = "yuv422p10le"
+	TranscodingMP4H265PixfmtYuv444p10le TranscodingMP4H265Pixfmt = "yuv444p10le"
+	TranscodingMP4H265PixfmtYuv420p12le TranscodingMP4H265Pixfmt = "yuv420p12le"
+	TranscodingMP4H265PixfmtYuv422p12le TranscodingMP4H265Pixfmt = "yuv422p12le"
+	TranscodingMP4H265PixfmtYuv444p12le TranscodingMP4H265Pixfmt = "yuv444p12le"
+)
+
+// Preset specifies the encoding speed preset. Valid values (from fastest to
+// slowest):
+//
+// - ultrafast: Fastest encoding, lowest quality
+// - superfast: Very fast encoding, lower quality
+// - veryfast: Fast encoding, moderate quality
+// - faster: Faster encoding, good quality
+// - fast: Fast encoding, better quality
+// - medium: Balanced preset, best quality
+type TranscodingMP4H265Preset string
+
+const (
+	TranscodingMP4H265PresetUltrafast TranscodingMP4H265Preset = "ultrafast"
+	TranscodingMP4H265PresetSuperfast TranscodingMP4H265Preset = "superfast"
+	TranscodingMP4H265PresetVeryfast  TranscodingMP4H265Preset = "veryfast"
+	TranscodingMP4H265PresetFaster    TranscodingMP4H265Preset = "faster"
+	TranscodingMP4H265PresetFast      TranscodingMP4H265Preset = "fast"
+	TranscodingMP4H265PresetMedium    TranscodingMP4H265Preset = "medium"
+)
+
+// Profilev selects the HEVC profile. It must support the requested pixel format.
+type TranscodingMP4H265Profilev string
+
+const (
+	TranscodingMP4H265ProfilevMain       TranscodingMP4H265Profilev = "main"
+	TranscodingMP4H265ProfilevMain10     TranscodingMP4H265Profilev = "main10"
+	TranscodingMP4H265ProfilevMain12     TranscodingMP4H265Profilev = "main12"
+	TranscodingMP4H265ProfilevMain422_10 TranscodingMP4H265Profilev = "main422-10"
+	TranscodingMP4H265ProfilevMain422_12 TranscodingMP4H265Profilev = "main422-12"
+	TranscodingMP4H265ProfilevMain444_8  TranscodingMP4H265Profilev = "main444-8"
+	TranscodingMP4H265ProfilevMain444_10 TranscodingMP4H265Profilev = "main444-10"
+	TranscodingMP4H265ProfilevMain444_12 TranscodingMP4H265Profilev = "main444-12"
+)
+
+// The property ID is required.
+type TranscodingWebmVp9Param struct {
+	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
+	// to 128000.
+	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
+	// Bufsize specifies the video buffer size in bits, from 100000 through 50000000.
+	// H.264 and H.265 require maxrate. AV1 and VP9 require a bitrate-controlled mode.
+	Bufsize param.Opt[int64] `json:"bufsize,omitzero"`
+	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
+	// values mean better quality but larger file size. Range: 15 to 35. Recommended
+	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
+	// quality.
+	Crf param.Opt[int64] `json:"crf,omitzero"`
+	// DisableAudio omits the audio stream. Defaults to false. A source without audio
+	// produces video only.
+	DisableAudio param.Opt[bool] `json:"disable_audio,omitzero"`
+	// DisableVideo selects an audio-only AAC M4A export. Defaults to false. The source
+	// must contain audio.
+	DisableVideo param.Opt[bool] `json:"disable_video,omitzero"`
+	// Duration specifies the requested output length in seconds. Defaults to the
+	// remaining source duration and is capped at the source end. Audio-only output
+	// must resolve to at least 0.001 seconds after trimming and sample rounding. The
+	// accepted interval determines the fixed price.
+	Duration param.Opt[float64] `json:"duration,omitzero"`
+	// Framerate specifies the output video frame rate. Defaults to the source rate and
+	// must be between 0.001 and 240 fps.
+	Framerate param.Opt[float64] `json:"framerate,omitzero"`
+	// Gop specifies the maximum keyframe interval in frames. Defaults to four seconds
+	// at the accepted frame rate, capped at 960 frames.
+	Gop param.Opt[int64] `json:"gop,omitzero"`
+	// Height specifies the output dimension in pixels. Use -2 or omit one dimension to
+	// preserve the source aspect ratio. Explicit dimensions must be 2 to 7680 and
+	// even. Omitting both preserves the source dimensions rounded down to even pixels.
+	Height param.Opt[int64] `json:"height,omitzero"`
+	// Maxrate specifies the video buffer maximum rate in bits per second, from 100000
+	// through 50000000. H.264 and H.265 require bufsize. VP9 requires video_bitrate;
+	// AV1 requires CRF mode.
+	Maxrate param.Opt[int64] `json:"maxrate,omitzero"`
+	// Minrate selects VP9 constant bitrate when equal to video_bitrate and maxrate.
+	// Other minimum-rate combinations are unsupported.
+	Minrate param.Opt[int64] `json:"minrate,omitzero"`
+	// PerTitle enables independent content-based bitrate prediction for each part of
+	// the video. Analysis uses only the selected trim interval. Defaults to false.
+	// Explicit rate-control settings cannot be combined with it.
+	PerTitle param.Opt[bool] `json:"per_title,omitzero"`
+	// Seek specifies the start in source seconds. Defaults to zero and must precede
+	// the source end. The accepted interval uses the output frame or sample timeline.
+	// Audio-only output must retain at least 0.001 seconds after sample rounding.
+	Seek param.Opt[float64] `json:"seek,omitzero"`
+	// VideoBitrate specifies the target video bitrate in bits per second, from 1000
+	// through 100000000. Omit it for CRF or per-title encoding.
+	VideoBitrate param.Opt[int64] `json:"video_bitrate,omitzero"`
+	// Width specifies the output dimension in pixels. Use -2 or omit one dimension to
+	// preserve the source aspect ratio. Explicit dimensions must be 2 to 7680 and
+	// even. Omitting both preserves the source dimensions rounded down to even pixels.
+	Width param.Opt[int64] `json:"width,omitzero"`
+	// AudioSamplerate specifies the output sample rate in Hz. Defaults to 48000. WebM
+	// Opus audio uses 48000.
+	//
+	// Any of 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000,
+	// 88200, 96000.
+	AudioSamplerate int64 `json:"audio_samplerate,omitzero"`
+	// Channels specifies the output channel count. Defaults to stereo. Six channels
+	// means 5.1; eight means 7.1.
+	//
+	// Any of 1, 2, 6, 8.
+	Channels int64 `json:"channels,omitzero"`
+	// CpuUsed specifies the CPU usage level for VP9 encoding. Range: 0 to 8. Lower
+	// values mean better quality but slower encoding, higher values mean faster
+	// encoding but lower quality. Recommended values: 0-2 for high quality, 2-4 for
+	// good quality, 4-6 for balanced, 6-8 for speed
+	//
+	// Any of "0", "1", "2", "3", "4", "5", "6", "7", "8".
+	CPUUsed TranscodingWebmVp9CPUUsed `json:"cpu_used,omitzero"`
+	// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
+	// profile must support it.
+	//
+	// Any of "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuv420p10le", "yuv422p10le",
+	// "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le",
+	// "yuv444p12le".
+	Pixfmt TranscodingWebmVp9Pixfmt `json:"pixfmt,omitzero"`
+	// Quality specifies the VP9 encoding quality preset. Valid values:
+	//
+	// - good: Balanced quality preset, good for most applications
+	// - best: Best quality preset, slower encoding
+	// - realtime: Fast encoding preset, suitable for live streaming
+	//
+	// Any of "good", "best", "realtime".
+	Quality TranscodingWebmVp9Quality `json:"quality,omitzero"`
+	// Id specifies the output format.
+	//
+	// This field can be elided, and will marshal its zero value as "webm_vp9".
+	ID constant.WebmVp9 `json:"id" default:"webm_vp9"`
+	paramObj
+}
+
+func (r TranscodingWebmVp9Param) MarshalJSON() (data []byte, err error) {
+	type shadow TranscodingWebmVp9Param
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscodingWebmVp9Param) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[TranscodingWebmVp9Param](
+		"audio_samplerate", 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000,
+	)
+	apijson.RegisterFieldValidator[TranscodingWebmVp9Param](
+		"channels", 1, 2, 6, 8,
+	)
+}
+
+// CpuUsed specifies the CPU usage level for VP9 encoding. Range: 0 to 8. Lower
+// values mean better quality but slower encoding, higher values mean faster
+// encoding but lower quality. Recommended values: 0-2 for high quality, 2-4 for
+// good quality, 4-6 for balanced, 6-8 for speed
+type TranscodingWebmVp9CPUUsed string
+
+const (
+	TranscodingWebmVp9CPUUsed0 TranscodingWebmVp9CPUUsed = "0"
+	TranscodingWebmVp9CPUUsed1 TranscodingWebmVp9CPUUsed = "1"
+	TranscodingWebmVp9CPUUsed2 TranscodingWebmVp9CPUUsed = "2"
+	TranscodingWebmVp9CPUUsed3 TranscodingWebmVp9CPUUsed = "3"
+	TranscodingWebmVp9CPUUsed4 TranscodingWebmVp9CPUUsed = "4"
+	TranscodingWebmVp9CPUUsed5 TranscodingWebmVp9CPUUsed = "5"
+	TranscodingWebmVp9CPUUsed6 TranscodingWebmVp9CPUUsed = "6"
+	TranscodingWebmVp9CPUUsed7 TranscodingWebmVp9CPUUsed = "7"
+	TranscodingWebmVp9CPUUsed8 TranscodingWebmVp9CPUUsed = "8"
+)
+
+// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
+// profile must support it.
+type TranscodingWebmVp9Pixfmt string
+
+const (
+	TranscodingWebmVp9PixfmtYuv420p     TranscodingWebmVp9Pixfmt = "yuv420p"
+	TranscodingWebmVp9PixfmtYuv422p     TranscodingWebmVp9Pixfmt = "yuv422p"
+	TranscodingWebmVp9PixfmtYuv440p     TranscodingWebmVp9Pixfmt = "yuv440p"
+	TranscodingWebmVp9PixfmtYuv444p     TranscodingWebmVp9Pixfmt = "yuv444p"
+	TranscodingWebmVp9PixfmtYuv420p10le TranscodingWebmVp9Pixfmt = "yuv420p10le"
+	TranscodingWebmVp9PixfmtYuv422p10le TranscodingWebmVp9Pixfmt = "yuv422p10le"
+	TranscodingWebmVp9PixfmtYuv440p10le TranscodingWebmVp9Pixfmt = "yuv440p10le"
+	TranscodingWebmVp9PixfmtYuv444p10le TranscodingWebmVp9Pixfmt = "yuv444p10le"
+	TranscodingWebmVp9PixfmtYuv420p12le TranscodingWebmVp9Pixfmt = "yuv420p12le"
+	TranscodingWebmVp9PixfmtYuv422p12le TranscodingWebmVp9Pixfmt = "yuv422p12le"
+	TranscodingWebmVp9PixfmtYuv440p12le TranscodingWebmVp9Pixfmt = "yuv440p12le"
+	TranscodingWebmVp9PixfmtYuv444p12le TranscodingWebmVp9Pixfmt = "yuv444p12le"
+)
+
+// Quality specifies the VP9 encoding quality preset. Valid values:
+//
+// - good: Balanced quality preset, good for most applications
+// - best: Best quality preset, slower encoding
+// - realtime: Fast encoding preset, suitable for live streaming
+type TranscodingWebmVp9Quality string
+
+const (
+	TranscodingWebmVp9QualityGood     TranscodingWebmVp9Quality = "good"
+	TranscodingWebmVp9QualityBest     TranscodingWebmVp9Quality = "best"
+	TranscodingWebmVp9QualityRealtime TranscodingWebmVp9Quality = "realtime"
+)
+
 type TranscodingNewParams struct {
 	// Format specifies the requested encoding settings.
 	Format TranscodingNewParamsFormatUnion `json:"format,omitzero" api:"required"`
@@ -567,11 +1335,11 @@ func (r *TranscodingNewParams) UnmarshalJSON(data []byte) error {
 //
 // Use [param.IsOmitted] to confirm if a field is set.
 type TranscodingNewParamsFormatUnion struct {
-	OfMP4H264 *TranscodingNewParamsFormatMP4H264 `json:",omitzero,inline"`
-	OfMP4H265 *TranscodingNewParamsFormatMP4H265 `json:",omitzero,inline"`
-	OfMP4Av1  *TranscodingNewParamsFormatMP4Av1  `json:",omitzero,inline"`
-	OfWebmVp9 *TranscodingNewParamsFormatWebmVp9 `json:",omitzero,inline"`
-	OfM4aAac  *TranscodingNewParamsFormatM4aAac  `json:",omitzero,inline"`
+	OfMP4H264 *TranscodingMP4H264Param `json:",omitzero,inline"`
+	OfMP4H265 *TranscodingMP4H265Param `json:",omitzero,inline"`
+	OfMP4Av1  *TranscodingMP4Av1Param  `json:",omitzero,inline"`
+	OfWebmVp9 *TranscodingWebmVp9Param `json:",omitzero,inline"`
+	OfM4aAac  *TranscodingM4aAacParam  `json:",omitzero,inline"`
 	paramUnion
 }
 
@@ -620,7 +1388,7 @@ func (u TranscodingNewParamsFormatUnion) GetX265Keyint() *int64 {
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscodingNewParamsFormatUnion) GetCPUUsed() *string {
 	if vt := u.OfWebmVp9; vt != nil {
-		return &vt.CPUUsed
+		return (*string)(&vt.CPUUsed)
 	}
 	return nil
 }
@@ -636,7 +1404,7 @@ func (u TranscodingNewParamsFormatUnion) GetMinrate() *int64 {
 // Returns a pointer to the underlying variant's property, if present.
 func (u TranscodingNewParamsFormatUnion) GetQuality() *string {
 	if vt := u.OfWebmVp9; vt != nil {
-		return &vt.Quality
+		return (*string)(&vt.Quality)
 	}
 	return nil
 }
@@ -690,6 +1458,20 @@ func (u TranscodingNewParamsFormatUnion) GetAudioSamplerate() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingNewParamsFormatUnion) GetBufsize() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u TranscodingNewParamsFormatUnion) GetChannels() *int64 {
 	if vt := u.OfMP4H264; vt != nil {
 		return (*int64)(&vt.Channels)
@@ -720,6 +1502,34 @@ func (u TranscodingNewParamsFormatUnion) GetCrf() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingNewParamsFormatUnion) GetDisableAudio() *bool {
+	if vt := u.OfMP4H264; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingNewParamsFormatUnion) GetDisableVideo() *bool {
+	if vt := u.OfMP4H264; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u TranscodingNewParamsFormatUnion) GetDuration() *float64 {
 	if vt := u.OfMP4H264; vt != nil && vt.Duration.Valid() {
 		return &vt.Duration.Value
@@ -731,6 +1541,48 @@ func (u TranscodingNewParamsFormatUnion) GetDuration() *float64 {
 		return &vt.Duration.Value
 	} else if vt := u.OfM4aAac; vt != nil && vt.Duration.Valid() {
 		return &vt.Duration.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingNewParamsFormatUnion) GetFramerate() *float64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingNewParamsFormatUnion) GetGop() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingNewParamsFormatUnion) GetHeight() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
 	}
 	return nil
 }
@@ -748,6 +1600,20 @@ func (u TranscodingNewParamsFormatUnion) GetLevel() *int64 {
 }
 
 // Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingNewParamsFormatUnion) GetMaxrate() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
 func (u TranscodingNewParamsFormatUnion) GetMovflags() *string {
 	if vt := u.OfMP4H264; vt != nil {
 		return (*string)(&vt.Movflags)
@@ -755,6 +1621,20 @@ func (u TranscodingNewParamsFormatUnion) GetMovflags() *string {
 		return (*string)(&vt.Movflags)
 	} else if vt := u.OfMP4Av1; vt != nil {
 		return (*string)(&vt.Movflags)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingNewParamsFormatUnion) GetPerTitle() *bool {
+	if vt := u.OfMP4H264; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
 	}
 	return nil
 }
@@ -813,475 +1693,42 @@ func (u TranscodingNewParamsFormatUnion) GetSeek() *float64 {
 	return nil
 }
 
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingNewParamsFormatUnion) GetVideoBitrate() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingNewParamsFormatUnion) GetWidth() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	}
+	return nil
+}
+
 func init() {
 	apijson.RegisterUnion[TranscodingNewParamsFormatUnion](
 		"id",
-		apijson.Discriminator[TranscodingNewParamsFormatMP4H264]("mp4_h264"),
-		apijson.Discriminator[TranscodingNewParamsFormatMP4H265]("mp4_h265"),
-		apijson.Discriminator[TranscodingNewParamsFormatMP4Av1]("mp4_av1"),
-		apijson.Discriminator[TranscodingNewParamsFormatWebmVp9]("webm_vp9"),
-		apijson.Discriminator[TranscodingNewParamsFormatM4aAac]("m4a_aac"),
-	)
-}
-
-// The property ID is required.
-type TranscodingNewParamsFormatMP4H264 struct {
-	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
-	// to 128000.
-	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
-	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
-	// values mean better quality but larger file size. Range: 16 to 35. Recommended
-	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
-	// quality.
-	Crf param.Opt[int64] `json:"crf,omitzero"`
-	// Duration specifies the requested output length in seconds. Defaults to the
-	// remaining source duration and is capped at the source end. Audio-only output
-	// must resolve to at least 0.001 seconds after trimming and sample rounding. The
-	// accepted interval determines the fixed price.
-	Duration param.Opt[float64] `json:"duration,omitzero"`
-	// Seek specifies the start in source seconds. Defaults to zero and must precede
-	// the source end. The accepted interval uses the output frame or sample timeline.
-	// Audio-only output must retain at least 0.001 seconds after sample rounding.
-	Seek param.Opt[float64] `json:"seek,omitzero"`
-	// X264KeyInt specifies the maximum number of frames between keyframes for H.264
-	// encoding. Range: 1 to 960. Higher values can improve compression but may affect
-	// seeking.
-	X264Keyint param.Opt[int64] `json:"x264_keyint,omitzero"`
-	// AudioSamplerate specifies the output sample rate in Hz. Defaults to 48000. WebM
-	// Opus audio uses 48000.
-	//
-	// Any of 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000,
-	// 88200, 96000.
-	AudioSamplerate int64 `json:"audio_samplerate,omitzero"`
-	// Channels specifies the output channel count. Defaults to stereo. Six channels
-	// means 5.1; eight means 7.1.
-	//
-	// Any of 1, 2, 6, 8.
-	Channels int64 `json:"channels,omitzero"`
-	// Level specifies the H.264 decoder level using its two-digit representation, such
-	// as 41 for level 4.1. The dimensions, frame rate and rate controls must fit this
-	// level and the effective profile. Omitted rate limits resolve to level-compatible
-	// defaults.
-	//
-	// Any of 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51.
-	Level int64 `json:"level,omitzero"`
-	// Movflags specifies MP4 packaging. Defaults to faststart, which places playback
-	// metadata before the media.
-	//
-	// Any of "faststart".
-	Movflags string `json:"movflags,omitzero"`
-	// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
-	// profile must support it.
-	//
-	// Any of "yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le",
-	// "yuv444p10le".
-	Pixfmt string `json:"pixfmt,omitzero"`
-	// Preset specifies the encoding speed preset. Valid values (from fastest to
-	// slowest):
-	//
-	// - ultrafast: Fastest encoding, lowest quality
-	// - superfast: Very fast encoding, lower quality
-	// - veryfast: Fast encoding, moderate quality
-	// - faster: Faster encoding, good quality
-	// - fast: Fast encoding, better quality
-	// - medium: Balanced preset, best quality
-	//
-	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
-	Preset string `json:"preset,omitzero"`
-	// Profilev specifies the H.264 profile. Valid values:
-	//
-	// - baseline: Basic profile, good for mobile devices
-	// - main: Main profile, good for most applications
-	// - high: High profile, best quality but requires more processing
-	// - high10: High 10-bit profile, supports 10-bit color
-	// - high422: High 4:2:2 profile, supports 4:2:2 color sampling
-	// - high444: High 4:4:4 profile, supports 4:4:4 color sampling
-	//
-	// Any of "baseline", "main", "high", "high10", "high422", "high444".
-	Profilev string `json:"profilev,omitzero"`
-	// Id specifies the output format.
-	//
-	// This field can be elided, and will marshal its zero value as "mp4_h264".
-	ID constant.MP4H264 `json:"id" default:"mp4_h264"`
-	paramObj
-}
-
-func (r TranscodingNewParamsFormatMP4H264) MarshalJSON() (data []byte, err error) {
-	type shadow TranscodingNewParamsFormatMP4H264
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscodingNewParamsFormatMP4H264) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H264](
-		"audio_samplerate", 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H264](
-		"channels", 1, 2, 6, 8,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H264](
-		"level", 10, 11, 12, 13, 20, 21, 22, 30, 31, 32, 40, 41, 42, 50, 51,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H264](
-		"movflags", "faststart",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H264](
-		"pixfmt", "yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H264](
-		"preset", "ultrafast", "superfast", "veryfast", "faster", "fast", "medium",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H264](
-		"profilev", "baseline", "main", "high", "high10", "high422", "high444",
-	)
-}
-
-// The property ID is required.
-type TranscodingNewParamsFormatMP4H265 struct {
-	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
-	// to 128000.
-	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
-	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
-	// values mean better quality but larger file size. Range: 16 to 35. Recommended
-	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
-	// quality.
-	Crf param.Opt[int64] `json:"crf,omitzero"`
-	// Duration specifies the requested output length in seconds. Defaults to the
-	// remaining source duration and is capped at the source end. Audio-only output
-	// must resolve to at least 0.001 seconds after trimming and sample rounding. The
-	// accepted interval determines the fixed price.
-	Duration param.Opt[float64] `json:"duration,omitzero"`
-	// Seek specifies the start in source seconds. Defaults to zero and must precede
-	// the source end. The accepted interval uses the output frame or sample timeline.
-	// Audio-only output must retain at least 0.001 seconds after sample rounding.
-	Seek param.Opt[float64] `json:"seek,omitzero"`
-	// X265KeyInt specifies the maximum number of frames between keyframes for H.265
-	// encoding. Range: 1 to 300. Higher values can improve compression but may affect
-	// seeking.
-	X265Keyint param.Opt[int64] `json:"x265_keyint,omitzero"`
-	// AudioSamplerate specifies the output sample rate in Hz. Defaults to 48000. WebM
-	// Opus audio uses 48000.
-	//
-	// Any of 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000,
-	// 88200, 96000.
-	AudioSamplerate int64 `json:"audio_samplerate,omitzero"`
-	// Channels specifies the output channel count. Defaults to stereo. Six channels
-	// means 5.1; eight means 7.1.
-	//
-	// Any of 1, 2, 6, 8.
-	Channels int64 `json:"channels,omitzero"`
-	// Level specifies the HEVC level using its two-digit representation, such as 31
-	// for level 3.1. The dimensions, frame rate and rate controls must fit this level.
-	// Omitted rate limits resolve to level-compatible defaults.
-	//
-	// Any of 30, 31, 41.
-	Level int64 `json:"level,omitzero"`
-	// Movflags specifies MP4 packaging. Defaults to faststart, which places playback
-	// metadata before the media.
-	//
-	// Any of "faststart".
-	Movflags string `json:"movflags,omitzero"`
-	// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
-	// profile must support it.
-	//
-	// Any of "yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le",
-	// "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv444p12le".
-	Pixfmt string `json:"pixfmt,omitzero"`
-	// Preset specifies the encoding speed preset. Valid values (from fastest to
-	// slowest):
-	//
-	// - ultrafast: Fastest encoding, lowest quality
-	// - superfast: Very fast encoding, lower quality
-	// - veryfast: Fast encoding, moderate quality
-	// - faster: Faster encoding, good quality
-	// - fast: Fast encoding, better quality
-	// - medium: Balanced preset, best quality
-	//
-	// Any of "ultrafast", "superfast", "veryfast", "faster", "fast", "medium".
-	Preset string `json:"preset,omitzero"`
-	// Profilev selects the HEVC profile. It must support the requested pixel format.
-	//
-	// Any of "main", "main10", "main12", "main422-10", "main422-12", "main444-8",
-	// "main444-10", "main444-12".
-	Profilev string `json:"profilev,omitzero"`
-	// Id specifies the output format.
-	//
-	// This field can be elided, and will marshal its zero value as "mp4_h265".
-	ID constant.MP4H265 `json:"id" default:"mp4_h265"`
-	paramObj
-}
-
-func (r TranscodingNewParamsFormatMP4H265) MarshalJSON() (data []byte, err error) {
-	type shadow TranscodingNewParamsFormatMP4H265
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscodingNewParamsFormatMP4H265) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H265](
-		"audio_samplerate", 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H265](
-		"channels", 1, 2, 6, 8,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H265](
-		"level", 30, 31, 41,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H265](
-		"movflags", "faststart",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H265](
-		"pixfmt", "yuv420p", "yuv422p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv444p12le",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H265](
-		"preset", "ultrafast", "superfast", "veryfast", "faster", "fast", "medium",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4H265](
-		"profilev", "main", "main10", "main12", "main422-10", "main422-12", "main444-8", "main444-10", "main444-12",
-	)
-}
-
-// The property ID is required.
-type TranscodingNewParamsFormatMP4Av1 struct {
-	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
-	// to 128000.
-	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
-	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
-	// values mean better quality but larger file size. Range: 16 to 63. Recommended
-	// values: 16-35 for high quality, 35-45 for good quality, 45-63 for acceptable
-	// quality.
-	Crf param.Opt[int64] `json:"crf,omitzero"`
-	// Duration specifies the requested output length in seconds. Defaults to the
-	// remaining source duration and is capped at the source end. Audio-only output
-	// must resolve to at least 0.001 seconds after trimming and sample rounding. The
-	// accepted interval determines the fixed price.
-	Duration param.Opt[float64] `json:"duration,omitzero"`
-	// Seek specifies the start in source seconds. Defaults to zero and must precede
-	// the source end. The accepted interval uses the output frame or sample timeline.
-	// Audio-only output must retain at least 0.001 seconds after sample rounding.
-	Seek param.Opt[float64] `json:"seek,omitzero"`
-	// AudioSamplerate specifies the output sample rate in Hz. Defaults to 48000. WebM
-	// Opus audio uses 48000.
-	//
-	// Any of 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000,
-	// 88200, 96000.
-	AudioSamplerate int64 `json:"audio_samplerate,omitzero"`
-	// Channels specifies the output channel count. Defaults to stereo. Six channels
-	// means 5.1; eight means 7.1.
-	//
-	// Any of 1, 2, 6, 8.
-	Channels int64 `json:"channels,omitzero"`
-	// Level specifies the AV1 level using its two-digit representation, such as 31 for
-	// level 3.1. The dimensions, frame rate and rate controls must fit this level.
-	// Omitted rate limits resolve to level-compatible defaults.
-	//
-	// Any of 30, 31, 41.
-	Level int64 `json:"level,omitzero"`
-	// Movflags specifies MP4 packaging. Defaults to faststart, which places playback
-	// metadata before the media.
-	//
-	// Any of "faststart".
-	Movflags string `json:"movflags,omitzero"`
-	// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
-	// profile must support it.
-	//
-	// Any of "yuv420p", "yuv420p10le".
-	Pixfmt string `json:"pixfmt,omitzero"`
-	// Preset controls the encoding efficiency and processing intensity. Lower presets
-	// use more optimization features, creating smaller files with better quality but
-	// requiring more compute time. Higher presets encode faster but produce larger
-	// files.
-	//
-	// Preset ranges:
-	//
-	// - 6-7: Fast encoding for real-time applications (smaller files)
-	// - 8-10: Balanced efficiency and speed for general use
-	// - 11-13: Fastest encoding for real-time applications (larger files)
-	//
-	// Any of "6", "7", "8", "9", "10", "11", "12", "13".
-	Preset string `json:"preset,omitzero"`
-	// Profilev selects the AV1 Main profile. Use pixfmt to select 8-bit or 10-bit
-	// output.
-	//
-	// Any of "main".
-	Profilev string `json:"profilev,omitzero"`
-	// Id specifies the output format.
-	//
-	// This field can be elided, and will marshal its zero value as "mp4_av1".
-	ID constant.MP4Av1 `json:"id" default:"mp4_av1"`
-	paramObj
-}
-
-func (r TranscodingNewParamsFormatMP4Av1) MarshalJSON() (data []byte, err error) {
-	type shadow TranscodingNewParamsFormatMP4Av1
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscodingNewParamsFormatMP4Av1) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4Av1](
-		"audio_samplerate", 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4Av1](
-		"channels", 1, 2, 6, 8,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4Av1](
-		"level", 30, 31, 41,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4Av1](
-		"movflags", "faststart",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4Av1](
-		"pixfmt", "yuv420p", "yuv420p10le",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4Av1](
-		"preset", "6", "7", "8", "9", "10", "11", "12", "13",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatMP4Av1](
-		"profilev", "main",
-	)
-}
-
-// The property ID is required.
-type TranscodingNewParamsFormatWebmVp9 struct {
-	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
-	// to 128000.
-	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
-	// Crf (Constant Rate Factor) controls the quality of the output video. Lower
-	// values mean better quality but larger file size. Range: 15 to 35. Recommended
-	// values: 18-28 for high quality, 23-28 for good quality, 28-35 for acceptable
-	// quality.
-	Crf param.Opt[int64] `json:"crf,omitzero"`
-	// Duration specifies the requested output length in seconds. Defaults to the
-	// remaining source duration and is capped at the source end. Audio-only output
-	// must resolve to at least 0.001 seconds after trimming and sample rounding. The
-	// accepted interval determines the fixed price.
-	Duration param.Opt[float64] `json:"duration,omitzero"`
-	// Minrate selects VP9 constant bitrate when equal to video_bitrate and maxrate.
-	// Other minimum-rate combinations are unsupported.
-	Minrate param.Opt[int64] `json:"minrate,omitzero"`
-	// Seek specifies the start in source seconds. Defaults to zero and must precede
-	// the source end. The accepted interval uses the output frame or sample timeline.
-	// Audio-only output must retain at least 0.001 seconds after sample rounding.
-	Seek param.Opt[float64] `json:"seek,omitzero"`
-	// AudioSamplerate specifies the output sample rate in Hz. Defaults to 48000. WebM
-	// Opus audio uses 48000.
-	//
-	// Any of 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000,
-	// 88200, 96000.
-	AudioSamplerate int64 `json:"audio_samplerate,omitzero"`
-	// Channels specifies the output channel count. Defaults to stereo. Six channels
-	// means 5.1; eight means 7.1.
-	//
-	// Any of 1, 2, 6, 8.
-	Channels int64 `json:"channels,omitzero"`
-	// CpuUsed specifies the CPU usage level for VP9 encoding. Range: 0 to 8. Lower
-	// values mean better quality but slower encoding, higher values mean faster
-	// encoding but lower quality. Recommended values: 0-2 for high quality, 2-4 for
-	// good quality, 4-6 for balanced, 6-8 for speed
-	//
-	// Any of "0", "1", "2", "3", "4", "5", "6", "7", "8".
-	CPUUsed string `json:"cpu_used,omitzero"`
-	// Pixfmt specifies the output pixel format. Defaults to yuv420p. The selected
-	// profile must support it.
-	//
-	// Any of "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuv420p10le", "yuv422p10le",
-	// "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le",
-	// "yuv444p12le".
-	Pixfmt string `json:"pixfmt,omitzero"`
-	// Quality specifies the VP9 encoding quality preset. Valid values:
-	//
-	// - good: Balanced quality preset, good for most applications
-	// - best: Best quality preset, slower encoding
-	// - realtime: Fast encoding preset, suitable for live streaming
-	//
-	// Any of "good", "best", "realtime".
-	Quality string `json:"quality,omitzero"`
-	// Id specifies the output format.
-	//
-	// This field can be elided, and will marshal its zero value as "webm_vp9".
-	ID constant.WebmVp9 `json:"id" default:"webm_vp9"`
-	paramObj
-}
-
-func (r TranscodingNewParamsFormatWebmVp9) MarshalJSON() (data []byte, err error) {
-	type shadow TranscodingNewParamsFormatWebmVp9
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscodingNewParamsFormatWebmVp9) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatWebmVp9](
-		"audio_samplerate", 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatWebmVp9](
-		"channels", 1, 2, 6, 8,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatWebmVp9](
-		"cpu_used", "0", "1", "2", "3", "4", "5", "6", "7", "8",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatWebmVp9](
-		"pixfmt", "yuv420p", "yuv422p", "yuv440p", "yuv444p", "yuv420p10le", "yuv422p10le", "yuv440p10le", "yuv444p10le", "yuv420p12le", "yuv422p12le", "yuv440p12le", "yuv444p12le",
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatWebmVp9](
-		"quality", "good", "best", "realtime",
-	)
-}
-
-// The property ID is required.
-type TranscodingNewParamsFormatM4aAac struct {
-	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
-	// to 128000.
-	AudioBitrate param.Opt[int64] `json:"audio_bitrate,omitzero"`
-	// Duration specifies the requested output length in seconds. Defaults to the
-	// remaining source duration and is capped at the source end. Audio-only output
-	// must resolve to at least 0.001 seconds after trimming and sample rounding. The
-	// accepted interval determines the fixed price.
-	Duration param.Opt[float64] `json:"duration,omitzero"`
-	// Seek specifies the start in source seconds. Defaults to zero and must precede
-	// the source end. The accepted interval uses the output frame or sample timeline.
-	// Audio-only output must retain at least 0.001 seconds after sample rounding.
-	Seek param.Opt[float64] `json:"seek,omitzero"`
-	// AudioSamplerate specifies the output sample rate in Hz. Defaults to 48000. WebM
-	// Opus audio uses 48000.
-	//
-	// Any of 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000,
-	// 88200, 96000.
-	AudioSamplerate int64 `json:"audio_samplerate,omitzero"`
-	// Channels specifies the output channel count. Defaults to stereo. Six channels
-	// means 5.1; eight means 7.1.
-	//
-	// Any of 1, 2, 6, 8.
-	Channels int64 `json:"channels,omitzero"`
-	// Id specifies an AAC M4A export.
-	//
-	// This field can be elided, and will marshal its zero value as "m4a_aac".
-	ID constant.M4aAac `json:"id" default:"m4a_aac"`
-	paramObj
-}
-
-func (r TranscodingNewParamsFormatM4aAac) MarshalJSON() (data []byte, err error) {
-	type shadow TranscodingNewParamsFormatM4aAac
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscodingNewParamsFormatM4aAac) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatM4aAac](
-		"audio_samplerate", 8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000,
-	)
-	apijson.RegisterFieldValidator[TranscodingNewParamsFormatM4aAac](
-		"channels", 1, 2, 6, 8,
+		apijson.Discriminator[TranscodingMP4H264Param]("mp4_h264"),
+		apijson.Discriminator[TranscodingMP4H265Param]("mp4_h265"),
+		apijson.Discriminator[TranscodingMP4Av1Param]("mp4_av1"),
+		apijson.Discriminator[TranscodingWebmVp9Param]("webm_vp9"),
+		apijson.Discriminator[TranscodingM4aAacParam]("m4a_aac"),
 	)
 }
 

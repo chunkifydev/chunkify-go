@@ -414,6 +414,29 @@ func (r *ThumbnailError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Output Storage selection, independent of Source storage.
+type ThumbnailCreateStorageParam struct {
+	// Id identifies output Storage in this Project. Omit to use the Project default.
+	ID param.Opt[string] `json:"id,omitzero"`
+	// Path specifies the output filename template relative to the selected Storage
+	// base_prefix. Required for customer storage; generated for Chunkify temporary
+	// storage. The filename must contain one %05d placeholder, replaced by the image
+	// or sprite sheet number starting at 1, and end in .jpg for jpeg or .webp for
+	// webp. The WebVTT file uses the filename without the placeholder and its adjacent
+	// separator, such as thumb.vtt for thumb-%05d.jpg. The combined path may contain
+	// at most 1024 bytes.
+	Path param.Opt[string] `json:"path,omitzero"`
+	paramObj
+}
+
+func (r ThumbnailCreateStorageParam) MarshalJSON() (data []byte, err error) {
+	type shadow ThumbnailCreateStorageParam
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ThumbnailCreateStorageParam) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ThumbnailNewParams struct {
 	// SourceId identifies a video Source in this Project.
 	SourceID string `json:"source_id" api:"required"`
@@ -440,7 +463,7 @@ type ThumbnailNewParams struct {
 	Range ThumbnailNewParamsRange `json:"range,omitzero"`
 	// Storage overrides the Project output destination and names the output files.
 	// Source storage remains independent.
-	Storage ThumbnailNewParamsStorage `json:"storage,omitzero"`
+	Storage ThumbnailCreateStorageParam `json:"storage,omitzero"`
 	// Timestamps specifies 1 to 100 Source-relative target times in seconds. Every
 	// time must be within the selected range. Repeated targets produce separate
 	// outputs.
@@ -488,30 +511,6 @@ func (r ThumbnailNewParamsRange) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ThumbnailNewParamsRange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Storage overrides the Project output destination and names the output files.
-// Source storage remains independent.
-type ThumbnailNewParamsStorage struct {
-	// Id identifies output Storage in this Project. Omit to use the Project default.
-	ID param.Opt[string] `json:"id,omitzero"`
-	// Path specifies the output filename template relative to the selected Storage
-	// base_prefix. Required for customer storage; generated for Chunkify temporary
-	// storage. The filename must contain one %05d placeholder, replaced by the image
-	// or sprite sheet number starting at 1, and end in .jpg for jpeg or .webp for
-	// webp. The WebVTT file uses the filename without the placeholder and its adjacent
-	// separator, such as thumb.vtt for thumb-%05d.jpg. The combined path may contain
-	// at most 1024 bytes.
-	Path param.Opt[string] `json:"path,omitzero"`
-	paramObj
-}
-
-func (r ThumbnailNewParamsStorage) MarshalJSON() (data []byte, err error) {
-	type shadow ThumbnailNewParamsStorage
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ThumbnailNewParamsStorage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
