@@ -56,24 +56,14 @@ func main() {
 	client := chunkify.NewClient(
 		option.WithProjectAccessToken("My Project Access Token"), // defaults to os.LookupEnv("CHUNKIFY_TOKEN")
 	)
-	job, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
-		Format: chunkify.JobNewParamsFormatUnion{
-			OfMP4H264: &chunkify.MP4H264Param{
-				Width:  chunkify.Int(1920),
-				Height: chunkify.Int(1080),
-				Crf:    chunkify.Int(21),
-			},
-		},
+	asset, err := client.Assets.New(context.TODO(), chunkify.AssetNewParams{
 		SourceID: "src_2G6MJiNz71bHQGNzGwKx5cJwPFS",
-		Transcoder: chunkify.JobNewParamsTranscoder{
-			Quantity: chunkify.Int(4),
-			Type:     "8vCPU",
-		},
+		Title:    chunkify.String("Launch video"),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", job.ID)
+	fmt.Printf("%+v\n", asset.ID)
 }
 
 ```
@@ -279,7 +269,7 @@ client := chunkify.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Files.List(context.TODO(), ...,
+client.Assets.List(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -339,14 +329,14 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Files.List(context.TODO(), chunkify.FileListParams{})
+_, err := client.Assets.List(context.TODO(), chunkify.AssetListParams{})
 if err != nil {
 	var apierr *chunkify.Error
 	if errors.As(err, &apierr) {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/files": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/assets": 400 Bad Request { ... }
 }
 ```
 
@@ -364,9 +354,9 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Files.List(
+client.Assets.List(
 	ctx,
-	chunkify.FileListParams{},
+	chunkify.AssetListParams{},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
 )
@@ -400,9 +390,9 @@ client := chunkify.NewClient(
 )
 
 // Override per-request:
-client.Files.List(
+client.Assets.List(
 	context.TODO(),
-	chunkify.FileListParams{},
+	chunkify.AssetListParams{},
 	option.WithMaxRetries(5),
 )
 ```
@@ -415,9 +405,9 @@ you need to examine response headers, status codes, or other details.
 ```go
 // Create a variable to store the HTTP response
 var response *http.Response
-page, err := client.Files.List(
+page, err := client.Assets.List(
 	context.TODO(),
-	chunkify.FileListParams{},
+	chunkify.AssetListParams{},
 	option.WithResponseInto(&response),
 )
 if err != nil {
