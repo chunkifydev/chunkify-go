@@ -415,7 +415,7 @@ func (r *ThumbnailError) UnmarshalJSON(data []byte) error {
 }
 
 // Output Storage selection, independent of Source storage.
-type ThumbnailCreateStorageParam struct {
+type ThumbnailCreateStorageParams struct {
 	// Id identifies output Storage in this Project. Omit to use the Project default.
 	ID param.Opt[string] `json:"id,omitzero"`
 	// Path specifies the output filename template relative to the selected Storage
@@ -429,11 +429,11 @@ type ThumbnailCreateStorageParam struct {
 	paramObj
 }
 
-func (r ThumbnailCreateStorageParam) MarshalJSON() (data []byte, err error) {
-	type shadow ThumbnailCreateStorageParam
+func (r ThumbnailCreateStorageParams) MarshalJSON() (data []byte, err error) {
+	type shadow ThumbnailCreateStorageParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *ThumbnailCreateStorageParam) UnmarshalJSON(data []byte) error {
+func (r *ThumbnailCreateStorageParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -463,7 +463,7 @@ type ThumbnailNewParams struct {
 	Range ThumbnailNewParamsRange `json:"range,omitzero"`
 	// Storage overrides the Project output destination and names the output files.
 	// Source storage remains independent.
-	Storage ThumbnailCreateStorageParam `json:"storage,omitzero"`
+	Storage ThumbnailCreateStorageParams `json:"storage,omitzero"`
 	// Timestamps specifies 1 to 100 Source-relative target times in seconds. Every
 	// time must be within the selected range. Repeated targets produce separate
 	// outputs.
