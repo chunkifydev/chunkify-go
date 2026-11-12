@@ -39,10 +39,10 @@ func NewProjectAnalyticsConnectionKeyService(opts ...option.RequestOption) (r Pr
 // Generate a public key for players to send events, or a read-only secret key for
 // a dashboard or MCP client to query a hosted Chunkify Analytics server. Save
 // secret keys when returned. Requires a team owner and a Team Access Key.
-func (r *ProjectAnalyticsConnectionKeyService) New(ctx context.Context, connectionID string, params ProjectAnalyticsConnectionKeyNewParams, opts ...option.RequestOption) (res *ProjectAnalyticsConnectionKeyNewResponse, err error) {
+func (r *ProjectAnalyticsConnectionKeyService) New(ctx context.Context, projectID string, connectionID string, body ProjectAnalyticsConnectionKeyNewParams, opts ...option.RequestOption) (res *ProjectAnalyticsConnectionKeyNewResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	if params.ProjectID == "" {
+	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return nil, err
 	}
@@ -50,18 +50,18 @@ func (r *ProjectAnalyticsConnectionKeyService) New(ctx context.Context, connecti
 		err = errors.New("missing required connectionId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("projects/%s/analytics/connections/%s/keys", params.ProjectID, connectionID)
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, params, &res, opts...)
+	path := fmt.Sprintf("projects/%s/analytics/connections/%s/keys", projectID, connectionID)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return res, err
 }
 
 // List keys for a hosted Chunkify Analytics server: the public key used by players
 // to send events, and read-only secret key records for dashboard and MCP access.
 // Secret values are not returned. Requires a team owner and a Team Access Key.
-func (r *ProjectAnalyticsConnectionKeyService) List(ctx context.Context, connectionID string, query ProjectAnalyticsConnectionKeyListParams, opts ...option.RequestOption) (res *ProjectAnalyticsConnectionKeyListResponse, err error) {
+func (r *ProjectAnalyticsConnectionKeyService) List(ctx context.Context, projectID string, connectionID string, opts ...option.RequestOption) (res *ProjectAnalyticsConnectionKeyListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	if query.ProjectID == "" {
+	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (r *ProjectAnalyticsConnectionKeyService) List(ctx context.Context, connect
 		err = errors.New("missing required connectionId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("projects/%s/analytics/connections/%s/keys", query.ProjectID, connectionID)
+	path := fmt.Sprintf("projects/%s/analytics/connections/%s/keys", projectID, connectionID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return res, err
 }
@@ -77,14 +77,14 @@ func (r *ProjectAnalyticsConnectionKeyService) List(ctx context.Context, connect
 // Rotate a public or read-only secret key for a hosted Chunkify Analytics server.
 // Update the player, dashboard, or MCP client with the new key; the old key stops
 // working immediately. Requires a team owner and a Team Access Key.
-func (r *ProjectAnalyticsConnectionKeyService) Rotate(ctx context.Context, keyID string, body ProjectAnalyticsConnectionKeyRotateParams, opts ...option.RequestOption) (res *ProjectAnalyticsConnectionKeyRotateResponse, err error) {
+func (r *ProjectAnalyticsConnectionKeyService) Rotate(ctx context.Context, projectID string, connectionID string, keyID string, opts ...option.RequestOption) (res *ProjectAnalyticsConnectionKeyRotateResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
-	if body.ProjectID == "" {
+	if projectID == "" {
 		err = errors.New("missing required projectId parameter")
 		return nil, err
 	}
-	if body.ConnectionID == "" {
+	if connectionID == "" {
 		err = errors.New("missing required connectionId parameter")
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (r *ProjectAnalyticsConnectionKeyService) Rotate(ctx context.Context, keyID
 		err = errors.New("missing required keyId parameter")
 		return nil, err
 	}
-	path := fmt.Sprintf("projects/%s/analytics/connections/%s/keys/%s/rotate", body.ProjectID, body.ConnectionID, keyID)
+	path := fmt.Sprintf("projects/%s/analytics/connections/%s/keys/%s/rotate", projectID, connectionID, keyID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, nil, &res, opts...)
 	return res, err
 }
@@ -203,7 +203,6 @@ func (r *ProjectAnalyticsConnectionKeyRotateResponse) UnmarshalJSON(data []byte)
 }
 
 type ProjectAnalyticsConnectionKeyNewParams struct {
-	ProjectID string `path:"projectId" api:"required" json:"-"`
 	// Purpose distinguishes player ingestion, read-only API access and a separate
 	// read-only MCP credential. Read and MCP keys have the same collector permissions.
 	//
@@ -229,14 +228,3 @@ const (
 	ProjectAnalyticsConnectionKeyNewParamsPurposeRead   ProjectAnalyticsConnectionKeyNewParamsPurpose = "read"
 	ProjectAnalyticsConnectionKeyNewParamsPurposeMcp    ProjectAnalyticsConnectionKeyNewParamsPurpose = "mcp"
 )
-
-type ProjectAnalyticsConnectionKeyListParams struct {
-	ProjectID string `path:"projectId" api:"required" json:"-"`
-	paramObj
-}
-
-type ProjectAnalyticsConnectionKeyRotateParams struct {
-	ProjectID    string `path:"projectId" api:"required" json:"-"`
-	ConnectionID string `path:"connectionId" api:"required" json:"-"`
-	paramObj
-}
