@@ -27,7 +27,7 @@ func TestProjectAnalyticsConnectionNewWithOptionalParams(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.New(
+	_, err := client.Projects.Analytics.Connections.New(
 		context.TODO(),
 		"projectId",
 		chunkify.ProjectAnalyticsConnectionNewParams{
@@ -61,12 +61,10 @@ func TestProjectAnalyticsConnectionGet(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.Get(
+	_, err := client.Projects.Analytics.Connections.Get(
 		context.TODO(),
+		"projectId",
 		"connectionId",
-		chunkify.ProjectAnalyticsConnectionGetParams{
-			ProjectID: "projectId",
-		},
 	)
 	if err != nil {
 		var apierr *chunkify.Error
@@ -91,11 +89,11 @@ func TestProjectAnalyticsConnectionUpdateWithOptionalParams(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.Update(
+	_, err := client.Projects.Analytics.Connections.Update(
 		context.TODO(),
+		"projectId",
 		"connectionId",
 		chunkify.ProjectAnalyticsConnectionUpdateParams{
-			ProjectID:           "projectId",
 			AllowedOrigins:      []string{"string"},
 			DefaultForDashboard: chunkify.Bool(true),
 			Endpoint:            chunkify.String("endpoint"),
@@ -127,7 +125,7 @@ func TestProjectAnalyticsConnectionList(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.List(context.TODO(), "projectId")
+	_, err := client.Projects.Analytics.Connections.List(context.TODO(), "projectId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
@@ -151,12 +149,10 @@ func TestProjectAnalyticsConnectionDelete(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	err := client.Projects.AnalyticsConnections.Delete(
+	err := client.Projects.Analytics.Connections.Delete(
 		context.TODO(),
+		"projectId",
 		"connectionId",
-		chunkify.ProjectAnalyticsConnectionDeleteParams{
-			ProjectID: "projectId",
-		},
 	)
 	if err != nil {
 		var apierr *chunkify.Error
