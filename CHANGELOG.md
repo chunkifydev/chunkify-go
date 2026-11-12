@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.17.0](https://github.com/chunkifydev/chunkify-go/compare/v0.16.3...v0.17.0) (2026-11-12)
+
+
+### Features
+
+* sync OpenAPI schema from Chunkify v2.0.0 ([6c8bfcc](https://github.com/chunkifydev/chunkify-go/commit/6c8bfccbf10d5d77bf9d9d995526ae3bd48f32ea))
+
+
+### Bug Fixes
+
+* align SDK method names with the API reference ([f858c5a](https://github.com/chunkifydev/chunkify-go/commit/f858c5a3fc1153aacf96c5c3257dceb937f06c35))
+
 ## [0.16.3](https://github.com/chunkifydev/chunkify-go/compare/v0.16.2...v0.16.3) (2026-09-15)
 
 
