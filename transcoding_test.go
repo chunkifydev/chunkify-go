@@ -28,7 +28,7 @@ func TestTranscodingNewWithOptionalParams(t *testing.T) {
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Transcodings.New(context.TODO(), chunkify.TranscodingNewParams{
-		Format: chunkify.TranscodingNewParamsFormatUnion{
+		Format: chunkify.TranscodingCreateFormatParamsUnion{
 			OfMP4H264: &chunkify.TranscodingMP4H264Param{
 				AudioBitrate:    chunkify.Int(32000),
 				AudioSamplerate: 8000,
@@ -58,7 +58,7 @@ func TestTranscodingNewWithOptionalParams(t *testing.T) {
 		Metadata: map[string]string{
 			"foo": "string",
 		},
-		Storage: chunkify.TranscodingNewParamsStorage{
+		Storage: chunkify.TranscodingCreateStorageParams{
 			ID:   chunkify.String("stor_example"),
 			Path: chunkify.String("exports/video.mp4"),
 		},
@@ -120,7 +120,7 @@ func TestTranscodingListWithOptionalParams(t *testing.T) {
 		Limit:     chunkify.Int(1),
 		Offset:    chunkify.Int(0),
 		SourceID:  chunkify.String("x"),
-		Status:    chunkify.TranscodingListParamsStatusPreparing,
+		Status:    chunkify.TranscodingStatusPreparing,
 		StorageID: chunkify.String("x"),
 	})
 	if err != nil {

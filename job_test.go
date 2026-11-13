@@ -11,6 +11,7 @@ import (
 	"github.com/chunkifydev/chunkify-go"
 	"github.com/chunkifydev/chunkify-go/internal/testutil"
 	"github.com/chunkifydev/chunkify-go/option"
+	"github.com/chunkifydev/chunkify-go/shared"
 )
 
 func TestJobNewWithOptionalParams(t *testing.T) {
@@ -28,7 +29,7 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Jobs.New(context.TODO(), chunkify.JobNewParams{
-		Format: chunkify.JobNewParamsFormatUnion{
+		Format: chunkify.JobCreateFormatParamsUnion{
 			OfMP4Av1: &chunkify.MP4Av1Param{
 				AudioBitrate: chunkify.Int(32000),
 				Bufsize:      chunkify.Int(100000),
@@ -59,13 +60,13 @@ func TestJobNewWithOptionalParams(t *testing.T) {
 			"key":  "value",
 			"key2": "value2",
 		},
-		Storage: chunkify.JobNewParamsStorage{
+		Storage: chunkify.JobCreateStorageParams{
 			ID:   chunkify.String("stor_example"),
 			Path: chunkify.String("exports/video.mp4"),
 		},
-		Transcoder: chunkify.JobNewParamsTranscoder{
+		Transcoder: chunkify.JobCreateTranscoderParams{
 			Quantity: chunkify.Int(2),
-			Type:     "4vCPU",
+			Type:     shared.InstanceType4vCPU,
 		},
 	})
 	if err != nil {
@@ -122,7 +123,7 @@ func TestJobListWithOptionalParams(t *testing.T) {
 			Lte:  chunkify.Int(0),
 			Sort: "asc",
 		},
-		FormatID:      chunkify.JobListParamsFormatIDMP4H264,
+		FormatID:      chunkify.JobFormatIDMP4H264,
 		HlsManifestID: chunkify.String("hls_manifest_id"),
 		Limit:         chunkify.Int(1),
 		Metadata:      [][]string{{"key1:value1"}},

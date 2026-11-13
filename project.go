@@ -116,7 +116,7 @@ type Project struct {
 	// Id is the unique identifier for the project.
 	ID string `json:"id" api:"required"`
 	// Defaults for new Assets, including Assets created from Uploads.
-	AssetDefaults ProjectAssetDefaults `json:"asset_defaults" api:"required"`
+	AssetDefaults AssetDefaults `json:"asset_defaults" api:"required"`
 	// Timestamp when the project was created
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Name of the project
@@ -145,52 +145,6 @@ type Project struct {
 // Returns the unmodified JSON received from the API
 func (r Project) RawJSON() string { return r.JSON.raw }
 func (r *Project) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Defaults for new Assets, including Assets created from Uploads.
-type ProjectAssetDefaults struct {
-	// Delete generated and partial files from the output Storage when a new Asset
-	// fails. The Asset record and original Source are preserved. Cleanup is attempted
-	// once after a delay and requires delete permission on the Storage. Defaults to
-	// false. Existing Assets are unchanged.
-	DeleteFilesOnFailure bool `json:"delete_files_on_failure"`
-	// Maximum streaming resolution. Defaults to 1080p on Hobby and 2160p on other
-	// plans. 2160p requires Starter or above. Smaller sources are not upscaled. Does
-	// not affect static renditions.
-	//
-	// Any of "1080p", "2160p".
-	MaxResolution string `json:"max_resolution"`
-	// Minimum streaming resolution. Defaults to auto, with no minimum. Must not exceed
-	// max_resolution. Smaller sources are not upscaled. Does not affect static
-	// renditions.
-	//
-	// Any of "auto", "240p", "360p", "540p", "720p", "1080p", "1440p", "2160p".
-	MinResolution string `json:"min_resolution"`
-	// PathTemplate specifies the Asset output folder relative to Storage base_prefix.
-	// Supports {assetID} and case-sensitive {metadata.<key>}; referenced values must
-	// be non-empty. Ignored for Chunkify storage, which always uses {assetID}.
-	// Defaults to {assetID}. Maximum template size: 1024 UTF-8 bytes. Expanded prefix:
-	// 768 bytes including base_prefix and trailing slash.
-	PathTemplate string `json:"path_template"`
-	// Allow public preview access for new Assets without an API token. Defaults to
-	// true. Existing Assets are unchanged.
-	PreviewEnabled bool `json:"preview_enabled"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		DeleteFilesOnFailure respjson.Field
-		MaxResolution        respjson.Field
-		MinResolution        respjson.Field
-		PathTemplate         respjson.Field
-		PreviewEnabled       respjson.Field
-		ExtraFields          map[string]respjson.Field
-		raw                  string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ProjectAssetDefaults) RawJSON() string { return r.JSON.raw }
-func (r *ProjectAssetDefaults) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -279,7 +233,7 @@ type ProjectUpdateParams struct {
 	StorageID param.Opt[string] `json:"storage_id,omitzero"`
 	// Defaults for new Assets and automatic Uploads. Replaces the whole object.
 	// Omitted fields reset to their defaults. Existing Assets are unchanged.
-	AssetDefaults ProjectUpdateParamsAssetDefaults `json:"asset_defaults,omitzero"`
+	AssetDefaults AssetDefaultsParams `json:"asset_defaults,omitzero"`
 	paramObj
 }
 
@@ -289,53 +243,4 @@ func (r ProjectUpdateParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *ProjectUpdateParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Defaults for new Assets and automatic Uploads. Replaces the whole object.
-// Omitted fields reset to their defaults. Existing Assets are unchanged.
-type ProjectUpdateParamsAssetDefaults struct {
-	// Delete generated and partial files from the output Storage when a new Asset
-	// fails. The Asset record and original Source are preserved. Cleanup is attempted
-	// once after a delay and requires delete permission on the Storage. Defaults to
-	// false. Existing Assets are unchanged.
-	DeleteFilesOnFailure param.Opt[bool] `json:"delete_files_on_failure,omitzero"`
-	// PathTemplate specifies the Asset output folder relative to Storage base_prefix.
-	// Supports {assetID} and case-sensitive {metadata.<key>}; referenced values must
-	// be non-empty. Ignored for Chunkify storage, which always uses {assetID}.
-	// Defaults to {assetID}. Maximum template size: 1024 UTF-8 bytes. Expanded prefix:
-	// 768 bytes including base_prefix and trailing slash.
-	PathTemplate param.Opt[string] `json:"path_template,omitzero"`
-	// Allow public preview access for new Assets without an API token. Defaults to
-	// true. Existing Assets are unchanged.
-	PreviewEnabled param.Opt[bool] `json:"preview_enabled,omitzero"`
-	// Maximum streaming resolution. Defaults to 1080p on Hobby and 2160p on other
-	// plans. 2160p requires Starter or above. Smaller sources are not upscaled. Does
-	// not affect static renditions.
-	//
-	// Any of "1080p", "2160p".
-	MaxResolution string `json:"max_resolution,omitzero"`
-	// Minimum streaming resolution. Defaults to auto, with no minimum. Must not exceed
-	// max_resolution. Smaller sources are not upscaled. Does not affect static
-	// renditions.
-	//
-	// Any of "auto", "240p", "360p", "540p", "720p", "1080p", "1440p", "2160p".
-	MinResolution string `json:"min_resolution,omitzero"`
-	paramObj
-}
-
-func (r ProjectUpdateParamsAssetDefaults) MarshalJSON() (data []byte, err error) {
-	type shadow ProjectUpdateParamsAssetDefaults
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ProjectUpdateParamsAssetDefaults) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[ProjectUpdateParamsAssetDefaults](
-		"max_resolution", "1080p", "2160p",
-	)
-	apijson.RegisterFieldValidator[ProjectUpdateParamsAssetDefaults](
-		"min_resolution", "auto", "240p", "360p", "540p", "720p", "1080p", "1440p", "2160p",
-	)
 }

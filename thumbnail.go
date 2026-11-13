@@ -18,6 +18,7 @@ import (
 	"github.com/chunkifydev/chunkify-go/packages/pagination"
 	"github.com/chunkifydev/chunkify-go/packages/param"
 	"github.com/chunkifydev/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/shared"
 	"github.com/chunkifydev/chunkify-go/shared/constant"
 )
 
@@ -164,7 +165,7 @@ type Thumbnail struct {
 	// Workflow actions. Omitted when the creator is unknown.
 	//
 	// Any of "api", "dashboard", "mcp", "workflow".
-	CreatedVia ThumbnailCreatedVia `json:"created_via"`
+	CreatedVia shared.CreatedVia `json:"created_via"`
 	// DeleteAt specifies when this standalone request is deleted: three days after its
 	// temporary output expires, otherwise when the team's data retention period ends,
 	// counted from when the request was accepted, and no sooner than three days after
@@ -212,12 +213,77 @@ func (r *Thumbnail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Output Storage selection, independent of Source storage.
+type ThumbnailCreateStorageParams struct {
+	// Id identifies output Storage in this Project. Omit to use the Project default.
+	ID param.Opt[string] `json:"id,omitzero"`
+	// Path specifies the output filename template relative to the selected Storage
+	// base_prefix. Required for customer storage; generated for Chunkify temporary
+	// storage. The filename must contain one %05d placeholder, replaced by the image
+	// or sprite sheet number starting at 1, and end in .jpg for jpeg or .webp for
+	// webp. The WebVTT file uses the filename without the placeholder and its adjacent
+	// separator, such as thumb.vtt for thumb-%05d.jpg. The combined path may contain
+	// at most 1024 bytes.
+	Path param.Opt[string] `json:"path,omitzero"`
+	paramObj
+}
+
+func (r ThumbnailCreateStorageParams) MarshalJSON() (data []byte, err error) {
+	type shadow ThumbnailCreateStorageParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ThumbnailCreateStorageParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The image rectangle within a sprite sheet.
+type ThumbnailCrop struct {
+	// X specifies the left edge in pixels.
+	X int64 `json:"x" api:"required"`
+	// Y specifies the top edge in pixels.
+	Y int64 `json:"y" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		X           respjson.Field
+		Y           respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ThumbnailCrop) RawJSON() string { return r.JSON.raw }
+func (r *ThumbnailCrop) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A customer-facing processing failure.
+type ThumbnailError struct {
+	// Code identifies the processing failure.
+	Code string `json:"code" api:"required"`
+	// Message explains the processing failure.
+	Message string `json:"message" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ThumbnailError) RawJSON() string { return r.JSON.raw }
+func (r *ThumbnailError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // One published image, sprite sheet, or WebVTT file.
 type ThumbnailFile struct {
 	// Kind identifies an individual image, sprite sheet, or WebVTT index.
 	//
 	// Any of "image", "sprite", "vtt".
-	Kind string `json:"kind" api:"required"`
+	Kind ThumbnailFileKind `json:"kind" api:"required"`
 	// Path specifies the file relative to storage_prefix.
 	Path string `json:"path" api:"required"`
 	// Size specifies the measured encoded file size in bytes.
@@ -254,6 +320,70 @@ func (r *ThumbnailFile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Kind identifies an individual image, sprite sheet, or WebVTT index.
+type ThumbnailFileKind string
+
+const (
+	ThumbnailFileKindImage  ThumbnailFileKind = "image"
+	ThumbnailFileKindSprite ThumbnailFileKind = "sprite"
+	ThumbnailFileKindVtt    ThumbnailFileKind = "vtt"
+)
+
+// Format specifies the image encoding.
+type ThumbnailFormat string
+
+const (
+	ThumbnailFormatJpeg ThumbnailFormat = "jpeg"
+	ThumbnailFormatWebp ThumbnailFormat = "webp"
+)
+
+// Output specifies individual images or automatically arranged sprite sheets.
+type ThumbnailOutput string
+
+const (
+	ThumbnailOutputImages  ThumbnailOutput = "images"
+	ThumbnailOutputSprites ThumbnailOutput = "sprites"
+)
+
+// The resolved Source-relative sampling range.
+type ThumbnailRange struct {
+	// End specifies the exclusive upper bound in seconds.
+	End float64 `json:"end" api:"required"`
+	// Start specifies the inclusive lower bound in seconds.
+	Start float64 `json:"start" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		End         respjson.Field
+		Start       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ThumbnailRange) RawJSON() string { return r.JSON.raw }
+func (r *ThumbnailRange) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Optional Source-relative sampling boundaries.
+type ThumbnailRangeParams struct {
+	// End specifies the exclusive upper bound in seconds. Defaults to the Source
+	// duration.
+	End param.Opt[float64] `json:"end,omitzero"`
+	// Start specifies the inclusive lower bound in seconds. Defaults to zero.
+	Start param.Opt[float64] `json:"start,omitzero"`
+	paramObj
+}
+
+func (r ThumbnailRangeParams) MarshalJSON() (data []byte, err error) {
+	type shadow ThumbnailRangeParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ThumbnailRangeParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // One successfully published requested sample. Repeated samples remain separate
 // entries.
 type ThumbnailSample struct {
@@ -269,7 +399,7 @@ type ThumbnailSample struct {
 	Width int64 `json:"width" api:"required"`
 	// Crop specifies the tile origin in its sprite sheet. Omitted for individual
 	// images; width and height give the tile dimensions.
-	Crop ThumbnailSampleCrop `json:"crop"`
+	Crop ThumbnailCrop `json:"crop"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Height      respjson.Field
@@ -288,40 +418,18 @@ func (r *ThumbnailSample) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Crop specifies the tile origin in its sprite sheet. Omitted for individual
-// images; width and height give the tile dimensions.
-type ThumbnailSampleCrop struct {
-	// X specifies the left edge in pixels.
-	X int64 `json:"x" api:"required"`
-	// Y specifies the top edge in pixels.
-	Y int64 `json:"y" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		X           respjson.Field
-		Y           respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ThumbnailSampleCrop) RawJSON() string { return r.JSON.raw }
-func (r *ThumbnailSampleCrop) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Settings contains the accepted sampling and output settings.
+// Accepted sampling and output settings, with defaults resolved.
 type ThumbnailSettings struct {
 	// Format specifies the accepted image encoding.
 	//
 	// Any of "jpeg", "webp".
-	Format string `json:"format" api:"required"`
+	Format ThumbnailFormat `json:"format" api:"required"`
 	// Output specifies the accepted output mode.
 	//
 	// Any of "images", "sprites".
-	Output string `json:"output" api:"required"`
+	Output ThumbnailOutput `json:"output" api:"required"`
 	// Range contains the accepted sampling boundaries.
-	Range ThumbnailSettingsRange `json:"range" api:"required"`
+	Range ThumbnailRange `json:"range" api:"required"`
 	// Size specifies the accepted maximum image or tile edge in pixels.
 	Size int64 `json:"size" api:"required"`
 	// Count specifies 1 to 100 thumbnails at the middle of equal sections of the
@@ -350,28 +458,8 @@ func (r *ThumbnailSettings) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Range contains the accepted sampling boundaries.
-type ThumbnailSettingsRange struct {
-	// End specifies the exclusive upper bound in seconds.
-	End float64 `json:"end" api:"required"`
-	// Start specifies the inclusive lower bound in seconds.
-	Start float64 `json:"start" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		End         respjson.Field
-		Start       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ThumbnailSettingsRange) RawJSON() string { return r.JSON.raw }
-func (r *ThumbnailSettingsRange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Status reports processing or output expiry.
+// Status is ready only after processing and publication finish. Temporary outputs
+// become expired after their retention period.
 type ThumbnailStatus string
 
 const (
@@ -380,39 +468,6 @@ const (
 	ThumbnailStatusFailed    ThumbnailStatus = "failed"
 	ThumbnailStatusExpired   ThumbnailStatus = "expired"
 )
-
-// CreatedVia specifies how the resource was created: api for API requests,
-// dashboard for the Chunkify dashboard, mcp for MCP clients, and workflow for
-// Workflow actions. Omitted when the creator is unknown.
-type ThumbnailCreatedVia string
-
-const (
-	ThumbnailCreatedViaAPI       ThumbnailCreatedVia = "api"
-	ThumbnailCreatedViaDashboard ThumbnailCreatedVia = "dashboard"
-	ThumbnailCreatedViaMcp       ThumbnailCreatedVia = "mcp"
-	ThumbnailCreatedViaWorkflow  ThumbnailCreatedVia = "workflow"
-)
-
-// Error explains a failed request. Omitted otherwise.
-type ThumbnailError struct {
-	// Code identifies the processing failure.
-	Code string `json:"code" api:"required"`
-	// Message explains the processing failure.
-	Message string `json:"message" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Message     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r ThumbnailError) RawJSON() string { return r.JSON.raw }
-func (r *ThumbnailError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
 
 type ThumbnailNewParams struct {
 	// SourceId identifies a video Source in this Project.
@@ -427,20 +482,20 @@ type ThumbnailNewParams struct {
 	// Format selects JPEG or WebP. Defaults to JPEG.
 	//
 	// Any of "jpeg", "webp".
-	Format ThumbnailNewParamsFormat `json:"format,omitzero"`
+	Format ThumbnailFormat `json:"format,omitzero"`
 	// Metadata attaches string values to this request. The serialized object may
 	// contain at most 2048 bytes.
 	Metadata map[string]string `json:"metadata,omitzero"`
 	// Output selects images or sprites. Defaults to images.
 	//
 	// Any of "images", "sprites".
-	Output ThumbnailNewParamsOutput `json:"output,omitzero"`
+	Output ThumbnailOutput `json:"output,omitzero"`
 	// Range limits sampling to part of the Source. Defaults to the whole Source
 	// duration.
-	Range ThumbnailNewParamsRange `json:"range,omitzero"`
+	Range ThumbnailRangeParams `json:"range,omitzero"`
 	// Storage overrides the Project output destination and names the output files.
 	// Source storage remains independent.
-	Storage ThumbnailNewParamsStorage `json:"storage,omitzero"`
+	Storage ThumbnailCreateStorageParams `json:"storage,omitzero"`
 	// Timestamps specifies 1 to 100 Source-relative target times in seconds. Every
 	// time must be within the selected range. Repeated targets produce separate
 	// outputs.
@@ -453,65 +508,6 @@ func (r ThumbnailNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ThumbnailNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Format selects JPEG or WebP. Defaults to JPEG.
-type ThumbnailNewParamsFormat string
-
-const (
-	ThumbnailNewParamsFormatJpeg ThumbnailNewParamsFormat = "jpeg"
-	ThumbnailNewParamsFormatWebp ThumbnailNewParamsFormat = "webp"
-)
-
-// Output selects images or sprites. Defaults to images.
-type ThumbnailNewParamsOutput string
-
-const (
-	ThumbnailNewParamsOutputImages  ThumbnailNewParamsOutput = "images"
-	ThumbnailNewParamsOutputSprites ThumbnailNewParamsOutput = "sprites"
-)
-
-// Range limits sampling to part of the Source. Defaults to the whole Source
-// duration.
-type ThumbnailNewParamsRange struct {
-	// End specifies the exclusive upper bound in seconds. Defaults to the Source
-	// duration.
-	End param.Opt[float64] `json:"end,omitzero"`
-	// Start specifies the inclusive lower bound in seconds. Defaults to zero.
-	Start param.Opt[float64] `json:"start,omitzero"`
-	paramObj
-}
-
-func (r ThumbnailNewParamsRange) MarshalJSON() (data []byte, err error) {
-	type shadow ThumbnailNewParamsRange
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ThumbnailNewParamsRange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Storage overrides the Project output destination and names the output files.
-// Source storage remains independent.
-type ThumbnailNewParamsStorage struct {
-	// Id identifies output Storage in this Project. Omit to use the Project default.
-	ID param.Opt[string] `json:"id,omitzero"`
-	// Path specifies the output filename template relative to the selected Storage
-	// base_prefix. Required for customer storage; generated for Chunkify temporary
-	// storage. The filename must contain one %05d placeholder, replaced by the image
-	// or sprite sheet number starting at 1, and end in .jpg for jpeg or .webp for
-	// webp. The WebVTT file uses the filename without the placeholder and its adjacent
-	// separator, such as thumb.vtt for thumb-%05d.jpg. The combined path may contain
-	// at most 1024 bytes.
-	Path param.Opt[string] `json:"path,omitzero"`
-	paramObj
-}
-
-func (r ThumbnailNewParamsStorage) MarshalJSON() (data []byte, err error) {
-	type shadow ThumbnailNewParamsStorage
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *ThumbnailNewParamsStorage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -573,7 +569,7 @@ type ThumbnailListParams struct {
 	// Filter by Thumbnail status.
 	//
 	// Any of "preparing", "ready", "failed", "expired".
-	Status ThumbnailListParamsStatus `query:"status,omitzero" json:"-"`
+	Status ThumbnailStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -605,16 +601,6 @@ func (r ThumbnailListParamsCreated) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-// Filter by Thumbnail status.
-type ThumbnailListParamsStatus string
-
-const (
-	ThumbnailListParamsStatusPreparing ThumbnailListParamsStatus = "preparing"
-	ThumbnailListParamsStatusReady     ThumbnailListParamsStatus = "ready"
-	ThumbnailListParamsStatusFailed    ThumbnailListParamsStatus = "failed"
-	ThumbnailListParamsStatusExpired   ThumbnailListParamsStatus = "expired"
-)
 
 type ThumbnailDeleteParams struct {
 	// DeleteFiles specifies whether to permanently delete this Thumbnail's owned

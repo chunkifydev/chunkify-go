@@ -9,7 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"slices"
-	"time"
 
 	"github.com/chunkifydev/chunkify-go/internal/apijson"
 	"github.com/chunkifydev/chunkify-go/internal/apiquery"
@@ -17,6 +16,7 @@ import (
 	"github.com/chunkifydev/chunkify-go/option"
 	"github.com/chunkifydev/chunkify-go/packages/param"
 	"github.com/chunkifydev/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/shared"
 	"github.com/chunkifydev/chunkify-go/shared/constant"
 )
 
@@ -58,7 +58,7 @@ func (r *JobLogService) List(ctx context.Context, jobID string, query JobLogList
 
 // Response containing a list of logs for a job
 type JobLogListResponse struct {
-	Data []JobLogListResponseData `json:"data" api:"required"`
+	Data []shared.Log `json:"data" api:"required"`
 	// Status indicates the response status "success"
 	Status constant.Success `json:"status" default:"success"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -73,42 +73,6 @@ type JobLogListResponse struct {
 // Returns the unmodified JSON received from the API
 func (r JobLogListResponse) RawJSON() string { return r.JSON.raw }
 func (r *JobLogListResponse) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type JobLogListResponseData struct {
-	// Additional structured data attached to the log
-	Attributes map[string]any `json:"attributes" api:"required"`
-	// Log level
-	//
-	// Any of "info", "error", "debug".
-	Level string `json:"level" api:"required"`
-	// The log message content
-	Msg string `json:"msg" api:"required"`
-	// Name of the service that generated the log
-	//
-	// Any of "transcoder", "manager".
-	Service string `json:"service" api:"required"`
-	// Timestamp when the log was created
-	Time time.Time `json:"time" api:"required" format:"date-time"`
-	// Optional ID of the job this log is associated with
-	JobID string `json:"job_id"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Attributes  respjson.Field
-		Level       respjson.Field
-		Msg         respjson.Field
-		Service     respjson.Field
-		Time        respjson.Field
-		JobID       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r JobLogListResponseData) RawJSON() string { return r.JSON.raw }
-func (r *JobLogListResponseData) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
