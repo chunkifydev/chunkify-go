@@ -128,7 +128,7 @@ type Notification struct {
 	// "transcoding.ready", "transcoding.failed", "transcoding.cancelled",
 	// "transcoding.expired", "transcoding.deleted", "thumbnail.created",
 	// "thumbnail.ready", "thumbnail.failed", "thumbnail.expired", "thumbnail.deleted".
-	Event NotificationEvent `json:"event" api:"required"`
+	Event WebhookEvent `json:"event" api:"required"`
 	// ID of the object that triggered this notification
 	ObjectID string `json:"object_id" api:"required"`
 	// JSON payload that was sent to the webhook endpoint
@@ -160,47 +160,6 @@ func (r *Notification) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Type of event that triggered this notification
-type NotificationEvent string
-
-const (
-	NotificationEventJobCreated           NotificationEvent = "job.created"
-	NotificationEventJobCompleted         NotificationEvent = "job.completed"
-	NotificationEventJobFailed            NotificationEvent = "job.failed"
-	NotificationEventJobCancelled         NotificationEvent = "job.cancelled"
-	NotificationEventSourceCreated        NotificationEvent = "source.created"
-	NotificationEventSourceDeleted        NotificationEvent = "source.deleted"
-	NotificationEventUploadCreated        NotificationEvent = "upload.created"
-	NotificationEventUploadCompleted      NotificationEvent = "upload.completed"
-	NotificationEventUploadFailed         NotificationEvent = "upload.failed"
-	NotificationEventUploadExpired        NotificationEvent = "upload.expired"
-	NotificationEventAssetCreated         NotificationEvent = "asset.created"
-	NotificationEventAssetReady           NotificationEvent = "asset.ready"
-	NotificationEventAssetPlaybackReady   NotificationEvent = "asset.playback_ready"
-	NotificationEventAssetFailed          NotificationEvent = "asset.failed"
-	NotificationEventAssetExpired         NotificationEvent = "asset.expired"
-	NotificationEventAssetDeleted         NotificationEvent = "asset.deleted"
-	NotificationEventAssetOutputCreated   NotificationEvent = "asset.output.created"
-	NotificationEventAssetOutputReady     NotificationEvent = "asset.output.ready"
-	NotificationEventAssetOutputFailed    NotificationEvent = "asset.output.failed"
-	NotificationEventAssetOutputDeleted   NotificationEvent = "asset.output.deleted"
-	NotificationEventWorkflowRunCreated   NotificationEvent = "workflow_run.created"
-	NotificationEventWorkflowRunCompleted NotificationEvent = "workflow_run.completed"
-	NotificationEventWorkflowRunFailed    NotificationEvent = "workflow_run.failed"
-	NotificationEventWorkflowRunCancelled NotificationEvent = "workflow_run.cancelled"
-	NotificationEventTranscodingCreated   NotificationEvent = "transcoding.created"
-	NotificationEventTranscodingReady     NotificationEvent = "transcoding.ready"
-	NotificationEventTranscodingFailed    NotificationEvent = "transcoding.failed"
-	NotificationEventTranscodingCancelled NotificationEvent = "transcoding.cancelled"
-	NotificationEventTranscodingExpired   NotificationEvent = "transcoding.expired"
-	NotificationEventTranscodingDeleted   NotificationEvent = "transcoding.deleted"
-	NotificationEventThumbnailCreated     NotificationEvent = "thumbnail.created"
-	NotificationEventThumbnailReady       NotificationEvent = "thumbnail.ready"
-	NotificationEventThumbnailFailed      NotificationEvent = "thumbnail.failed"
-	NotificationEventThumbnailExpired     NotificationEvent = "thumbnail.expired"
-	NotificationEventThumbnailDeleted     NotificationEvent = "thumbnail.deleted"
-)
-
 type NotificationNewParams struct {
 	// Event specifies the type of event that triggered the notification.
 	//
@@ -214,7 +173,7 @@ type NotificationNewParams struct {
 	// "transcoding.ready", "transcoding.failed", "transcoding.cancelled",
 	// "transcoding.expired", "transcoding.deleted", "thumbnail.created",
 	// "thumbnail.ready", "thumbnail.failed", "thumbnail.expired", "thumbnail.deleted".
-	Event NotificationNewParamsEvent `json:"event,omitzero" api:"required"`
+	Event WebhookEvent `json:"event,omitzero" api:"required"`
 	// ID of the resource that triggered the event. Use the caption, static rendition,
 	// or thumbnail ID for their Asset child events. Replaying asset events,
 	// job.created, or source.created requires a retained snapshot. Resource deletion
@@ -232,47 +191,6 @@ func (r NotificationNewParams) MarshalJSON() (data []byte, err error) {
 func (r *NotificationNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Event specifies the type of event that triggered the notification.
-type NotificationNewParamsEvent string
-
-const (
-	NotificationNewParamsEventJobCreated           NotificationNewParamsEvent = "job.created"
-	NotificationNewParamsEventJobCompleted         NotificationNewParamsEvent = "job.completed"
-	NotificationNewParamsEventJobFailed            NotificationNewParamsEvent = "job.failed"
-	NotificationNewParamsEventJobCancelled         NotificationNewParamsEvent = "job.cancelled"
-	NotificationNewParamsEventSourceCreated        NotificationNewParamsEvent = "source.created"
-	NotificationNewParamsEventSourceDeleted        NotificationNewParamsEvent = "source.deleted"
-	NotificationNewParamsEventUploadCreated        NotificationNewParamsEvent = "upload.created"
-	NotificationNewParamsEventUploadCompleted      NotificationNewParamsEvent = "upload.completed"
-	NotificationNewParamsEventUploadFailed         NotificationNewParamsEvent = "upload.failed"
-	NotificationNewParamsEventUploadExpired        NotificationNewParamsEvent = "upload.expired"
-	NotificationNewParamsEventAssetCreated         NotificationNewParamsEvent = "asset.created"
-	NotificationNewParamsEventAssetReady           NotificationNewParamsEvent = "asset.ready"
-	NotificationNewParamsEventAssetPlaybackReady   NotificationNewParamsEvent = "asset.playback_ready"
-	NotificationNewParamsEventAssetFailed          NotificationNewParamsEvent = "asset.failed"
-	NotificationNewParamsEventAssetExpired         NotificationNewParamsEvent = "asset.expired"
-	NotificationNewParamsEventAssetDeleted         NotificationNewParamsEvent = "asset.deleted"
-	NotificationNewParamsEventAssetOutputCreated   NotificationNewParamsEvent = "asset.output.created"
-	NotificationNewParamsEventAssetOutputReady     NotificationNewParamsEvent = "asset.output.ready"
-	NotificationNewParamsEventAssetOutputFailed    NotificationNewParamsEvent = "asset.output.failed"
-	NotificationNewParamsEventAssetOutputDeleted   NotificationNewParamsEvent = "asset.output.deleted"
-	NotificationNewParamsEventWorkflowRunCreated   NotificationNewParamsEvent = "workflow_run.created"
-	NotificationNewParamsEventWorkflowRunCompleted NotificationNewParamsEvent = "workflow_run.completed"
-	NotificationNewParamsEventWorkflowRunFailed    NotificationNewParamsEvent = "workflow_run.failed"
-	NotificationNewParamsEventWorkflowRunCancelled NotificationNewParamsEvent = "workflow_run.cancelled"
-	NotificationNewParamsEventTranscodingCreated   NotificationNewParamsEvent = "transcoding.created"
-	NotificationNewParamsEventTranscodingReady     NotificationNewParamsEvent = "transcoding.ready"
-	NotificationNewParamsEventTranscodingFailed    NotificationNewParamsEvent = "transcoding.failed"
-	NotificationNewParamsEventTranscodingCancelled NotificationNewParamsEvent = "transcoding.cancelled"
-	NotificationNewParamsEventTranscodingExpired   NotificationNewParamsEvent = "transcoding.expired"
-	NotificationNewParamsEventTranscodingDeleted   NotificationNewParamsEvent = "transcoding.deleted"
-	NotificationNewParamsEventThumbnailCreated     NotificationNewParamsEvent = "thumbnail.created"
-	NotificationNewParamsEventThumbnailReady       NotificationNewParamsEvent = "thumbnail.ready"
-	NotificationNewParamsEventThumbnailFailed      NotificationNewParamsEvent = "thumbnail.failed"
-	NotificationNewParamsEventThumbnailExpired     NotificationNewParamsEvent = "thumbnail.expired"
-	NotificationNewParamsEventThumbnailDeleted     NotificationNewParamsEvent = "thumbnail.deleted"
-)
 
 type NotificationNewResponseEnvelope struct {
 	// Data contains the response object
@@ -327,18 +245,7 @@ type NotificationListParams struct {
 	WebhookID param.Opt[string]             `query:"webhook_id,omitzero" json:"-"`
 	Created   NotificationListParamsCreated `query:"created,omitzero" json:"-"`
 	// Filter by events
-	//
-	// Any of "job.created", "job.completed", "job.failed", "job.cancelled",
-	// "source.created", "source.deleted", "upload.created", "upload.completed",
-	// "upload.failed", "upload.expired", "asset.created", "asset.ready",
-	// "asset.playback_ready", "asset.failed", "asset.expired", "asset.deleted",
-	// "asset.output.created", "asset.output.ready", "asset.output.failed",
-	// "asset.output.deleted", "workflow_run.created", "workflow_run.completed",
-	// "workflow_run.failed", "workflow_run.cancelled", "transcoding.created",
-	// "transcoding.ready", "transcoding.failed", "transcoding.cancelled",
-	// "transcoding.expired", "transcoding.deleted", "thumbnail.created",
-	// "thumbnail.ready", "thumbnail.failed", "thumbnail.expired", "thumbnail.deleted".
-	Events             []string                                 `query:"events,omitzero" json:"-"`
+	Events             []WebhookEvent                           `query:"events,omitzero" json:"-"`
 	ResponseStatusCode NotificationListParamsResponseStatusCode `query:"response_status_code,omitzero" json:"-"`
 	paramObj
 }
