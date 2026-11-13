@@ -488,7 +488,7 @@ const (
 type UploadCompleteParams struct {
 	// All uploaded parts in ascending part_number order, with the ETags returned by
 	// storage.
-	Parts []UploadCompleteParamsPart `json:"parts,omitzero" api:"required"`
+	Parts []UploadCompleteParamsPart `json:"parts,omitzero"`
 	paramObj
 }
 

@@ -25,8 +25,8 @@ import (
 // automatically. You should not instantiate this service directly, and instead use
 // the [NewProjectService] method instead.
 type ProjectService struct {
-	Options              []option.RequestOption
-	AnalyticsConnections ProjectAnalyticsConnectionService
+	Options   []option.RequestOption
+	Analytics ProjectAnalyticsService
 }
 
 // NewProjectService generates a new service that applies the given options to each
@@ -35,7 +35,7 @@ type ProjectService struct {
 func NewProjectService(opts ...option.RequestOption) (r ProjectService) {
 	r = ProjectService{}
 	r.Options = opts
-	r.AnalyticsConnections = NewProjectAnalyticsConnectionService(opts...)
+	r.Analytics = NewProjectAnalyticsService(opts...)
 	return
 }
 

@@ -27,7 +27,7 @@ func TestProjectAnalyticsConnectionNewWithOptionalParams(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.New(
+	_, err := client.Projects.Analytics.Connections.New(
 		context.TODO(),
 		"projectId",
 		chunkify.ProjectAnalyticsConnectionNewParams{
@@ -61,7 +61,7 @@ func TestProjectAnalyticsConnectionGet(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.Get(
+	_, err := client.Projects.Analytics.Connections.Get(
 		context.TODO(),
 		"connectionId",
 		chunkify.ProjectAnalyticsConnectionGetParams{
@@ -91,7 +91,7 @@ func TestProjectAnalyticsConnectionUpdateWithOptionalParams(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.Update(
+	_, err := client.Projects.Analytics.Connections.Update(
 		context.TODO(),
 		"connectionId",
 		chunkify.ProjectAnalyticsConnectionUpdateParams{
@@ -127,7 +127,7 @@ func TestProjectAnalyticsConnectionList(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	_, err := client.Projects.AnalyticsConnections.List(context.TODO(), "projectId")
+	_, err := client.Projects.Analytics.Connections.List(context.TODO(), "projectId")
 	if err != nil {
 		var apierr *chunkify.Error
 		if errors.As(err, &apierr) {
@@ -151,7 +151,7 @@ func TestProjectAnalyticsConnectionDelete(t *testing.T) {
 		option.WithProjectAccessToken("My Project Access Token"),
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
-	err := client.Projects.AnalyticsConnections.Delete(
+	err := client.Projects.Analytics.Connections.Delete(
 		context.TODO(),
 		"connectionId",
 		chunkify.ProjectAnalyticsConnectionDeleteParams{

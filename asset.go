@@ -331,6 +331,18 @@ func (r *AssetSourceMetadata) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Status specifies the Asset preparation state. ready means the video is prepared
+// for playback, with its poster and timeline previews available. Static renditions
+// and captions have independent statuses.
+type AssetStatus string
+
+const (
+	AssetStatusPreparing AssetStatus = "preparing"
+	AssetStatusReady     AssetStatus = "ready"
+	AssetStatusFailed    AssetStatus = "failed"
+	AssetStatusExpired   AssetStatus = "expired"
+)
+
 // CreatedVia specifies how the resource was created: api for API requests,
 // dashboard for the Chunkify dashboard, mcp for MCP clients, and workflow for
 // Workflow actions. Omitted when the creator is unknown.
@@ -459,15 +471,6 @@ func (r AssetTimelinePreviews) RawJSON() string { return r.JSON.raw }
 func (r *AssetTimelinePreviews) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-type AssetStatus string
-
-const (
-	AssetStatusPreparing AssetStatus = "preparing"
-	AssetStatusReady     AssetStatus = "ready"
-	AssetStatusFailed    AssetStatus = "failed"
-	AssetStatusExpired   AssetStatus = "expired"
-)
 
 type AssetNewParams struct {
 	// ID of the video Source to process.
@@ -634,7 +637,7 @@ type AssetListParams struct {
 	// Filter by Asset status.
 	//
 	// Any of "preparing", "ready", "failed", "expired".
-	Status AssetStatus `query:"status,omitzero" json:"-"`
+	Status AssetListParamsStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -665,6 +668,16 @@ func (r AssetListParamsCreated) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Filter by Asset status.
+type AssetListParamsStatus string
+
+const (
+	AssetListParamsStatusPreparing AssetListParamsStatus = "preparing"
+	AssetListParamsStatusReady     AssetListParamsStatus = "ready"
+	AssetListParamsStatusFailed    AssetListParamsStatus = "failed"
+	AssetListParamsStatusExpired   AssetListParamsStatus = "expired"
+)
 
 type AssetDeleteParams struct {
 	// Also delete all files under the Asset's storage prefix, including streaming and
