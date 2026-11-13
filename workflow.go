@@ -995,7 +995,7 @@ type WorkflowNewParamsRuleActionCreateCaption struct {
 	// reuses the Asset’s original transcript.
 	TranscriptID WorkflowNewParamsRuleActionCreateCaptionTranscriptID `json:"transcript_id,omitzero"`
 	// Params specifies caption generation settings. Pass an empty object.
-	Params WorkflowNewParamsRuleActionCreateCaptionParams `json:"params,omitzero" api:"required"`
+	Params WorkflowNewParamsRuleActionCreateCaptionParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_caption.
 	//
 	// This field can be elided, and will marshal its zero value as "create_caption".
@@ -1143,7 +1143,7 @@ type WorkflowNewParamsRuleActionCreateThumbnails struct {
 	ID string `json:"id" api:"required"`
 	// Params specifies sampling and image settings. Outputs use the Asset folder and
 	// Storage.
-	Params WorkflowNewParamsRuleActionCreateThumbnailsParams `json:"params,omitzero" api:"required"`
+	Params WorkflowNewParamsRuleActionCreateThumbnailsParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_thumbnails.
 	//
 	// This field can be elided, and will marshal its zero value as
@@ -1237,7 +1237,7 @@ type WorkflowNewParamsRuleActionCreateTranscript struct {
 	// underscores.
 	ID string `json:"id" api:"required"`
 	// Params specifies transcript settings. Pass an empty object.
-	Params WorkflowNewParamsRuleActionCreateTranscriptParams `json:"params,omitzero" api:"required"`
+	Params WorkflowNewParamsRuleActionCreateTranscriptParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_transcript.
 	//
 	// This field can be elided, and will marshal its zero value as
@@ -1608,7 +1608,7 @@ type WorkflowUpdateParamsRuleActionCreateCaption struct {
 	// reuses the Asset’s original transcript.
 	TranscriptID WorkflowUpdateParamsRuleActionCreateCaptionTranscriptID `json:"transcript_id,omitzero"`
 	// Params specifies caption generation settings. Pass an empty object.
-	Params WorkflowUpdateParamsRuleActionCreateCaptionParams `json:"params,omitzero" api:"required"`
+	Params WorkflowUpdateParamsRuleActionCreateCaptionParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_caption.
 	//
 	// This field can be elided, and will marshal its zero value as "create_caption".
@@ -1756,7 +1756,7 @@ type WorkflowUpdateParamsRuleActionCreateThumbnails struct {
 	ID string `json:"id" api:"required"`
 	// Params specifies sampling and image settings. Outputs use the Asset folder and
 	// Storage.
-	Params WorkflowUpdateParamsRuleActionCreateThumbnailsParams `json:"params,omitzero" api:"required"`
+	Params WorkflowUpdateParamsRuleActionCreateThumbnailsParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_thumbnails.
 	//
 	// This field can be elided, and will marshal its zero value as
@@ -1850,7 +1850,7 @@ type WorkflowUpdateParamsRuleActionCreateTranscript struct {
 	// underscores.
 	ID string `json:"id" api:"required"`
 	// Params specifies transcript settings. Pass an empty object.
-	Params WorkflowUpdateParamsRuleActionCreateTranscriptParams `json:"params,omitzero" api:"required"`
+	Params WorkflowUpdateParamsRuleActionCreateTranscriptParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_transcript.
 	//
 	// This field can be elided, and will marshal its zero value as

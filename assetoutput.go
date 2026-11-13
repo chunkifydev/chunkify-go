@@ -823,7 +823,7 @@ func (r *AssetOutputNewParams) UnmarshalJSON(data []byte) error {
 // The properties Params, Type are required.
 type AssetOutputNewParamsOutputCaption struct {
 	// Params specifies the settings for this output type.
-	Params AssetOutputNewParamsOutputCaptionParams `json:"params,omitzero" api:"required"`
+	Params AssetOutputNewParamsOutputCaptionParams `json:"params" api:"required"`
 	// Type specifies the output kind to create.
 	//
 	// This field can be elided, and will marshal its zero value as "caption".
@@ -922,7 +922,7 @@ func init() {
 // The properties Params, Type are required.
 type AssetOutputNewParamsOutputThumbnail struct {
 	// Params specifies the settings for this output type.
-	Params AssetOutputNewParamsOutputThumbnailParams `json:"params,omitzero" api:"required"`
+	Params AssetOutputNewParamsOutputThumbnailParams `json:"params" api:"required"`
 	// Type specifies the output kind to create.
 	//
 	// This field can be elided, and will marshal its zero value as "thumbnail".
@@ -1006,8 +1006,7 @@ func (r *AssetOutputNewParamsOutputThumbnailParamsRange) UnmarshalJSON(data []by
 
 func NewAssetOutputNewParamsOutputTranscript() AssetOutputNewParamsOutputTranscript {
 	return AssetOutputNewParamsOutputTranscript{
-		Params: map[string]any{},
-		Type:   "transcript",
+		Type: "transcript",
 	}
 }
 
@@ -1019,7 +1018,7 @@ func NewAssetOutputNewParamsOutputTranscript() AssetOutputNewParamsOutputTranscr
 type AssetOutputNewParamsOutputTranscript struct {
 	// Parameters for an original-language transcript. Pass an empty object; the spoken
 	// language is detected automatically.
-	Params AssetOutputNewParamsOutputTranscriptParams `json:"params,omitzero" api:"required"`
+	Params AssetOutputNewParamsOutputTranscriptParams `json:"params" api:"required"`
 	// Type specifies the output kind.
 	Type constant.Transcript `json:"type" default:"transcript"`
 	paramObj
