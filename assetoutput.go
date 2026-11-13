@@ -19,6 +19,7 @@ import (
 	"github.com/chunkifydev/chunkify-go/packages/pagination"
 	"github.com/chunkifydev/chunkify-go/packages/param"
 	"github.com/chunkifydev/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/shared"
 	"github.com/chunkifydev/chunkify-go/shared/constant"
 )
 
@@ -237,9 +238,7 @@ type AssetOutputUnionDetails struct {
 	ID        string    `json:"id"`
 	Status    string    `json:"status"`
 	CreatedAt time.Time `json:"created_at"`
-	// This field is a union of [AssetOutputCaptionDetailsError],
-	// [AssetOutputStaticRenditionDetailsError], [ThumbnailError],
-	// [AssetOutputTranscriptDetailsError]
+	// This field is a union of [shared.AssetOutputError], [ThumbnailError]
 	Error        AssetOutputUnionDetailsError `json:"error"`
 	LanguageCode string                       `json:"language_code"`
 	// This field is from variant [AssetOutputCaptionDetails].
@@ -374,11 +373,9 @@ func (r *AssetOutputUnionDetails) UnmarshalJSON(data []byte) error {
 type AssetOutputUnionDetailsError struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
-	Stage   string `json:"stage"`
 	JSON    struct {
 		Code    respjson.Field
 		Message respjson.Field
-		Stage   respjson.Field
 		raw     string
 	} `json:"-"`
 }
@@ -434,7 +431,7 @@ type AssetOutputCaptionDetails struct {
 	// Time this caption output was requested.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
 	// Reason caption processing failed.
-	Error AssetOutputCaptionDetailsError `json:"error"`
+	Error shared.AssetOutputError `json:"error"`
 	// Primary language of this subtitle track, such as en or fr. Omitted when no
 	// speech was detected or processing has not finished.
 	LanguageCode string `json:"language_code"`
@@ -470,33 +467,6 @@ type AssetOutputCaptionDetails struct {
 // Returns the unmodified JSON received from the API
 func (r AssetOutputCaptionDetails) RawJSON() string { return r.JSON.raw }
 func (r *AssetOutputCaptionDetails) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Reason caption processing failed.
-type AssetOutputCaptionDetailsError struct {
-	// Machine-readable processing error code.
-	Code string `json:"code" api:"required"`
-	// Description of the processing failure.
-	Message string `json:"message" api:"required"`
-	// Processing stage that failed.
-	//
-	// Any of "ingest", "analysis", "encoding", "packaging", "upload", "validation",
-	// "cleanup".
-	Stage string `json:"stage" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Message     respjson.Field
-		Stage       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputCaptionDetailsError) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputCaptionDetailsError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -582,8 +552,9 @@ type AssetOutputStaticRenditionDetails struct {
 	// URL.
 	CdnURL string `json:"cdn_url" format:"uri"`
 	// Output duration in seconds. Omitted until ready.
-	Duration float64                                `json:"duration"`
-	Error    AssetOutputStaticRenditionDetailsError `json:"error"`
+	Duration float64 `json:"duration"`
+	// A customer-facing Asset output processing failure.
+	Error shared.AssetOutputError `json:"error"`
 	// Progress specifies the current processing stage and encoding percentage. Omitted
 	// after processing ends.
 	Progress AssetOutputStaticRenditionDetailsProgress `json:"progress"`
@@ -633,32 +604,6 @@ type AssetOutputStaticRenditionDetails struct {
 // Returns the unmodified JSON received from the API
 func (r AssetOutputStaticRenditionDetails) RawJSON() string { return r.JSON.raw }
 func (r *AssetOutputStaticRenditionDetails) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AssetOutputStaticRenditionDetailsError struct {
-	// Machine-readable processing error code.
-	Code string `json:"code" api:"required"`
-	// Description of the processing failure.
-	Message string `json:"message" api:"required"`
-	// Processing stage that failed.
-	//
-	// Any of "ingest", "analysis", "encoding", "packaging", "upload", "validation",
-	// "cleanup".
-	Stage string `json:"stage" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Message     respjson.Field
-		Stage       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputStaticRenditionDetailsError) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputStaticRenditionDetailsError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -772,7 +717,8 @@ type AssetOutputTranscriptDetails struct {
 	// Content contains the complete text and timed segments. Included when ready;
 	// omitted while preparing, failed or expired.
 	Content AssetOutputTranscriptDetailsContent `json:"content"`
-	Error   AssetOutputTranscriptDetailsError   `json:"error"`
+	// A customer-facing Asset output processing failure.
+	Error shared.AssetOutputError `json:"error"`
 	// LanguageCode identifies the detected primary language, such as en. Omitted
 	// before recognition or when no speech is detected.
 	LanguageCode string `json:"language_code"`
@@ -839,32 +785,6 @@ type AssetOutputTranscriptDetailsContentSegment struct {
 // Returns the unmodified JSON received from the API
 func (r AssetOutputTranscriptDetailsContentSegment) RawJSON() string { return r.JSON.raw }
 func (r *AssetOutputTranscriptDetailsContentSegment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-type AssetOutputTranscriptDetailsError struct {
-	// Machine-readable processing error code.
-	Code string `json:"code" api:"required"`
-	// Description of the processing failure.
-	Message string `json:"message" api:"required"`
-	// Processing stage that failed.
-	//
-	// Any of "ingest", "analysis", "encoding", "packaging", "upload", "validation",
-	// "cleanup".
-	Stage string `json:"stage" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Message     respjson.Field
-		Stage       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputTranscriptDetailsError) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputTranscriptDetailsError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
