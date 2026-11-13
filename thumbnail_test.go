@@ -40,7 +40,7 @@ func TestThumbnailNewWithOptionalParams(t *testing.T) {
 			Start: chunkify.Float(0),
 		},
 		Size: chunkify.Int(64),
-		Storage: chunkify.ThumbnailCreateStorageParams{
+		Storage: chunkify.ThumbnailNewParamsStorage{
 			ID:   chunkify.String("x"),
 			Path: chunkify.String("x"),
 		},
