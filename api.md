@@ -1,5 +1,6 @@
 # Shared Response Types
 
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go/shared#AssetOutputError">AssetOutputError</a>
 - <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go/shared">shared</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go/shared#ChunkifyError">ChunkifyError</a>
 
 # Assets
@@ -302,8 +303,8 @@ Response Types:
 
 - <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#Webhook">Webhook</a>
 - <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WebhookListResponse">WebhookListResponse</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#NewEventWebhookEvent">NewEventWebhookEvent</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#UnwrapWebhookEvent">UnwrapWebhookEvent</a>
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#NewEventWebhookEventUnion">NewEventWebhookEventUnion</a>
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#UnwrapWebhookEventUnion">UnwrapWebhookEventUnion</a>
 
 Methods:
 

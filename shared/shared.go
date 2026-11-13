@@ -14,6 +14,27 @@ type paramUnion = param.APIUnion
 // aliased to make [param.APIObject] private when embedding
 type paramObj = param.APIObject
 
+// A customer-facing Asset output processing failure.
+type AssetOutputError struct {
+	// Machine-readable processing error code.
+	Code string `json:"code" api:"required"`
+	// Description of the processing failure.
+	Message string `json:"message" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Message     respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r AssetOutputError) RawJSON() string { return r.JSON.raw }
+func (r *AssetOutputError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 type ChunkifyError struct {
 	// Additional error details or output
 	Detail string `json:"detail" api:"required"`
