@@ -16,6 +16,11 @@ type paramObj = param.APIObject
 
 type Error = apierror.Error
 
+// A customer-facing Asset output processing failure.
+//
+// This is an alias to an internal type.
+type AssetOutputError = shared.AssetOutputError
+
 // This is an alias to an internal type.
 type ChunkifyError = shared.ChunkifyError
 
