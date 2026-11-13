@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.18.0](https://github.com/chunkifydev/chunkify-go/compare/v0.17.0...v0.18.0) (2026-11-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **config:** declare every spec schema as an SDK model
+* **config:** restore the pre-#19 type models and declare AssetOutputError
+* mirror the OpenAPI spec for analytics params and thumbnail storage
+
+### Features
+
+* **config:** declare every spec schema as an SDK model ([bc6fa31](https://github.com/chunkifydev/chunkify-go/commit/bc6fa31a6a2b09acf69dca4c791eb017c6b264e5))
+* mirror the OpenAPI spec for analytics params and thumbnail storage ([926df9a](https://github.com/chunkifydev/chunkify-go/commit/926df9afbc186584e1ec330eb7fc1f7a5526f14e))
+
+
+### Bug Fixes
+
+* **config:** restore the pre-[#19](https://github.com/chunkifydev/chunkify-go/issues/19) type models and declare AssetOutputError ([f1fe821](https://github.com/chunkifydev/chunkify-go/commit/f1fe821506109b68cabae42426a8583e242eb89d))
+
+
+### Chores
+
+* sync OpenAPI schema from Chunkify v3.0.0 ([ae7a230](https://github.com/chunkifydev/chunkify-go/commit/ae7a2309fd21635fe8998402d1238235d03ac822))
+* sync OpenAPI schema from Chunkify v3.1.0 ([139cc4f](https://github.com/chunkifydev/chunkify-go/commit/139cc4f4e5679f87da0f399ae1ff525460cd45ed))
+
 ## [0.17.0](https://github.com/chunkifydev/chunkify-go/compare/v0.16.3...v0.17.0) (2026-11-12)
 
 
