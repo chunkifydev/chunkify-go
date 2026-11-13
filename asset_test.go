@@ -136,7 +136,7 @@ func TestAssetListWithOptionalParams(t *testing.T) {
 		Offset:    chunkify.Int(0),
 		Search:    chunkify.String("search"),
 		SourceID:  chunkify.String("x"),
-		Status:    chunkify.AssetStatusPreparing,
+		Status:    chunkify.AssetListParamsStatusPreparing,
 		StorageID: chunkify.String("storage_id"),
 	})
 	if err != nil {
