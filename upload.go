@@ -178,7 +178,7 @@ type Upload struct {
 	// Workflow actions. Omitted when the creator is unknown.
 	//
 	// Any of "api", "dashboard", "mcp", "workflow".
-	CreatedVia UploadCreatedVia `json:"created_via"`
+	CreatedVia shared.CreatedVia `json:"created_via"`
 	// Error message of the upload
 	Error shared.ChunkifyError `json:"error"`
 	// Declared file size in bytes, when supplied at creation.
@@ -186,7 +186,7 @@ type Upload struct {
 	// Additional metadata for the upload
 	Metadata map[string]string `json:"metadata"`
 	// Multipart transfer details, returned only on creation for multipart Uploads.
-	Multipart UploadMultipart `json:"multipart"`
+	Multipart UploadMultipartSession `json:"multipart"`
 	// SourceId is the id of the source that was created from the upload
 	SourceID string `json:"source_id"`
 	// Resolved Storage selected when the Upload was created. Absent for historical
@@ -247,20 +247,43 @@ const (
 	UploadUploadModeMultipart UploadUploadMode = "multipart"
 )
 
-// CreatedVia specifies how the resource was created: api for API requests,
-// dashboard for the Chunkify dashboard, mcp for MCP clients, and workflow for
-// Workflow actions. Omitted when the creator is unknown.
-type UploadCreatedVia string
+type UploadCreateStorageParams struct {
+	// Storage belonging to this Project. Omit to use the Project default.
+	ID param.Opt[string] `json:"id,omitzero"`
+	// Exact object key including filename, required for customer Storage and forbidden
+	// for Chunkify Storage. The output base_prefix is not added. Existing keys may be
+	// overwritten.
+	Path param.Opt[string] `json:"path,omitzero"`
+	paramObj
+}
 
-const (
-	UploadCreatedViaAPI       UploadCreatedVia = "api"
-	UploadCreatedViaDashboard UploadCreatedVia = "dashboard"
-	UploadCreatedViaMcp       UploadCreatedVia = "mcp"
-	UploadCreatedViaWorkflow  UploadCreatedVia = "workflow"
-)
+func (r UploadCreateStorageParams) MarshalJSON() (data []byte, err error) {
+	type shadow UploadCreateStorageParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UploadCreateStorageParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
-// Multipart transfer details, returned only on creation for multipart Uploads.
-type UploadMultipart struct {
+// The properties Etag, PartNumber are required.
+type UploadMultipartPartParams struct {
+	// ETag returned by storage for this part, including its quotation marks when
+	// present.
+	Etag string `json:"etag" api:"required"`
+	// One-based part number.
+	PartNumber int64 `json:"part_number" api:"required"`
+	paramObj
+}
+
+func (r UploadMultipartPartParams) MarshalJSON() (data []byte, err error) {
+	type shadow UploadMultipartPartParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *UploadMultipartPartParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type UploadMultipartSession struct {
 	// ExpiresAt specifies when the signed part URLs expire. URLs cannot be refreshed;
 	// create a new Upload after expiry.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
@@ -268,7 +291,7 @@ type UploadMultipart struct {
 	PartSizeBytes int64 `json:"part_size_bytes" api:"required"`
 	// Parts contains every signed upload URL in ascending part_number order. Upload
 	// file slices directly to these URLs.
-	Parts []UploadMultipartPart `json:"parts" api:"required"`
+	Parts []UploadMultipartSignedPart `json:"parts" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ExpiresAt     respjson.Field
@@ -280,12 +303,12 @@ type UploadMultipart struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r UploadMultipart) RawJSON() string { return r.JSON.raw }
-func (r *UploadMultipart) UnmarshalJSON(data []byte) error {
+func (r UploadMultipartSession) RawJSON() string { return r.JSON.raw }
+func (r *UploadMultipartSession) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type UploadMultipartPart struct {
+type UploadMultipartSignedPart struct {
 	// PartNumber specifies the one-based part number for this URL.
 	PartNumber int64 `json:"part_number" api:"required"`
 	// UploadUrl specifies the signed PUT URL for this part. Retry the same file slice
@@ -301,8 +324,8 @@ type UploadMultipartPart struct {
 }
 
 // Returns the unmodified JSON received from the API
-func (r UploadMultipartPart) RawJSON() string { return r.JSON.raw }
-func (r *UploadMultipartPart) UnmarshalJSON(data []byte) error {
+func (r UploadMultipartSignedPart) RawJSON() string { return r.JSON.raw }
+func (r *UploadMultipartSignedPart) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -333,7 +356,7 @@ type UploadNewParams struct {
 	// Optional Storage override. Omit id to use the Project default.
 	// Customer-connected Storage requires path; Chunkify Storage generates its own
 	// path.
-	Storage UploadNewParamsStorage `json:"storage,omitzero"`
+	Storage UploadCreateStorageParams `json:"storage,omitzero"`
 	// UploadMode specifies the transfer method. Defaults to auto. Auto chooses
 	// multipart above 100 MiB and single PUT at or below 100 MiB for every Storage
 	// provider. Multipart requires a provider that supports the required multipart
@@ -350,27 +373,6 @@ func (r UploadNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *UploadNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Optional Storage override. Omit id to use the Project default.
-// Customer-connected Storage requires path; Chunkify Storage generates its own
-// path.
-type UploadNewParamsStorage struct {
-	// Storage belonging to this Project. Omit to use the Project default.
-	ID param.Opt[string] `json:"id,omitzero"`
-	// Exact object key including filename, required for customer Storage and forbidden
-	// for Chunkify Storage. The output base_prefix is not added. Existing keys may be
-	// overwritten.
-	Path param.Opt[string] `json:"path,omitzero"`
-	paramObj
-}
-
-func (r UploadNewParamsStorage) MarshalJSON() (data []byte, err error) {
-	type shadow UploadNewParamsStorage
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *UploadNewParamsStorage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -488,7 +490,7 @@ const (
 type UploadCompleteParams struct {
 	// All uploaded parts in ascending part_number order, with the ETags returned by
 	// storage.
-	Parts []UploadCompleteParamsPart `json:"parts,omitzero"`
+	Parts []UploadMultipartPartParams `json:"parts,omitzero"`
 	paramObj
 }
 
@@ -497,23 +499,5 @@ func (r UploadCompleteParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *UploadCompleteParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// The properties Etag, PartNumber are required.
-type UploadCompleteParamsPart struct {
-	// ETag returned by storage for this part, including its quotation marks when
-	// present.
-	Etag string `json:"etag" api:"required"`
-	// One-based part number.
-	PartNumber int64 `json:"part_number" api:"required"`
-	paramObj
-}
-
-func (r UploadCompleteParamsPart) MarshalJSON() (data []byte, err error) {
-	type shadow UploadCompleteParamsPart
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *UploadCompleteParamsPart) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }

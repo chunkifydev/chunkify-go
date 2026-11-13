@@ -57,7 +57,7 @@ func TestEventListWithOptionalParams(t *testing.T) {
 			Lte:  chunkify.Int(0),
 			Sort: "asc",
 		},
-		Events:   []string{"asset.playback_ready"},
+		Events:   []chunkify.WebhookEvent{chunkify.WebhookEventAssetPlaybackReady},
 		Limit:    chunkify.Int(1),
 		ObjectID: chunkify.String("object_id"),
 		Offset:   chunkify.Int(0),

@@ -81,10 +81,10 @@ func TestProjectUpdateWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"projectId",
 		chunkify.ProjectUpdateParams{
-			AssetDefaults: chunkify.ProjectUpdateParamsAssetDefaults{
+			AssetDefaults: chunkify.AssetDefaultsParams{
 				DeleteFilesOnFailure: chunkify.Bool(true),
-				MaxResolution:        "1080p",
-				MinResolution:        "auto",
+				MaxResolution:        chunkify.AssetDefaultsMaxResolution1080p,
+				MinResolution:        chunkify.AssetDefaultsMinResolutionAuto,
 				PathTemplate:         chunkify.String("videos/{metadata.VideoID}"),
 				PreviewEnabled:       chunkify.Bool(true),
 			},

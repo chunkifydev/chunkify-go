@@ -61,3 +61,88 @@ const ChunkifyErrorTypeTimeout = shared.ChunkifyErrorTypeTimeout
 
 // Equals "cancelled"
 const ChunkifyErrorTypeCancelled = shared.ChunkifyErrorTypeCancelled
+
+// CreatedVia specifies how the resource was created: api for API requests,
+// dashboard for the Chunkify dashboard, mcp for MCP clients, and workflow for
+// Workflow actions. Omitted when the creator is unknown.
+//
+// This is an alias to an internal type.
+type CreatedVia = shared.CreatedVia
+
+// Equals "api"
+const CreatedViaAPI = shared.CreatedViaAPI
+
+// Equals "dashboard"
+const CreatedViaDashboard = shared.CreatedViaDashboard
+
+// Equals "mcp"
+const CreatedViaMcp = shared.CreatedViaMcp
+
+// Equals "workflow"
+const CreatedViaWorkflow = shared.CreatedViaWorkflow
+
+// This is an alias to an internal type.
+type InstanceType = shared.InstanceType
+
+// Equals "4vCPU"
+const InstanceType4vCPU = shared.InstanceType4vCPU
+
+// Equals "8vCPU"
+const InstanceType8vCPU = shared.InstanceType8vCPU
+
+// Equals "16vCPU"
+const InstanceType16vCPU = shared.InstanceType16vCPU
+
+// This is an alias to an internal type.
+type Log = shared.Log
+
+// Log level
+//
+// This is an alias to an internal type.
+type LogLevel = shared.LogLevel
+
+// Equals "info"
+const LogLevelInfo = shared.LogLevelInfo
+
+// Equals "error"
+const LogLevelError = shared.LogLevelError
+
+// Equals "debug"
+const LogLevelDebug = shared.LogLevelDebug
+
+// Name of the service that generated the log
+//
+// This is an alias to an internal type.
+type LogService = shared.LogService
+
+// Equals "transcoder"
+const LogServiceTranscoder = shared.LogServiceTranscoder
+
+// Equals "manager"
+const LogServiceManager = shared.LogServiceManager
+
+// This is an alias to an internal type.
+type TranscoderStatus = shared.TranscoderStatus
+
+// Current status of the transcoder (starting, transcoding, finished, failed)
+//
+// This is an alias to an internal type.
+type TranscoderStatusStatus = shared.TranscoderStatusStatus
+
+// Equals "starting"
+const TranscoderStatusStatusStarting = shared.TranscoderStatusStatusStarting
+
+// Equals "pending"
+const TranscoderStatusStatusPending = shared.TranscoderStatusStatusPending
+
+// Equals "transcoding"
+const TranscoderStatusStatusTranscoding = shared.TranscoderStatusStatusTranscoding
+
+// Equals "completed"
+const TranscoderStatusStatusCompleted = shared.TranscoderStatusStatusCompleted
+
+// Equals "failed"
+const TranscoderStatusStatusFailed = shared.TranscoderStatusStatusFailed
+
+// Equals "cancelled"
+const TranscoderStatusStatusCancelled = shared.TranscoderStatusStatusCancelled

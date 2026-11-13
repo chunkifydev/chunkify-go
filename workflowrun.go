@@ -100,14 +100,14 @@ type WorkflowRun struct {
 	// Unique Workflow run ID.
 	ID string `json:"id" api:"required"`
 	// Counts of action outcomes in this run. Reused actions are included in completed.
-	Actions WorkflowRunActions `json:"actions" api:"required"`
+	Actions WorkflowActionCounts `json:"actions" api:"required"`
 	// AssetExecutionStatus specifies the combined status of this revision for the
 	// Asset across retained runs. Any failed action or run makes it failed. Pending or
 	// active work, or an Asset still preparing for an unarchived Workflow, makes it
 	// running. Otherwise it is completed.
 	//
 	// Any of "pending", "running", "completed", "failed", "cancelled".
-	AssetExecutionStatus WorkflowRunAssetExecutionStatus `json:"asset_execution_status" api:"required"`
+	AssetExecutionStatus WorkflowRunStatus `json:"asset_execution_status" api:"required"`
 	// ID of the Asset processed by this run.
 	AssetID string `json:"asset_id" api:"required"`
 	// When the run completed, failed, or was cancelled. Null while the run is pending
@@ -163,65 +163,6 @@ func (r WorkflowRun) RawJSON() string { return r.JSON.raw }
 func (r *WorkflowRun) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Counts of action outcomes in this run. Reused actions are included in completed.
-type WorkflowRunActions struct {
-	// Number of actions cancelled before completion.
-	Cancelled int64 `json:"cancelled" api:"required"`
-	// Number of actions that completed successfully, including reused outputs.
-	Completed int64 `json:"completed" api:"required"`
-	// Number of actions that failed.
-	Failed int64 `json:"failed" api:"required"`
-	// Number of completed actions that reused an existing output. Included in
-	// completed.
-	Reused int64 `json:"reused" api:"required"`
-	// Number of actions skipped without producing an output.
-	Skipped int64 `json:"skipped" api:"required"`
-	// Total number of actions in the run, including unfinished actions.
-	Total int64 `json:"total" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Cancelled   respjson.Field
-		Completed   respjson.Field
-		Failed      respjson.Field
-		Reused      respjson.Field
-		Skipped     respjson.Field
-		Total       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r WorkflowRunActions) RawJSON() string { return r.JSON.raw }
-func (r *WorkflowRunActions) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// AssetExecutionStatus specifies the combined status of this revision for the
-// Asset across retained runs. Any failed action or run makes it failed. Pending or
-// active work, or an Asset still preparing for an unarchived Workflow, makes it
-// running. Otherwise it is completed.
-type WorkflowRunAssetExecutionStatus string
-
-const (
-	WorkflowRunAssetExecutionStatusPending   WorkflowRunAssetExecutionStatus = "pending"
-	WorkflowRunAssetExecutionStatusRunning   WorkflowRunAssetExecutionStatus = "running"
-	WorkflowRunAssetExecutionStatusCompleted WorkflowRunAssetExecutionStatus = "completed"
-	WorkflowRunAssetExecutionStatusFailed    WorkflowRunAssetExecutionStatus = "failed"
-	WorkflowRunAssetExecutionStatusCancelled WorkflowRunAssetExecutionStatus = "cancelled"
-)
-
-// Current status of this event run, based on its own actions.
-type WorkflowRunStatus string
-
-const (
-	WorkflowRunStatusPending   WorkflowRunStatus = "pending"
-	WorkflowRunStatusRunning   WorkflowRunStatus = "running"
-	WorkflowRunStatusCompleted WorkflowRunStatus = "completed"
-	WorkflowRunStatusFailed    WorkflowRunStatus = "failed"
-	WorkflowRunStatusCancelled WorkflowRunStatus = "cancelled"
-)
 
 type WorkflowRunGetParams struct {
 	WorkflowID string `path:"workflowId" api:"required" json:"-"`

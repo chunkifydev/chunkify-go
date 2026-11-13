@@ -34,7 +34,7 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 			"key":  "value",
 			"key2": "value2",
 		},
-		Storage: chunkify.UploadNewParamsStorage{
+		Storage: chunkify.UploadCreateStorageParams{
 			ID:   chunkify.String("x"),
 			Path: chunkify.String("x"),
 		},
@@ -153,7 +153,7 @@ func TestUploadCompleteWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"token",
 		chunkify.UploadCompleteParams{
-			Parts: []chunkify.UploadCompleteParamsPart{{
+			Parts: []chunkify.UploadMultipartPartParams{{
 				Etag:       `"abc123"`,
 				PartNumber: 1,
 			}},
