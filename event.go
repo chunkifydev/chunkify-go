@@ -116,7 +116,7 @@ type Event struct {
 	// "transcoding.ready", "transcoding.failed", "transcoding.cancelled",
 	// "transcoding.expired", "transcoding.deleted", "thumbnail.created",
 	// "thumbnail.ready", "thumbnail.failed", "thumbnail.expired", "thumbnail.deleted".
-	Event EventEvent `json:"event" api:"required"`
+	Event WebhookEvent `json:"event" api:"required"`
 	// Retention deadline set from the project team plan when the event was recorded.
 	// Deliveries and retries share this deadline.
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
@@ -168,46 +168,6 @@ const (
 	EventDeliveryStatusFailed    EventDeliveryStatus = "failed"
 )
 
-type EventEvent string
-
-const (
-	EventEventJobCreated           EventEvent = "job.created"
-	EventEventJobCompleted         EventEvent = "job.completed"
-	EventEventJobFailed            EventEvent = "job.failed"
-	EventEventJobCancelled         EventEvent = "job.cancelled"
-	EventEventSourceCreated        EventEvent = "source.created"
-	EventEventSourceDeleted        EventEvent = "source.deleted"
-	EventEventUploadCreated        EventEvent = "upload.created"
-	EventEventUploadCompleted      EventEvent = "upload.completed"
-	EventEventUploadFailed         EventEvent = "upload.failed"
-	EventEventUploadExpired        EventEvent = "upload.expired"
-	EventEventAssetCreated         EventEvent = "asset.created"
-	EventEventAssetReady           EventEvent = "asset.ready"
-	EventEventAssetPlaybackReady   EventEvent = "asset.playback_ready"
-	EventEventAssetFailed          EventEvent = "asset.failed"
-	EventEventAssetExpired         EventEvent = "asset.expired"
-	EventEventAssetDeleted         EventEvent = "asset.deleted"
-	EventEventAssetOutputCreated   EventEvent = "asset.output.created"
-	EventEventAssetOutputReady     EventEvent = "asset.output.ready"
-	EventEventAssetOutputFailed    EventEvent = "asset.output.failed"
-	EventEventAssetOutputDeleted   EventEvent = "asset.output.deleted"
-	EventEventWorkflowRunCreated   EventEvent = "workflow_run.created"
-	EventEventWorkflowRunCompleted EventEvent = "workflow_run.completed"
-	EventEventWorkflowRunFailed    EventEvent = "workflow_run.failed"
-	EventEventWorkflowRunCancelled EventEvent = "workflow_run.cancelled"
-	EventEventTranscodingCreated   EventEvent = "transcoding.created"
-	EventEventTranscodingReady     EventEvent = "transcoding.ready"
-	EventEventTranscodingFailed    EventEvent = "transcoding.failed"
-	EventEventTranscodingCancelled EventEvent = "transcoding.cancelled"
-	EventEventTranscodingExpired   EventEvent = "transcoding.expired"
-	EventEventTranscodingDeleted   EventEvent = "transcoding.deleted"
-	EventEventThumbnailCreated     EventEvent = "thumbnail.created"
-	EventEventThumbnailReady       EventEvent = "thumbnail.ready"
-	EventEventThumbnailFailed      EventEvent = "thumbnail.failed"
-	EventEventThumbnailExpired     EventEvent = "thumbnail.expired"
-	EventEventThumbnailDeleted     EventEvent = "thumbnail.deleted"
-)
-
 type EventGetResponseEnvelope struct {
 	// A retained lifecycle event, recorded independently of webhook subscriptions. The
 	// payload is an immutable JSON snapshot.
@@ -239,18 +199,7 @@ type EventListParams struct {
 	Offset  param.Opt[int64]       `query:"offset,omitzero" json:"-"`
 	Created EventListParamsCreated `query:"created,omitzero" json:"-"`
 	// Filter by events
-	//
-	// Any of "job.created", "job.completed", "job.failed", "job.cancelled",
-	// "source.created", "source.deleted", "upload.created", "upload.completed",
-	// "upload.failed", "upload.expired", "asset.created", "asset.ready",
-	// "asset.playback_ready", "asset.failed", "asset.expired", "asset.deleted",
-	// "asset.output.created", "asset.output.ready", "asset.output.failed",
-	// "asset.output.deleted", "workflow_run.created", "workflow_run.completed",
-	// "workflow_run.failed", "workflow_run.cancelled", "transcoding.created",
-	// "transcoding.ready", "transcoding.failed", "transcoding.cancelled",
-	// "transcoding.expired", "transcoding.deleted", "thumbnail.created",
-	// "thumbnail.ready", "thumbnail.failed", "thumbnail.expired", "thumbnail.deleted".
-	Events []string `query:"events,omitzero" json:"-"`
+	Events []WebhookEvent `query:"events,omitzero" json:"-"`
 	paramObj
 }
 

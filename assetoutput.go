@@ -141,8 +141,8 @@ func (r *AssetOutputService) Delete(ctx context.Context, outputID string, params
 }
 
 // AssetOutputUnion contains all possible properties and values from
-// [AssetOutputCaption], [AssetOutputStaticRendition], [AssetOutputThumbnail],
-// [AssetOutputTranscript].
+// [AssetCaptionOutput], [AssetStaticRenditionOutput], [AssetThumbnailOutput],
+// [AssetTranscriptOutput].
 //
 // Use the [AssetOutputUnion.AsAny] method to switch on the variant.
 //
@@ -150,10 +150,11 @@ func (r *AssetOutputService) Delete(ctx context.Context, outputID string, params
 type AssetOutputUnion struct {
 	ID      string `json:"id"`
 	AssetID string `json:"asset_id"`
-	// This field is a union of [AssetOutputCaptionDetails],
-	// [AssetOutputStaticRenditionDetails], [Thumbnail], [AssetOutputTranscriptDetails]
+	// This field is a union of [AssetCaption], [AssetStaticRendition], [Thumbnail],
+	// [AssetTranscript]
 	Details AssetOutputUnionDetails `json:"details"`
-	Status  string                  `json:"status"`
+	// This field is from variant [AssetCaptionOutput].
+	Status AssetOutputStatus `json:"status"`
 	// Any of "caption", "static_rendition", "thumbnail", "transcript".
 	Type string `json:"type"`
 	JSON struct {
@@ -172,18 +173,18 @@ type anyAssetOutput interface {
 	implAssetOutputUnion()
 }
 
-func (AssetOutputCaption) implAssetOutputUnion()         {}
-func (AssetOutputStaticRendition) implAssetOutputUnion() {}
-func (AssetOutputThumbnail) implAssetOutputUnion()       {}
-func (AssetOutputTranscript) implAssetOutputUnion()      {}
+func (AssetCaptionOutput) implAssetOutputUnion()         {}
+func (AssetStaticRenditionOutput) implAssetOutputUnion() {}
+func (AssetThumbnailOutput) implAssetOutputUnion()       {}
+func (AssetTranscriptOutput) implAssetOutputUnion()      {}
 
 // Use the following switch statement to find the correct variant
 //
 //	switch variant := AssetOutputUnion.AsAny().(type) {
-//	case chunkify.AssetOutputCaption:
-//	case chunkify.AssetOutputStaticRendition:
-//	case chunkify.AssetOutputThumbnail:
-//	case chunkify.AssetOutputTranscript:
+//	case chunkify.AssetCaptionOutput:
+//	case chunkify.AssetStaticRenditionOutput:
+//	case chunkify.AssetThumbnailOutput:
+//	case chunkify.AssetTranscriptOutput:
 //	default:
 //	  fmt.Errorf("no variant present")
 //	}
@@ -201,22 +202,22 @@ func (u AssetOutputUnion) AsAny() anyAssetOutput {
 	return nil
 }
 
-func (u AssetOutputUnion) AsCaption() (v AssetOutputCaption) {
+func (u AssetOutputUnion) AsCaption() (v AssetCaptionOutput) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssetOutputUnion) AsStaticRendition() (v AssetOutputStaticRendition) {
+func (u AssetOutputUnion) AsStaticRendition() (v AssetStaticRenditionOutput) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssetOutputUnion) AsThumbnail() (v AssetOutputThumbnail) {
+func (u AssetOutputUnion) AsThumbnail() (v AssetThumbnailOutput) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
 
-func (u AssetOutputUnion) AsTranscript() (v AssetOutputTranscript) {
+func (u AssetOutputUnion) AsTranscript() (v AssetTranscriptOutput) {
 	apijson.UnmarshalRoot(json.RawMessage(u.JSON.raw), &v)
 	return
 }
@@ -241,50 +242,50 @@ type AssetOutputUnionDetails struct {
 	// This field is a union of [shared.AssetOutputError], [ThumbnailError]
 	Error        AssetOutputUnionDetailsError `json:"error"`
 	LanguageCode string                       `json:"language_code"`
-	// This field is from variant [AssetOutputCaptionDetails].
+	// This field is from variant [AssetCaption].
 	PlaylistPath string `json:"playlist_path"`
 	Size         int64  `json:"size"`
-	// This field is from variant [AssetOutputCaptionDetails].
+	// This field is from variant [AssetCaption].
 	SourceCaptionID string `json:"source_caption_id"`
-	// This field is from variant [AssetOutputCaptionDetails].
+	// This field is from variant [AssetCaption].
 	TranscriptID string `json:"transcript_id"`
-	// This field is from variant [AssetOutputCaptionDetails].
+	// This field is from variant [AssetCaption].
 	VttPath string `json:"vtt_path"`
 	AssetID string `json:"asset_id"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	Container constant.MP4 `json:"container"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	Height int64 `json:"height"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	Path string `json:"path"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
-	RequestedResolution string `json:"requested_resolution"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
+	RequestedResolution AssetStaticRenditionRequestedResolution `json:"requested_resolution"`
+	// This field is from variant [AssetStaticRendition].
 	Resolution string    `json:"resolution"`
 	StorageID  string    `json:"storage_id"`
 	UpdatedAt  time.Time `json:"updated_at"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	VideoCodec constant.H264 `json:"video_codec"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	Width int64 `json:"width"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	AudioBitrate int64 `json:"audio_bitrate"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	AudioCodec string `json:"audio_codec"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	AudioSamplerate int64 `json:"audio_samplerate"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	CdnURL string `json:"cdn_url"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	Duration float64 `json:"duration"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
-	Progress AssetOutputStaticRenditionDetailsProgress `json:"progress"`
-	ReadyAt  time.Time                                 `json:"ready_at"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
+	Progress AssetRenditionProgress `json:"progress"`
+	ReadyAt  time.Time              `json:"ready_at"`
+	// This field is from variant [AssetStaticRendition].
 	URL string `json:"url"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	VideoBitrate int64 `json:"video_bitrate"`
-	// This field is from variant [AssetOutputStaticRenditionDetails].
+	// This field is from variant [AssetStaticRendition].
 	VideoFramerate float64 `json:"video_framerate"`
 	// This field is from variant [Thumbnail].
 	Files []ThumbnailFile `json:"files"`
@@ -305,13 +306,13 @@ type AssetOutputUnionDetails struct {
 	// This field is from variant [Thumbnail].
 	CreatedByUserID string `json:"created_by_user_id"`
 	// This field is from variant [Thumbnail].
-	CreatedVia ThumbnailCreatedVia `json:"created_via"`
+	CreatedVia shared.CreatedVia `json:"created_via"`
 	// This field is from variant [Thumbnail].
 	DeleteAt time.Time `json:"delete_at"`
 	// This field is from variant [Thumbnail].
 	ExpiresAt time.Time `json:"expires_at"`
-	// This field is from variant [AssetOutputTranscriptDetails].
-	Content AssetOutputTranscriptDetailsContent `json:"content"`
+	// This field is from variant [AssetTranscript].
+	Content AssetTranscriptContent `json:"content"`
 	JSON    struct {
 		ID                  respjson.Field
 		Status              respjson.Field
@@ -384,410 +385,6 @@ func (r *AssetOutputUnionDetailsError) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// An Asset-owned caption output and its canonical resource details.
-type AssetOutputCaption struct {
-	// Id identifies the Asset output, prefixed with aop\_. The type field identifies
-	// the output kind.
-	ID string `json:"id" api:"required"`
-	// AssetId identifies the owning Asset.
-	AssetID string `json:"asset_id" api:"required"`
-	// Details contains the canonical typed output resource, including its available
-	// delivery fields.
-	Details AssetOutputCaptionDetails `json:"details" api:"required"`
-	// Status specifies the output processing state. Expired means temporary output
-	// files are no longer available.
-	//
-	// Any of "preparing", "ready", "failed", "expired".
-	Status string `json:"status" api:"required"`
-	// Type identifies the output kind.
-	Type constant.Caption `json:"type" default:"caption"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		AssetID     respjson.Field
-		Details     respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputCaption) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputCaption) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Details contains the canonical typed output resource, including its available
-// delivery fields.
-type AssetOutputCaptionDetails struct {
-	// Unique Asset output ID, prefixed with aop\_.
-	ID string `json:"id" api:"required"`
-	// Caption processing status.
-	//
-	// Any of "preparing", "ready", "failed", "expired".
-	Status string `json:"status" api:"required"`
-	// Time this caption output was requested.
-	CreatedAt time.Time `json:"created_at" format:"date-time"`
-	// Reason caption processing failed.
-	Error shared.AssetOutputError `json:"error"`
-	// Primary language of this subtitle track, such as en or fr. Omitted when no
-	// speech was detected or processing has not finished.
-	LanguageCode string `json:"language_code"`
-	// Subtitle media playlist path in Storage. Available when speech was detected.
-	PlaylistPath string `json:"playlist_path"`
-	// Combined subtitle playlist and WebVTT size in bytes. Available when ready.
-	Size int64 `json:"size"`
-	// ID of the caption track translated to create this track. Omitted for speech
-	// transcription.
-	SourceCaptionID string `json:"source_caption_id"`
-	// TranscriptId identifies the original-language transcript used to generate this
-	// caption. Omitted for translated captions.
-	TranscriptID string `json:"transcript_id"`
-	// WebVTT subtitle segment path in Storage. Available when speech was detected.
-	VttPath string `json:"vtt_path"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID              respjson.Field
-		Status          respjson.Field
-		CreatedAt       respjson.Field
-		Error           respjson.Field
-		LanguageCode    respjson.Field
-		PlaylistPath    respjson.Field
-		Size            respjson.Field
-		SourceCaptionID respjson.Field
-		TranscriptID    respjson.Field
-		VttPath         respjson.Field
-		ExtraFields     map[string]respjson.Field
-		raw             string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputCaptionDetails) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputCaptionDetails) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An Asset-owned static rendition output and its canonical resource details.
-type AssetOutputStaticRendition struct {
-	// Id identifies the Asset output, prefixed with aop\_. The type field identifies
-	// the output kind.
-	ID string `json:"id" api:"required"`
-	// AssetId identifies the owning Asset.
-	AssetID string `json:"asset_id" api:"required"`
-	// Details contains the canonical typed output resource, including its available
-	// delivery fields.
-	Details AssetOutputStaticRenditionDetails `json:"details" api:"required"`
-	// Status specifies the output processing state. Expired means temporary output
-	// files are no longer available.
-	//
-	// Any of "preparing", "ready", "failed", "expired".
-	Status string `json:"status" api:"required"`
-	// Type identifies the output kind.
-	Type constant.StaticRendition `json:"type" default:"static_rendition"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		AssetID     respjson.Field
-		Details     respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputStaticRendition) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputStaticRendition) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Details contains the canonical typed output resource, including its available
-// delivery fields.
-type AssetOutputStaticRenditionDetails struct {
-	// Unique Asset output ID, prefixed with aop\_.
-	ID string `json:"id" api:"required"`
-	// Parent Asset ID.
-	AssetID string `json:"asset_id" api:"required"`
-	// Media container.
-	Container constant.MP4 `json:"container" default:"mp4"`
-	// When the rendition was created.
-	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Output height in pixels.
-	Height int64 `json:"height" api:"required"`
-	// MP4 path in Storage. Recreating the same resolution reuses this path and
-	// overwrites any retained file.
-	Path string `json:"path" api:"required"`
-	// Requested resolution selector.
-	//
-	// Any of "highest", "240p", "360p", "480p", "540p", "720p", "1080p", "1440p",
-	// "2160p".
-	RequestedResolution string `json:"requested_resolution" api:"required"`
-	// Selected output resolution. May be smaller than 240p for small sources. Use
-	// width and height for pixel dimensions.
-	Resolution string `json:"resolution" api:"required"`
-	// Processing status of this MP4, independent of streaming outputs.
-	//
-	// Any of "preparing", "ready", "failed", "expired".
-	Status string `json:"status" api:"required"`
-	// Storage containing this rendition, inherited from its Asset.
-	StorageID string `json:"storage_id" api:"required"`
-	// When the rendition was last updated.
-	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
-	// Video codec.
-	VideoCodec constant.H264 `json:"video_codec" default:"h264"`
-	// Output width in pixels.
-	Width int64 `json:"width" api:"required"`
-	// Measured audio bitrate in bits per second. Omitted until known or when there is
-	// no audio.
-	AudioBitrate int64 `json:"audio_bitrate"`
-	// Measured audio codec. Omitted until known or when there is no audio.
-	AudioCodec string `json:"audio_codec"`
-	// Measured audio sample rate in Hz. Omitted until known or when there is no audio.
-	AudioSamplerate int64 `json:"audio_samplerate"`
-	// Unsigned MP4 CDN URL. Available when ready and unexpired and Storage has a CDN
-	// URL.
-	CdnURL string `json:"cdn_url" format:"uri"`
-	// Output duration in seconds. Omitted until ready.
-	Duration float64 `json:"duration"`
-	// A customer-facing Asset output processing failure.
-	Error shared.AssetOutputError `json:"error"`
-	// Progress specifies the current processing stage and encoding percentage. Omitted
-	// after processing ends.
-	Progress AssetOutputStaticRenditionDetailsProgress `json:"progress"`
-	// When the MP4 became available.
-	ReadyAt time.Time `json:"ready_at" format:"date-time"`
-	// File size in bytes. Omitted until ready.
-	Size int64 `json:"size"`
-	// Signed MP4 download URL, available when ready and unexpired. Valid for up to ten
-	// minutes. Retrieve the output to refresh it. Independent of preview_enabled.
-	URL string `json:"url" format:"uri"`
-	// Measured video bitrate in bits per second. Omitted until ready.
-	VideoBitrate int64 `json:"video_bitrate"`
-	// Measured video frame rate in frames per second. Omitted until known.
-	VideoFramerate float64 `json:"video_framerate"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID                  respjson.Field
-		AssetID             respjson.Field
-		Container           respjson.Field
-		CreatedAt           respjson.Field
-		Height              respjson.Field
-		Path                respjson.Field
-		RequestedResolution respjson.Field
-		Resolution          respjson.Field
-		Status              respjson.Field
-		StorageID           respjson.Field
-		UpdatedAt           respjson.Field
-		VideoCodec          respjson.Field
-		Width               respjson.Field
-		AudioBitrate        respjson.Field
-		AudioCodec          respjson.Field
-		AudioSamplerate     respjson.Field
-		CdnURL              respjson.Field
-		Duration            respjson.Field
-		Error               respjson.Field
-		Progress            respjson.Field
-		ReadyAt             respjson.Field
-		Size                respjson.Field
-		URL                 respjson.Field
-		VideoBitrate        respjson.Field
-		VideoFramerate      respjson.Field
-		ExtraFields         map[string]respjson.Field
-		raw                 string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputStaticRenditionDetails) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputStaticRenditionDetails) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Progress specifies the current processing stage and encoding percentage. Omitted
-// after processing ends.
-type AssetOutputStaticRenditionDetailsProgress struct {
-	// Stage specifies the current preparation activity. Finalization and streaming
-	// publication can overlap encoding; finalizing is shown once encoding has
-	// completed.
-	//
-	// Any of "queued", "starting", "encoding", "finalizing", "uploading".
-	Stage string `json:"stage" api:"required"`
-	// Percent specifies the percentage of the video encoded so far. Present only
-	// during encoding when video duration is known. It may decrease if processing
-	// restarts. It does not estimate total preparation time.
-	Percent float64 `json:"percent"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Stage       respjson.Field
-		Percent     respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputStaticRenditionDetailsProgress) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputStaticRenditionDetailsProgress) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An Asset-owned thumbnail output and its canonical resource details.
-type AssetOutputThumbnail struct {
-	// Id identifies the Asset output, prefixed with aop\_. The type field identifies
-	// the output kind.
-	ID string `json:"id" api:"required"`
-	// AssetId identifies the owning Asset.
-	AssetID string `json:"asset_id" api:"required"`
-	// Details contains the canonical typed output resource, including its available
-	// delivery fields.
-	Details Thumbnail `json:"details" api:"required"`
-	// Status specifies the output processing state. Expired means temporary output
-	// files are no longer available.
-	//
-	// Any of "preparing", "ready", "failed", "expired".
-	Status string `json:"status" api:"required"`
-	// Type identifies the output kind.
-	Type constant.Thumbnail `json:"type" default:"thumbnail"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		AssetID     respjson.Field
-		Details     respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputThumbnail) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputThumbnail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An Asset-owned transcript output and its content.
-type AssetOutputTranscript struct {
-	// Id identifies the Asset output, prefixed with aop\_.
-	ID string `json:"id" api:"required"`
-	// AssetId identifies the owning Asset.
-	AssetID string `json:"asset_id" api:"required"`
-	// An original-language transcript. Content is included in ready output responses
-	// and lifecycle event snapshots. Transcripts have no download or CDN URL.
-	Details AssetOutputTranscriptDetails `json:"details" api:"required"`
-	// Status specifies the output processing state. Expired means temporary output
-	// files are no longer available.
-	//
-	// Any of "preparing", "ready", "failed", "expired".
-	Status string `json:"status" api:"required"`
-	// Type identifies the output kind.
-	Type constant.Transcript `json:"type" default:"transcript"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		AssetID     respjson.Field
-		Details     respjson.Field
-		Status      respjson.Field
-		Type        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputTranscript) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputTranscript) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// An original-language transcript. Content is included in ready output responses
-// and lifecycle event snapshots. Transcripts have no download or CDN URL.
-type AssetOutputTranscriptDetails struct {
-	// Id identifies the Asset output, prefixed with aop\_.
-	ID string `json:"id" api:"required"`
-	// Status specifies the output processing state. Expired means temporary output
-	// files are no longer available.
-	//
-	// Any of "preparing", "ready", "failed", "expired".
-	Status string `json:"status" api:"required"`
-	// Content contains the complete text and timed segments. Included when ready;
-	// omitted while preparing, failed or expired.
-	Content AssetOutputTranscriptDetailsContent `json:"content"`
-	// A customer-facing Asset output processing failure.
-	Error shared.AssetOutputError `json:"error"`
-	// LanguageCode identifies the detected primary language, such as en. Omitted
-	// before recognition or when no speech is detected.
-	LanguageCode string `json:"language_code"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID           respjson.Field
-		Status       respjson.Field
-		Content      respjson.Field
-		Error        respjson.Field
-		LanguageCode respjson.Field
-		ExtraFields  map[string]respjson.Field
-		raw          string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputTranscriptDetails) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputTranscriptDetails) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Content contains the complete text and timed segments. Included when ready;
-// omitted while preparing, failed or expired.
-type AssetOutputTranscriptDetailsContent struct {
-	// Segments contains timed passages in chronological order. Individual word
-	// timestamps are not included.
-	Segments []AssetOutputTranscriptDetailsContentSegment `json:"segments" api:"required"`
-	// Text contains the complete recognized speech in the original language.
-	Text string `json:"text" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Segments    respjson.Field
-		Text        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputTranscriptDetailsContent) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputTranscriptDetailsContent) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// A timed passage of recognized speech. Times are seconds from the start of the
-// Asset.
-type AssetOutputTranscriptDetailsContentSegment struct {
-	// End specifies the passage end time in seconds.
-	End float64 `json:"end" api:"required"`
-	// Start specifies the passage start time in seconds.
-	Start float64 `json:"start" api:"required"`
-	// Text contains the recognized passage, including punctuation.
-	Text string `json:"text" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		End         respjson.Field
-		Start       respjson.Field
-		Text        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r AssetOutputTranscriptDetailsContentSegment) RawJSON() string { return r.JSON.raw }
-func (r *AssetOutputTranscriptDetailsContentSegment) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
 type AssetOutputNewParams struct {
 
 	//
@@ -796,17 +393,17 @@ type AssetOutputNewParams struct {
 
 	// This field is a request body variant, only one variant field can be set. Create
 	// an Asset-owned caption output.
-	OfCaption *AssetOutputNewParamsOutputCaption `json:",inline"`
+	OfCaption *AssetCaptionOutputCreateParams `json:",inline"`
 	// This field is a request body variant, only one variant field can be set. Create
 	// an Asset-owned static rendition output.
-	OfStaticRendition *AssetOutputNewParamsOutputStaticRendition `json:",inline"`
+	OfStaticRendition *AssetStaticRenditionOutputCreateParams `json:",inline"`
 	// This field is a request body variant, only one variant field can be set. Create
 	// an Asset-owned thumbnail output.
-	OfThumbnail *AssetOutputNewParamsOutputThumbnail `json:",inline"`
+	OfThumbnail *AssetThumbnailOutputCreateParams `json:",inline"`
 	// This field is a request body variant, only one variant field can be set. Create
 	// or reuse the original-language transcript for an Asset. Caption generation
 	// shares this transcript and its speech-recognition charge.
-	OfTranscript *AssetOutputNewParamsOutputTranscript `json:",inline"`
+	OfTranscript *AssetTranscriptOutputCreateParams `json:",inline"`
 
 	paramObj
 }
@@ -815,234 +412,6 @@ func (u AssetOutputNewParams) MarshalJSON() ([]byte, error) {
 	return param.MarshalUnion(u, u.OfCaption, u.OfStaticRendition, u.OfThumbnail, u.OfTranscript)
 }
 func (r *AssetOutputNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Create an Asset-owned caption output.
-//
-// The properties Params, Type are required.
-type AssetOutputNewParamsOutputCaption struct {
-	// Params specifies the settings for this output type.
-	Params AssetOutputNewParamsOutputCaptionParams `json:"params" api:"required"`
-	// Type specifies the output kind to create.
-	//
-	// This field can be elided, and will marshal its zero value as "caption".
-	Type constant.Caption `json:"type" default:"caption"`
-	paramObj
-}
-
-func (r AssetOutputNewParamsOutputCaption) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputCaption
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssetOutputNewParamsOutputCaption) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Params specifies the settings for this output type.
-type AssetOutputNewParamsOutputCaptionParams struct {
-	// SourceCaptionId specifies the caption on this Asset to translate. Supply
-	// language_code with this field. Omit both fields to generate original captions.
-	SourceCaptionID param.Opt[string] `json:"source_caption_id,omitzero"`
-	// LanguageCode specifies the target language for a translated caption. Supply
-	// source_caption_id with this field. Omit both fields to transcribe the Asset
-	// audio with automatic language detection.
-	//
-	// Any of "en", "fr", "es", "de", "it", "pt", "nl", "ja", "ko", "zh", "ar", "hi",
-	// "ru", "tr", "pl", "sv".
-	LanguageCode string `json:"language_code,omitzero"`
-	paramObj
-}
-
-func (r AssetOutputNewParamsOutputCaptionParams) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputCaptionParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssetOutputNewParamsOutputCaptionParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AssetOutputNewParamsOutputCaptionParams](
-		"language_code", "en", "fr", "es", "de", "it", "pt", "nl", "ja", "ko", "zh", "ar", "hi", "ru", "tr", "pl", "sv",
-	)
-}
-
-// Create an Asset-owned static rendition output.
-//
-// The properties Params, Type are required.
-type AssetOutputNewParamsOutputStaticRendition struct {
-	// Params specifies the settings for this output type.
-	Params AssetOutputNewParamsOutputStaticRenditionParams `json:"params,omitzero" api:"required"`
-	// Type specifies the output kind to create.
-	//
-	// This field can be elided, and will marshal its zero value as "static_rendition".
-	Type constant.StaticRendition `json:"type" default:"static_rendition"`
-	paramObj
-}
-
-func (r AssetOutputNewParamsOutputStaticRendition) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputStaticRendition
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssetOutputNewParamsOutputStaticRendition) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Params specifies the settings for this output type.
-//
-// The property Resolution is required.
-type AssetOutputNewParamsOutputStaticRenditionParams struct {
-	// H.264 MP4 resolution. highest selects the largest supported output without
-	// upscaling. Hobby supports up to 1080p; other plans support up to 2160p.
-	// Independent of the streaming resolution limits.
-	//
-	// Any of "highest", "240p", "360p", "480p", "540p", "720p", "1080p", "1440p",
-	// "2160p".
-	Resolution string `json:"resolution,omitzero" api:"required"`
-	paramObj
-}
-
-func (r AssetOutputNewParamsOutputStaticRenditionParams) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputStaticRenditionParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssetOutputNewParamsOutputStaticRenditionParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AssetOutputNewParamsOutputStaticRenditionParams](
-		"resolution", "highest", "240p", "360p", "480p", "540p", "720p", "1080p", "1440p", "2160p",
-	)
-}
-
-// Create an Asset-owned thumbnail output.
-//
-// The properties Params, Type are required.
-type AssetOutputNewParamsOutputThumbnail struct {
-	// Params specifies the settings for this output type.
-	Params AssetOutputNewParamsOutputThumbnailParams `json:"params" api:"required"`
-	// Type specifies the output kind to create.
-	//
-	// This field can be elided, and will marshal its zero value as "thumbnail".
-	Type constant.Thumbnail `json:"type" default:"thumbnail"`
-	paramObj
-}
-
-func (r AssetOutputNewParamsOutputThumbnail) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputThumbnail
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssetOutputNewParamsOutputThumbnail) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Params specifies the settings for this output type.
-type AssetOutputNewParamsOutputThumbnailParams struct {
-	// Count specifies 1 to 100 thumbnails at the middle of equal sections of the
-	// selected range.
-	Count param.Opt[int64] `json:"count,omitzero"`
-	// Size specifies the maximum image or tile edge in pixels, from 64 to 1920.
-	// Defaults to 320. Odd sizes are supported. Preserves display aspect ratio without
-	// cropping or upscaling.
-	Size param.Opt[int64] `json:"size,omitzero"`
-	// Format selects JPEG or WebP. Defaults to JPEG.
-	//
-	// Any of "jpeg", "webp".
-	Format string `json:"format,omitzero"`
-	// Metadata attaches string values to this request. The serialized object may
-	// contain at most 2048 bytes.
-	Metadata map[string]string `json:"metadata,omitzero"`
-	// Output selects images or sprites. Defaults to images.
-	//
-	// Any of "images", "sprites".
-	Output string `json:"output,omitzero"`
-	// Range limits sampling to part of the Source. Defaults to the whole Source
-	// duration.
-	Range AssetOutputNewParamsOutputThumbnailParamsRange `json:"range,omitzero"`
-	// Timestamps specifies 1 to 100 Source-relative target times in seconds. Every
-	// timestamp must be within the selected range, including its start and excluding
-	// its end. Repeated targets produce separate outputs.
-	Timestamps []float64 `json:"timestamps,omitzero"`
-	paramObj
-}
-
-func (r AssetOutputNewParamsOutputThumbnailParams) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputThumbnailParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssetOutputNewParamsOutputThumbnailParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[AssetOutputNewParamsOutputThumbnailParams](
-		"format", "jpeg", "webp",
-	)
-	apijson.RegisterFieldValidator[AssetOutputNewParamsOutputThumbnailParams](
-		"output", "images", "sprites",
-	)
-}
-
-// Range limits sampling to part of the Source. Defaults to the whole Source
-// duration.
-type AssetOutputNewParamsOutputThumbnailParamsRange struct {
-	// End specifies the exclusive upper bound in seconds. Defaults to the Source
-	// duration.
-	End param.Opt[float64] `json:"end,omitzero"`
-	// Start specifies the inclusive lower bound in seconds. Defaults to zero.
-	Start param.Opt[float64] `json:"start,omitzero"`
-	paramObj
-}
-
-func (r AssetOutputNewParamsOutputThumbnailParamsRange) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputThumbnailParamsRange
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssetOutputNewParamsOutputThumbnailParamsRange) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func NewAssetOutputNewParamsOutputTranscript() AssetOutputNewParamsOutputTranscript {
-	return AssetOutputNewParamsOutputTranscript{
-		Type: "transcript",
-	}
-}
-
-// Create or reuse the original-language transcript for an Asset. Caption
-// generation shares this transcript and its speech-recognition charge.
-//
-// This struct has a constant value, construct it with
-// [NewAssetOutputNewParamsOutputTranscript].
-type AssetOutputNewParamsOutputTranscript struct {
-	// Parameters for an original-language transcript. Pass an empty object; the spoken
-	// language is detected automatically.
-	Params AssetOutputNewParamsOutputTranscriptParams `json:"params" api:"required"`
-	// Type specifies the output kind.
-	Type constant.Transcript `json:"type" default:"transcript"`
-	paramObj
-}
-
-func (r AssetOutputNewParamsOutputTranscript) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputTranscript
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssetOutputNewParamsOutputTranscript) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Parameters for an original-language transcript. Pass an empty object; the spoken
-// language is detected automatically.
-type AssetOutputNewParamsOutputTranscriptParams struct {
-	paramObj
-}
-
-func (r AssetOutputNewParamsOutputTranscriptParams) MarshalJSON() (data []byte, err error) {
-	type shadow AssetOutputNewParamsOutputTranscriptParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *AssetOutputNewParamsOutputTranscriptParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

@@ -178,29 +178,8 @@ func (r *Source) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type SourceNewParams struct {
-	// Url is the URL of the source, which must be a valid HTTP URL.
-	URL param.Opt[string] `json:"url,omitzero" format:"http-url"`
-	// Metadata allows for additional information to be attached to the source, with a
-	// maximum size of 2048 bytes.
-	Metadata map[string]string `json:"metadata,omitzero"`
-	// Storage input configuration. Provide this or url, never both.
-	Storage SourceNewParamsStorage `json:"storage,omitzero"`
-	paramObj
-}
-
-func (r SourceNewParams) MarshalJSON() (data []byte, err error) {
-	type shadow SourceNewParams
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *SourceNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Storage input configuration. Provide this or url, never both.
-//
 // The property Path is required.
-type SourceNewParamsStorage struct {
+type SourceCreateStorageParams struct {
 	// Exact object key in the configured bucket, 1 to 1024 UTF-8 bytes. The output
 	// base_prefix is not added.
 	Path string `json:"path" api:"required"`
@@ -211,11 +190,30 @@ type SourceNewParamsStorage struct {
 	paramObj
 }
 
-func (r SourceNewParamsStorage) MarshalJSON() (data []byte, err error) {
-	type shadow SourceNewParamsStorage
+func (r SourceCreateStorageParams) MarshalJSON() (data []byte, err error) {
+	type shadow SourceCreateStorageParams
 	return param.MarshalObject(r, (*shadow)(&r))
 }
-func (r *SourceNewParamsStorage) UnmarshalJSON(data []byte) error {
+func (r *SourceCreateStorageParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type SourceNewParams struct {
+	// Url is the URL of the source, which must be a valid HTTP URL.
+	URL param.Opt[string] `json:"url,omitzero" format:"http-url"`
+	// Metadata allows for additional information to be attached to the source, with a
+	// maximum size of 2048 bytes.
+	Metadata map[string]string `json:"metadata,omitzero"`
+	// Storage input configuration. Provide this or url, never both.
+	Storage SourceCreateStorageParams `json:"storage,omitzero"`
+	paramObj
+}
+
+func (r SourceNewParams) MarshalJSON() (data []byte, err error) {
+	type shadow SourceNewParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *SourceNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
