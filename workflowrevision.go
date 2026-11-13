@@ -141,9 +141,11 @@ func (r *WorkflowRevisionRule) UnmarshalJSON(data []byte) error {
 type WorkflowRevisionRuleActionUnion struct {
 	ID string `json:"id"`
 	// This field is a union of
-	// [WorkflowRevisionRuleActionCreateStaticRenditionParams], [any],
+	// [WorkflowRevisionRuleActionCreateStaticRenditionParams],
+	// [WorkflowRevisionRuleActionCreateCaptionParams],
 	// [WorkflowRevisionRuleActionTranslateCaptionParams],
-	// [WorkflowRevisionRuleActionCreateThumbnailsParams], [any]
+	// [WorkflowRevisionRuleActionCreateThumbnailsParams],
+	// [WorkflowRevisionRuleActionCreateTranscriptParams]
 	Params WorkflowRevisionRuleActionUnionParams `json:"params"`
 	// Any of "create_static_rendition", "create_caption", "translate_caption",
 	// "create_thumbnails", "create_transcript".
@@ -240,12 +242,7 @@ func (r *WorkflowRevisionRuleActionUnion) UnmarshalJSON(data []byte) error {
 //
 // For type safety it is recommended to directly use a variant of the
 // [WorkflowRevisionRuleActionUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfWorkflowRevisionRuleActionCreateTranscripts]
 type WorkflowRevisionRuleActionUnionParams struct {
-	// This field will be present if the value is a [any] instead of an object.
-	OfWorkflowRevisionRuleActionCreateTranscripts any `json:",inline"`
 	// This field is from variant
 	// [WorkflowRevisionRuleActionCreateStaticRenditionParams].
 	Resolution string `json:"resolution"`
@@ -266,17 +263,16 @@ type WorkflowRevisionRuleActionUnionParams struct {
 	// This field is from variant [WorkflowRevisionRuleActionCreateThumbnailsParams].
 	Timestamps []float64 `json:"timestamps"`
 	JSON       struct {
-		OfWorkflowRevisionRuleActionCreateTranscripts respjson.Field
-		Resolution                                    respjson.Field
-		LanguageCode                                  respjson.Field
-		Count                                         respjson.Field
-		Format                                        respjson.Field
-		Metadata                                      respjson.Field
-		Output                                        respjson.Field
-		Range                                         respjson.Field
-		Size                                          respjson.Field
-		Timestamps                                    respjson.Field
-		raw                                           string
+		Resolution   respjson.Field
+		LanguageCode respjson.Field
+		Count        respjson.Field
+		Format       respjson.Field
+		Metadata     respjson.Field
+		Output       respjson.Field
+		Range        respjson.Field
+		Size         respjson.Field
+		Timestamps   respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -341,7 +337,7 @@ type WorkflowRevisionRuleActionCreateCaption struct {
 	// underscores.
 	ID string `json:"id" api:"required"`
 	// Params specifies caption generation settings. Pass an empty object.
-	Params any `json:"params" api:"required"`
+	Params WorkflowRevisionRuleActionCreateCaptionParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_caption.
 	Type constant.CreateCaption `json:"type" default:"create_caption"`
 	// TranscriptId binds caption publication to the transcript in the triggering
@@ -362,6 +358,21 @@ type WorkflowRevisionRuleActionCreateCaption struct {
 // Returns the unmodified JSON received from the API
 func (r WorkflowRevisionRuleActionCreateCaption) RawJSON() string { return r.JSON.raw }
 func (r *WorkflowRevisionRuleActionCreateCaption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Params specifies caption generation settings. Pass an empty object.
+type WorkflowRevisionRuleActionCreateCaptionParams struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WorkflowRevisionRuleActionCreateCaptionParams) RawJSON() string { return r.JSON.raw }
+func (r *WorkflowRevisionRuleActionCreateCaptionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -566,7 +577,7 @@ type WorkflowRevisionRuleActionCreateTranscript struct {
 	// underscores.
 	ID string `json:"id" api:"required"`
 	// Params specifies transcript settings. Pass an empty object.
-	Params any `json:"params" api:"required"`
+	Params WorkflowRevisionRuleActionCreateTranscriptParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_transcript.
 	Type constant.CreateTranscript `json:"type" default:"create_transcript"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -582,6 +593,21 @@ type WorkflowRevisionRuleActionCreateTranscript struct {
 // Returns the unmodified JSON received from the API
 func (r WorkflowRevisionRuleActionCreateTranscript) RawJSON() string { return r.JSON.raw }
 func (r *WorkflowRevisionRuleActionCreateTranscript) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Params specifies transcript settings. Pass an empty object.
+type WorkflowRevisionRuleActionCreateTranscriptParams struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WorkflowRevisionRuleActionCreateTranscriptParams) RawJSON() string { return r.JSON.raw }
+func (r *WorkflowRevisionRuleActionCreateTranscriptParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
