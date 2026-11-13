@@ -29,18 +29,18 @@ func TestWorkflowNew(t *testing.T) {
 	)
 	_, err := client.Workflows.New(context.TODO(), chunkify.WorkflowNewParams{
 		Name: "x",
-		Rules: []chunkify.WorkflowRuleParam{{
+		Rules: []chunkify.WorkflowNewParamsRule{{
 			ID: "id",
-			Actions: []chunkify.WorkflowActionUnionParam{{
-				OfCreateStaticRendition: &chunkify.WorkflowStaticActionParam{
+			Actions: []chunkify.WorkflowNewParamsRuleActionUnion{{
+				OfCreateStaticRendition: &chunkify.WorkflowNewParamsRuleActionCreateStaticRendition{
 					ID: "id",
-					Params: chunkify.WorkflowStaticParams{
-						Resolution: chunkify.WorkflowStaticParamsResolutionHighest,
+					Params: chunkify.WorkflowNewParamsRuleActionCreateStaticRenditionParams{
+						Resolution: "highest",
 					},
 				},
 			}},
-			Event: chunkify.WorkflowRuleEventAssetReady,
-			Origin: chunkify.WorkflowRuleOriginParam{
+			Event: "asset.ready",
+			Origin: chunkify.WorkflowNewParamsRuleOrigin{
 				ActionID: "action_id",
 				RuleID:   "rule_id",
 			},
@@ -100,18 +100,18 @@ func TestWorkflowUpdateWithOptionalParams(t *testing.T) {
 		chunkify.WorkflowUpdateParams{
 			ExpectedRevision: chunkify.Int(1),
 			Name:             chunkify.String("x"),
-			Rules: []chunkify.WorkflowRuleParam{{
+			Rules: []chunkify.WorkflowUpdateParamsRule{{
 				ID: "id",
-				Actions: []chunkify.WorkflowActionUnionParam{{
-					OfCreateStaticRendition: &chunkify.WorkflowStaticActionParam{
+				Actions: []chunkify.WorkflowUpdateParamsRuleActionUnion{{
+					OfCreateStaticRendition: &chunkify.WorkflowUpdateParamsRuleActionCreateStaticRendition{
 						ID: "id",
-						Params: chunkify.WorkflowStaticParams{
-							Resolution: chunkify.WorkflowStaticParamsResolutionHighest,
+						Params: chunkify.WorkflowUpdateParamsRuleActionCreateStaticRenditionParams{
+							Resolution: "highest",
 						},
 					},
 				}},
-				Event: chunkify.WorkflowRuleEventAssetReady,
-				Origin: chunkify.WorkflowRuleOriginParam{
+				Event: "asset.ready",
+				Origin: chunkify.WorkflowUpdateParamsRuleOrigin{
 					ActionID: "action_id",
 					RuleID:   "rule_id",
 				},

@@ -4,15 +4,9 @@
 
 # Assets
 
-Params Types:
-
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#AssetStaticRenditionCreateParams">AssetStaticRenditionCreateParams</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#AssetStatus">AssetStatus</a>
-
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#Asset">Asset</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#AssetStatus">AssetStatus</a>
 
 Methods:
 
@@ -37,15 +31,15 @@ Methods:
 
 ## Workflow
 
-Response Types:
-
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#AssetActionRun">AssetActionRun</a>
-
 Methods:
 
 - <code title="post /assets/{assetId}/workflow/update">client.Assets.Workflow.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#AssetWorkflowService.Update">Update</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, assetID <a href="https://pkg.go.dev/builtin#string">string</a>) (\*<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowRun">WorkflowRun</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ### Actions
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#AssetActionRun">AssetActionRun</a>
 
 Methods:
 
@@ -242,10 +236,6 @@ Methods:
 
 # Thumbnails
 
-Params Types:
-
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#ThumbnailCreateStorageParams">ThumbnailCreateStorageParams</a>
-
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#Thumbnail">Thumbnail</a>
@@ -325,34 +315,9 @@ Methods:
 
 # Workflows
 
-Params Types:
-
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowActionUnionParam">WorkflowActionUnionParam</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowCaptionActionParam">WorkflowCaptionActionParam</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowCaptionParams">WorkflowCaptionParams</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowRuleParam">WorkflowRuleParam</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowStaticActionParam">WorkflowStaticActionParam</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowStaticParams">WorkflowStaticParams</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowThumbnailActionParam">WorkflowThumbnailActionParam</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowThumbnailParams">WorkflowThumbnailParams</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowTranscriptActionParam">WorkflowTranscriptActionParam</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowTranslationActionParam">WorkflowTranslationActionParam</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowTranslationParams">WorkflowTranslationParams</a>
-
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#Workflow">Workflow</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowActionUnion">WorkflowActionUnion</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowCaptionAction">WorkflowCaptionAction</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowCaptionParams">WorkflowCaptionParams</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowRule">WorkflowRule</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowStaticAction">WorkflowStaticAction</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowStaticParamsResp">WorkflowStaticParamsResp</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowThumbnailAction">WorkflowThumbnailAction</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowThumbnailParamsResp">WorkflowThumbnailParamsResp</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowTranscriptAction">WorkflowTranscriptAction</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowTranslationAction">WorkflowTranslationAction</a>
-- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#WorkflowTranslationParamsResp">WorkflowTranslationParamsResp</a>
 
 Methods:
 
