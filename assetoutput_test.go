@@ -31,9 +31,9 @@ func TestAssetOutputNew(t *testing.T) {
 		context.TODO(),
 		"assetId",
 		chunkify.AssetOutputNewParams{
-			OfStaticRendition: &chunkify.AssetOutputNewParamsOutputStaticRendition{
-				Params: chunkify.AssetOutputNewParamsOutputStaticRenditionParams{
-					Resolution: "1080p",
+			OfStaticRendition: &chunkify.AssetStaticRenditionOutputCreateParams{
+				Params: chunkify.AssetStaticRenditionCreateParams{
+					Resolution: chunkify.AssetStaticRenditionCreateParamsResolution1080p,
 				},
 			},
 		},

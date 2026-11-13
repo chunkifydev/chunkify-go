@@ -37,7 +37,7 @@ func TestAssetNewWithOptionalParams(t *testing.T) {
 		MinResolution:  chunkify.AssetNewParamsMinResolutionAuto,
 		PathTemplate:   chunkify.String("videos/{metadata.VideoID}"),
 		PreviewEnabled: chunkify.Bool(true),
-		Storage: chunkify.AssetNewParamsStorage{
+		Storage: chunkify.AssetCreateStorageParams{
 			ID: chunkify.String("stor_example"),
 		},
 		Title:      chunkify.String("Launch video"),
@@ -136,7 +136,7 @@ func TestAssetListWithOptionalParams(t *testing.T) {
 		Offset:    chunkify.Int(0),
 		Search:    chunkify.String("search"),
 		SourceID:  chunkify.String("x"),
-		Status:    chunkify.AssetListParamsStatusPreparing,
+		Status:    chunkify.AssetStatusPreparing,
 		StorageID: chunkify.String("storage_id"),
 	})
 	if err != nil {

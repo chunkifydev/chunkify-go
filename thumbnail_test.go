@@ -30,17 +30,17 @@ func TestThumbnailNewWithOptionalParams(t *testing.T) {
 	_, err := client.Thumbnails.New(context.TODO(), chunkify.ThumbnailNewParams{
 		SourceID: "src_example",
 		Count:    chunkify.Int(10),
-		Format:   chunkify.ThumbnailNewParamsFormatJpeg,
+		Format:   chunkify.ThumbnailFormatJpeg,
 		Metadata: map[string]string{
 			"foo": "string",
 		},
-		Output: chunkify.ThumbnailNewParamsOutputImages,
-		Range: chunkify.ThumbnailNewParamsRange{
+		Output: chunkify.ThumbnailOutputImages,
+		Range: chunkify.ThumbnailRangeParams{
 			End:   chunkify.Float(1),
 			Start: chunkify.Float(0),
 		},
 		Size: chunkify.Int(64),
-		Storage: chunkify.ThumbnailNewParamsStorage{
+		Storage: chunkify.ThumbnailCreateStorageParams{
 			ID:   chunkify.String("x"),
 			Path: chunkify.String("x"),
 		},
@@ -103,7 +103,7 @@ func TestThumbnailListWithOptionalParams(t *testing.T) {
 		Limit:     chunkify.Int(1),
 		Offset:    chunkify.Int(0),
 		SourceID:  chunkify.String("x"),
-		Status:    chunkify.ThumbnailListParamsStatusPreparing,
+		Status:    chunkify.ThumbnailStatusPreparing,
 		StorageID: chunkify.String("x"),
 	})
 	if err != nil {

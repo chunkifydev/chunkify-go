@@ -28,7 +28,7 @@ func TestTokenNewWithOptionalParams(t *testing.T) {
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Tokens.New(context.TODO(), chunkify.TokenNewParams{
-		Scope:     chunkify.TokenNewParamsScopeProject,
+		Scope:     chunkify.TokenScopeProject,
 		Name:      chunkify.String("My Token"),
 		ProjectID: chunkify.String("proj_A1cce6120E56e7Tu9ioP09Nhjk1"),
 	})

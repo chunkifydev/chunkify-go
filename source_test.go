@@ -32,7 +32,7 @@ func TestSourceNewWithOptionalParams(t *testing.T) {
 			"key":  "value",
 			"key2": "value2",
 		},
-		Storage: chunkify.SourceNewParamsStorage{
+		Storage: chunkify.SourceCreateStorageParams{
 			Path: "x",
 			ID:   chunkify.String("x"),
 		},
