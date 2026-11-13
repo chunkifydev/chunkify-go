@@ -288,16 +288,7 @@ func (r *WorkflowActionUnion) UnmarshalJSON(data []byte) error {
 //
 // For type safety it is recommended to directly use a variant of the
 // [WorkflowActionUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfWorkflowCaption OfWorkflowTranscript]
 type WorkflowActionUnionParams struct {
-	// This field will be present if the value is a [WorkflowCaption] instead of an
-	// object.
-	OfWorkflowCaption WorkflowCaption `json:",inline"`
-	// This field will be present if the value is a [WorkflowTranscript] instead of an
-	// object.
-	OfWorkflowTranscript WorkflowTranscript `json:",inline"`
 	// This field is from variant [WorkflowStatic].
 	Resolution WorkflowStaticResolution `json:"resolution"`
 	// This field is from variant [WorkflowTranslation].
@@ -317,18 +308,16 @@ type WorkflowActionUnionParams struct {
 	// This field is from variant [WorkflowThumbnail].
 	Timestamps []float64 `json:"timestamps"`
 	JSON       struct {
-		OfWorkflowCaption    respjson.Field
-		OfWorkflowTranscript respjson.Field
-		Resolution           respjson.Field
-		LanguageCode         respjson.Field
-		Count                respjson.Field
-		Format               respjson.Field
-		Metadata             respjson.Field
-		Output               respjson.Field
-		Range                respjson.Field
-		Size                 respjson.Field
-		Timestamps           respjson.Field
-		raw                  string
+		Resolution   respjson.Field
+		LanguageCode respjson.Field
+		Count        respjson.Field
+		Format       respjson.Field
+		Metadata     respjson.Field
+		Output       respjson.Field
+		Range        respjson.Field
+		Size         respjson.Field
+		Timestamps   respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -539,7 +528,21 @@ func init() {
 	)
 }
 
-type WorkflowCaption = any
+// Parameters for generating original captions. Pass an empty object; the spoken
+// language is detected automatically.
+type WorkflowCaption struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WorkflowCaption) RawJSON() string { return r.JSON.raw }
+func (r *WorkflowCaption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Generates or reuses original captions and their transcript from the Asset's
 // speech.
@@ -583,7 +586,7 @@ type WorkflowCaptionActionParams struct {
 	// underscores.
 	ID string `json:"id" api:"required"`
 	// Params specifies caption generation settings. Pass an empty object.
-	Params WorkflowCaptionParams `json:"params,omitzero" api:"required"`
+	Params WorkflowCaptionParams `json:"params" api:"required"`
 	// TranscriptId binds caption publication to the transcript in the triggering
 	// event. Use it only when connected to create_transcript. When omitted, creates or
 	// reuses the Asset’s original transcript.
@@ -600,6 +603,20 @@ func (r WorkflowCaptionActionParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WorkflowCaptionActionParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameters for generating original captions. Pass an empty object; the spoken
+// language is detected automatically.
+type WorkflowCaptionParams struct {
+	paramObj
+}
+
+func (r WorkflowCaptionParams) MarshalJSON() (data []byte, err error) {
+	type shadow WorkflowCaptionParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WorkflowCaptionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -987,7 +1004,7 @@ type WorkflowThumbnailActionParams struct {
 	ID string `json:"id" api:"required"`
 	// Params specifies sampling and image settings. Outputs use the Asset folder and
 	// Storage.
-	Params WorkflowThumbnailParams `json:"params,omitzero" api:"required"`
+	Params WorkflowThumbnailParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_thumbnails.
 	//
 	// This field can be elided, and will marshal its zero value as
@@ -1084,7 +1101,21 @@ func (r *WorkflowThumbnailRangeParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-type WorkflowTranscript = any
+// Parameters for an original-language transcript. Pass an empty object; the spoken
+// language is detected automatically.
+type WorkflowTranscript struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WorkflowTranscript) RawJSON() string { return r.JSON.raw }
+func (r *WorkflowTranscript) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
 
 // Creates or reuses the original-language transcript. Can run alongside caption
 // generation in the same asset.ready rule.
@@ -1123,7 +1154,7 @@ type WorkflowTranscriptActionParams struct {
 	// underscores.
 	ID string `json:"id" api:"required"`
 	// Params specifies transcript settings. Pass an empty object.
-	Params WorkflowTranscriptParams `json:"params,omitzero" api:"required"`
+	Params WorkflowTranscriptParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_transcript.
 	//
 	// This field can be elided, and will marshal its zero value as
@@ -1137,6 +1168,20 @@ func (r WorkflowTranscriptActionParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WorkflowTranscriptActionParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameters for an original-language transcript. Pass an empty object; the spoken
+// language is detected automatically.
+type WorkflowTranscriptParams struct {
+	paramObj
+}
+
+func (r WorkflowTranscriptParams) MarshalJSON() (data []byte, err error) {
+	type shadow WorkflowTranscriptParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WorkflowTranscriptParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 

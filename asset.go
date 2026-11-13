@@ -531,7 +531,7 @@ func (r *AssetCaptionOutput) UnmarshalJSON(data []byte) error {
 // The properties Params, Type are required.
 type AssetCaptionOutputCreateParams struct {
 	// Params specifies the settings for this output type.
-	Params AssetCaptionOutputParams `json:"params,omitzero" api:"required"`
+	Params AssetCaptionOutputParams `json:"params" api:"required"`
 	// Type specifies the output kind to create.
 	//
 	// This field can be elided, and will marshal its zero value as "caption".
@@ -1200,7 +1200,7 @@ func (r *AssetThumbnailOutput) UnmarshalJSON(data []byte) error {
 // The properties Params, Type are required.
 type AssetThumbnailOutputCreateParams struct {
 	// Params specifies the settings for this output type.
-	Params AssetThumbnailCreateParams `json:"params,omitzero" api:"required"`
+	Params AssetThumbnailCreateParams `json:"params" api:"required"`
 	// Type specifies the output kind to create.
 	//
 	// This field can be elided, and will marshal its zero value as "thumbnail".
@@ -1363,7 +1363,7 @@ func (r *AssetTranscriptOutput) UnmarshalJSON(data []byte) error {
 type AssetTranscriptOutputCreateParams struct {
 	// Parameters for an original-language transcript. Pass an empty object; the spoken
 	// language is detected automatically.
-	Params AssetTranscriptOutputParams `json:"params,omitzero" api:"required"`
+	Params AssetTranscriptOutputParams `json:"params" api:"required"`
 	// Type specifies the output kind.
 	//
 	// This field can be elided, and will marshal its zero value as "transcript".
@@ -1376,6 +1376,20 @@ func (r AssetTranscriptOutputCreateParams) MarshalJSON() (data []byte, err error
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *AssetTranscriptOutputCreateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Parameters for an original-language transcript. Pass an empty object; the spoken
+// language is detected automatically.
+type AssetTranscriptOutputParams struct {
+	paramObj
+}
+
+func (r AssetTranscriptOutputParams) MarshalJSON() (data []byte, err error) {
+	type shadow AssetTranscriptOutputParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *AssetTranscriptOutputParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
