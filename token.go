@@ -113,7 +113,6 @@ func (r *Token) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Access scope of the token
 type TokenScope string
 
 const (
@@ -148,7 +147,7 @@ type TokenNewParams struct {
 	// "project".
 	//
 	// Any of "project", "team".
-	Scope TokenNewParamsScope `json:"scope,omitzero" api:"required"`
+	Scope TokenScope `json:"scope,omitzero" api:"required"`
 	// Name is the name of the token, which can be up to 64 characters long.
 	Name param.Opt[string] `json:"name,omitzero"`
 	// ProjectId is required if the scope is set to "project".
@@ -163,15 +162,6 @@ func (r TokenNewParams) MarshalJSON() (data []byte, err error) {
 func (r *TokenNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
-
-// Scope specifies the scope of the token, which must be either "team" or
-// "project".
-type TokenNewParamsScope string
-
-const (
-	TokenNewParamsScopeProject TokenNewParamsScope = "project"
-	TokenNewParamsScopeTeam    TokenNewParamsScope = "team"
-)
 
 type TokenNewResponseEnvelope struct {
 	// Data contains the response object
