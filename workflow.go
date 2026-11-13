@@ -230,9 +230,11 @@ func (r *WorkflowRule) UnmarshalJSON(data []byte) error {
 // Use the methods beginning with 'As' to cast the union to one of its variants.
 type WorkflowRuleActionUnion struct {
 	ID string `json:"id"`
-	// This field is a union of [WorkflowRuleActionCreateStaticRenditionParams], [any],
+	// This field is a union of [WorkflowRuleActionCreateStaticRenditionParams],
+	// [WorkflowRuleActionCreateCaptionParams],
 	// [WorkflowRuleActionTranslateCaptionParams],
-	// [WorkflowRuleActionCreateThumbnailsParams], [any]
+	// [WorkflowRuleActionCreateThumbnailsParams],
+	// [WorkflowRuleActionCreateTranscriptParams]
 	Params WorkflowRuleActionUnionParams `json:"params"`
 	// Any of "create_static_rendition", "create_caption", "translate_caption",
 	// "create_thumbnails", "create_transcript".
@@ -329,12 +331,7 @@ func (r *WorkflowRuleActionUnion) UnmarshalJSON(data []byte) error {
 //
 // For type safety it is recommended to directly use a variant of the
 // [WorkflowRuleActionUnion].
-//
-// If the underlying value is not a json object, one of the following properties
-// will be valid: OfWorkflowRuleActionCreateTranscripts]
 type WorkflowRuleActionUnionParams struct {
-	// This field will be present if the value is a [any] instead of an object.
-	OfWorkflowRuleActionCreateTranscripts any `json:",inline"`
 	// This field is from variant [WorkflowRuleActionCreateStaticRenditionParams].
 	Resolution string `json:"resolution"`
 	// This field is from variant [WorkflowRuleActionTranslateCaptionParams].
@@ -354,17 +351,16 @@ type WorkflowRuleActionUnionParams struct {
 	// This field is from variant [WorkflowRuleActionCreateThumbnailsParams].
 	Timestamps []float64 `json:"timestamps"`
 	JSON       struct {
-		OfWorkflowRuleActionCreateTranscripts respjson.Field
-		Resolution                            respjson.Field
-		LanguageCode                          respjson.Field
-		Count                                 respjson.Field
-		Format                                respjson.Field
-		Metadata                              respjson.Field
-		Output                                respjson.Field
-		Range                                 respjson.Field
-		Size                                  respjson.Field
-		Timestamps                            respjson.Field
-		raw                                   string
+		Resolution   respjson.Field
+		LanguageCode respjson.Field
+		Count        respjson.Field
+		Format       respjson.Field
+		Metadata     respjson.Field
+		Output       respjson.Field
+		Range        respjson.Field
+		Size         respjson.Field
+		Timestamps   respjson.Field
+		raw          string
 	} `json:"-"`
 }
 
@@ -429,7 +425,7 @@ type WorkflowRuleActionCreateCaption struct {
 	// underscores.
 	ID string `json:"id" api:"required"`
 	// Params specifies caption generation settings. Pass an empty object.
-	Params any `json:"params" api:"required"`
+	Params WorkflowRuleActionCreateCaptionParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_caption.
 	Type constant.CreateCaption `json:"type" default:"create_caption"`
 	// TranscriptId binds caption publication to the transcript in the triggering
@@ -450,6 +446,21 @@ type WorkflowRuleActionCreateCaption struct {
 // Returns the unmodified JSON received from the API
 func (r WorkflowRuleActionCreateCaption) RawJSON() string { return r.JSON.raw }
 func (r *WorkflowRuleActionCreateCaption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Params specifies caption generation settings. Pass an empty object.
+type WorkflowRuleActionCreateCaptionParams struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WorkflowRuleActionCreateCaptionParams) RawJSON() string { return r.JSON.raw }
+func (r *WorkflowRuleActionCreateCaptionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -654,7 +665,7 @@ type WorkflowRuleActionCreateTranscript struct {
 	// underscores.
 	ID string `json:"id" api:"required"`
 	// Params specifies transcript settings. Pass an empty object.
-	Params any `json:"params" api:"required"`
+	Params WorkflowRuleActionCreateTranscriptParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_transcript.
 	Type constant.CreateTranscript `json:"type" default:"create_transcript"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -670,6 +681,21 @@ type WorkflowRuleActionCreateTranscript struct {
 // Returns the unmodified JSON received from the API
 func (r WorkflowRuleActionCreateTranscript) RawJSON() string { return r.JSON.raw }
 func (r *WorkflowRuleActionCreateTranscript) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Params specifies transcript settings. Pass an empty object.
+type WorkflowRuleActionCreateTranscriptParams struct {
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r WorkflowRuleActionCreateTranscriptParams) RawJSON() string { return r.JSON.raw }
+func (r *WorkflowRuleActionCreateTranscriptParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -870,18 +896,21 @@ func (u WorkflowNewParamsRuleActionUnion) GetParams() (res workflowNewParamsRule
 }
 
 // Can have the runtime types
-// [*WorkflowNewParamsRuleActionCreateStaticRenditionParams], [*any],
+// [*WorkflowNewParamsRuleActionCreateStaticRenditionParams],
+// [*WorkflowNewParamsRuleActionCreateCaptionParams],
 // [*WorkflowNewParamsRuleActionTranslateCaptionParams],
-// [*WorkflowNewParamsRuleActionCreateThumbnailsParams]
+// [*WorkflowNewParamsRuleActionCreateThumbnailsParams],
+// [*WorkflowNewParamsRuleActionCreateTranscriptParams]
 type workflowNewParamsRuleActionUnionParams struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
 //	case *chunkify.WorkflowNewParamsRuleActionCreateStaticRenditionParams:
-//	case *any:
+//	case *chunkify.WorkflowNewParamsRuleActionCreateCaptionParams:
 //	case *chunkify.WorkflowNewParamsRuleActionTranslateCaptionParams:
 //	case *chunkify.WorkflowNewParamsRuleActionCreateThumbnailsParams:
+//	case *chunkify.WorkflowNewParamsRuleActionCreateTranscriptParams:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -961,12 +990,12 @@ type WorkflowNewParamsRuleActionCreateCaption struct {
 	// characters, starting with a letter and containing only letters, digits, or
 	// underscores.
 	ID string `json:"id" api:"required"`
-	// Params specifies caption generation settings. Pass an empty object.
-	Params any `json:"params,omitzero" api:"required"`
 	// TranscriptId binds caption publication to the transcript in the triggering
 	// event. Use it only when connected to create_transcript. When omitted, creates or
 	// reuses the Asset’s original transcript.
 	TranscriptID WorkflowNewParamsRuleActionCreateCaptionTranscriptID `json:"transcript_id,omitzero"`
+	// Params specifies caption generation settings. Pass an empty object.
+	Params WorkflowNewParamsRuleActionCreateCaptionParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_caption.
 	//
 	// This field can be elided, and will marshal its zero value as "create_caption".
@@ -979,6 +1008,19 @@ func (r WorkflowNewParamsRuleActionCreateCaption) MarshalJSON() (data []byte, er
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WorkflowNewParamsRuleActionCreateCaption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Params specifies caption generation settings. Pass an empty object.
+type WorkflowNewParamsRuleActionCreateCaptionParams struct {
+	paramObj
+}
+
+func (r WorkflowNewParamsRuleActionCreateCaptionParams) MarshalJSON() (data []byte, err error) {
+	type shadow WorkflowNewParamsRuleActionCreateCaptionParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WorkflowNewParamsRuleActionCreateCaptionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1101,7 +1143,7 @@ type WorkflowNewParamsRuleActionCreateThumbnails struct {
 	ID string `json:"id" api:"required"`
 	// Params specifies sampling and image settings. Outputs use the Asset folder and
 	// Storage.
-	Params WorkflowNewParamsRuleActionCreateThumbnailsParams `json:"params,omitzero" api:"required"`
+	Params WorkflowNewParamsRuleActionCreateThumbnailsParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_thumbnails.
 	//
 	// This field can be elided, and will marshal its zero value as
@@ -1195,7 +1237,7 @@ type WorkflowNewParamsRuleActionCreateTranscript struct {
 	// underscores.
 	ID string `json:"id" api:"required"`
 	// Params specifies transcript settings. Pass an empty object.
-	Params any `json:"params,omitzero" api:"required"`
+	Params WorkflowNewParamsRuleActionCreateTranscriptParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_transcript.
 	//
 	// This field can be elided, and will marshal its zero value as
@@ -1209,6 +1251,19 @@ func (r WorkflowNewParamsRuleActionCreateTranscript) MarshalJSON() (data []byte,
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WorkflowNewParamsRuleActionCreateTranscript) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Params specifies transcript settings. Pass an empty object.
+type WorkflowNewParamsRuleActionCreateTranscriptParams struct {
+	paramObj
+}
+
+func (r WorkflowNewParamsRuleActionCreateTranscriptParams) MarshalJSON() (data []byte, err error) {
+	type shadow WorkflowNewParamsRuleActionCreateTranscriptParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WorkflowNewParamsRuleActionCreateTranscriptParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1454,18 +1509,21 @@ func (u WorkflowUpdateParamsRuleActionUnion) GetParams() (res workflowUpdatePara
 }
 
 // Can have the runtime types
-// [*WorkflowUpdateParamsRuleActionCreateStaticRenditionParams], [*any],
+// [*WorkflowUpdateParamsRuleActionCreateStaticRenditionParams],
+// [*WorkflowUpdateParamsRuleActionCreateCaptionParams],
 // [*WorkflowUpdateParamsRuleActionTranslateCaptionParams],
-// [*WorkflowUpdateParamsRuleActionCreateThumbnailsParams]
+// [*WorkflowUpdateParamsRuleActionCreateThumbnailsParams],
+// [*WorkflowUpdateParamsRuleActionCreateTranscriptParams]
 type workflowUpdateParamsRuleActionUnionParams struct{ any }
 
 // Use the following switch statement to get the type of the union:
 //
 //	switch u.AsAny().(type) {
 //	case *chunkify.WorkflowUpdateParamsRuleActionCreateStaticRenditionParams:
-//	case *any:
+//	case *chunkify.WorkflowUpdateParamsRuleActionCreateCaptionParams:
 //	case *chunkify.WorkflowUpdateParamsRuleActionTranslateCaptionParams:
 //	case *chunkify.WorkflowUpdateParamsRuleActionCreateThumbnailsParams:
+//	case *chunkify.WorkflowUpdateParamsRuleActionCreateTranscriptParams:
 //	default:
 //	    fmt.Errorf("not present")
 //	}
@@ -1545,12 +1603,12 @@ type WorkflowUpdateParamsRuleActionCreateCaption struct {
 	// characters, starting with a letter and containing only letters, digits, or
 	// underscores.
 	ID string `json:"id" api:"required"`
-	// Params specifies caption generation settings. Pass an empty object.
-	Params any `json:"params,omitzero" api:"required"`
 	// TranscriptId binds caption publication to the transcript in the triggering
 	// event. Use it only when connected to create_transcript. When omitted, creates or
 	// reuses the Asset’s original transcript.
 	TranscriptID WorkflowUpdateParamsRuleActionCreateCaptionTranscriptID `json:"transcript_id,omitzero"`
+	// Params specifies caption generation settings. Pass an empty object.
+	Params WorkflowUpdateParamsRuleActionCreateCaptionParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_caption.
 	//
 	// This field can be elided, and will marshal its zero value as "create_caption".
@@ -1563,6 +1621,19 @@ func (r WorkflowUpdateParamsRuleActionCreateCaption) MarshalJSON() (data []byte,
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WorkflowUpdateParamsRuleActionCreateCaption) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Params specifies caption generation settings. Pass an empty object.
+type WorkflowUpdateParamsRuleActionCreateCaptionParams struct {
+	paramObj
+}
+
+func (r WorkflowUpdateParamsRuleActionCreateCaptionParams) MarshalJSON() (data []byte, err error) {
+	type shadow WorkflowUpdateParamsRuleActionCreateCaptionParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WorkflowUpdateParamsRuleActionCreateCaptionParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1685,7 +1756,7 @@ type WorkflowUpdateParamsRuleActionCreateThumbnails struct {
 	ID string `json:"id" api:"required"`
 	// Params specifies sampling and image settings. Outputs use the Asset folder and
 	// Storage.
-	Params WorkflowUpdateParamsRuleActionCreateThumbnailsParams `json:"params,omitzero" api:"required"`
+	Params WorkflowUpdateParamsRuleActionCreateThumbnailsParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_thumbnails.
 	//
 	// This field can be elided, and will marshal its zero value as
@@ -1779,7 +1850,7 @@ type WorkflowUpdateParamsRuleActionCreateTranscript struct {
 	// underscores.
 	ID string `json:"id" api:"required"`
 	// Params specifies transcript settings. Pass an empty object.
-	Params any `json:"params,omitzero" api:"required"`
+	Params WorkflowUpdateParamsRuleActionCreateTranscriptParams `json:"params" api:"required"`
 	// Type specifies the action to perform. Must be create_transcript.
 	//
 	// This field can be elided, and will marshal its zero value as
@@ -1793,6 +1864,19 @@ func (r WorkflowUpdateParamsRuleActionCreateTranscript) MarshalJSON() (data []by
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *WorkflowUpdateParamsRuleActionCreateTranscript) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Params specifies transcript settings. Pass an empty object.
+type WorkflowUpdateParamsRuleActionCreateTranscriptParams struct {
+	paramObj
+}
+
+func (r WorkflowUpdateParamsRuleActionCreateTranscriptParams) MarshalJSON() (data []byte, err error) {
+	type shadow WorkflowUpdateParamsRuleActionCreateTranscriptParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *WorkflowUpdateParamsRuleActionCreateTranscriptParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
