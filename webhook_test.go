@@ -34,7 +34,7 @@ func TestWebhookNewWithOptionalParams(t *testing.T) {
 	_, err := client.Webhooks.New(context.TODO(), chunkify.WebhookNewParams{
 		URL:     "https://example.com/webhook",
 		Enabled: chunkify.Bool(true),
-		Events:  []string{"asset.playback_ready"},
+		Events:  []chunkify.WebhookEvent{chunkify.WebhookEventAssetPlaybackReady},
 	})
 	if err != nil {
 		var apierr *chunkify.Error
@@ -88,7 +88,7 @@ func TestWebhookUpdateWithOptionalParams(t *testing.T) {
 		"webhookId",
 		chunkify.WebhookUpdateParams{
 			Enabled: chunkify.Bool(true),
-			Events:  []string{"asset.playback_ready"},
+			Events:  []chunkify.WebhookEvent{chunkify.WebhookEventAssetPlaybackReady},
 		},
 	)
 	if err != nil {

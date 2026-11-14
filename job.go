@@ -1376,6 +1376,731 @@ func (r *Job) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Current status of the job.
+type JobStatus string
+
+const (
+	JobStatusPending     JobStatus = "pending"
+	JobStatusQueued      JobStatus = "queued"
+	JobStatusIngesting   JobStatus = "ingesting"
+	JobStatusTranscoding JobStatus = "transcoding"
+	JobStatusDownloading JobStatus = "downloading"
+	JobStatusMerging     JobStatus = "merging"
+	JobStatusUploading   JobStatus = "uploading"
+	JobStatusFailed      JobStatus = "failed"
+	JobStatusCompleted   JobStatus = "completed"
+	JobStatusCancelled   JobStatus = "cancelled"
+	JobStatusMerged      JobStatus = "merged"
+	JobStatusDownloaded  JobStatus = "downloaded"
+	JobStatusTranscoded  JobStatus = "transcoded"
+	JobStatusWaiting     JobStatus = "waiting"
+)
+
+func JobCreateFormatParamsOfJpg(interval int64) JobCreateFormatParamsUnion {
+	var jpg JpgParam
+	jpg.Interval = interval
+	return JobCreateFormatParamsUnion{OfJpg: &jpg}
+}
+
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type JobCreateFormatParamsUnion struct {
+	OfMP4Av1  *MP4Av1Param  `json:",omitzero,inline"`
+	OfMP4H264 *MP4H264Param `json:",omitzero,inline"`
+	OfMP4H265 *MP4H265Param `json:",omitzero,inline"`
+	OfWebmVp9 *WebmVp9Param `json:",omitzero,inline"`
+	OfHlsAv1  *HlsAv1Param  `json:",omitzero,inline"`
+	OfHlsH264 *HlsH264Param `json:",omitzero,inline"`
+	OfHlsH265 *HlsH265Param `json:",omitzero,inline"`
+	OfJpg     *JpgParam     `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u JobCreateFormatParamsUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfMP4Av1,
+		u.OfMP4H264,
+		u.OfMP4H265,
+		u.OfWebmVp9,
+		u.OfHlsAv1,
+		u.OfHlsH264,
+		u.OfHlsH265,
+		u.OfJpg)
+}
+func (u *JobCreateFormatParamsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *JobCreateFormatParamsUnion) asAny() any {
+	if !param.IsOmitted(u.OfMP4Av1) {
+		return u.OfMP4Av1
+	} else if !param.IsOmitted(u.OfMP4H264) {
+		return u.OfMP4H264
+	} else if !param.IsOmitted(u.OfMP4H265) {
+		return u.OfMP4H265
+	} else if !param.IsOmitted(u.OfWebmVp9) {
+		return u.OfWebmVp9
+	} else if !param.IsOmitted(u.OfHlsAv1) {
+		return u.OfHlsAv1
+	} else if !param.IsOmitted(u.OfHlsH264) {
+		return u.OfHlsH264
+	} else if !param.IsOmitted(u.OfHlsH265) {
+		return u.OfHlsH265
+	} else if !param.IsOmitted(u.OfJpg) {
+		return u.OfJpg
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetCPUUsed() *string {
+	if vt := u.OfWebmVp9; vt != nil {
+		return (*string)(&vt.CPUUsed)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetQuality() *string {
+	if vt := u.OfWebmVp9; vt != nil {
+		return (*string)(&vt.Quality)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetInterval() *int64 {
+	if vt := u.OfJpg; vt != nil {
+		return &vt.Interval
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetChunkDuration() *int64 {
+	if vt := u.OfJpg; vt != nil && vt.ChunkDuration.Valid() {
+		return &vt.ChunkDuration.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetFrames() *int64 {
+	if vt := u.OfJpg; vt != nil && vt.Frames.Valid() {
+		return &vt.Frames.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetSprite() *bool {
+	if vt := u.OfJpg; vt != nil && vt.Sprite.Valid() {
+		return &vt.Sprite.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetID() *string {
+	if vt := u.OfMP4Av1; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfMP4H264; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfWebmVp9; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfHlsAv1; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfHlsH264; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfHlsH265; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfJpg; vt != nil {
+		return (*string)(&vt.ID)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetAudioBitrate() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetBufsize() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetChannels() *int64 {
+	if vt := u.OfMP4Av1; vt != nil {
+		return (*int64)(&vt.Channels)
+	} else if vt := u.OfMP4H264; vt != nil {
+		return (*int64)(&vt.Channels)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*int64)(&vt.Channels)
+	} else if vt := u.OfWebmVp9; vt != nil {
+		return (*int64)(&vt.Channels)
+	} else if vt := u.OfHlsAv1; vt != nil {
+		return (*int64)(&vt.Channels)
+	} else if vt := u.OfHlsH264; vt != nil {
+		return (*int64)(&vt.Channels)
+	} else if vt := u.OfHlsH265; vt != nil {
+		return (*int64)(&vt.Channels)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetCrf() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetDisableAudio() *bool {
+	if vt := u.OfMP4Av1; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetDisableVideo() *bool {
+	if vt := u.OfMP4Av1; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetDuration() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfJpg; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetFramerate() *float64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetGop() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetHeight() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfJpg; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetLevel() *int64 {
+	if vt := u.OfMP4Av1; vt != nil {
+		return (*int64)(&vt.Level)
+	} else if vt := u.OfMP4H264; vt != nil {
+		return (*int64)(&vt.Level)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*int64)(&vt.Level)
+	} else if vt := u.OfHlsAv1; vt != nil {
+		return (*int64)(&vt.Level)
+	} else if vt := u.OfHlsH264; vt != nil {
+		return (*int64)(&vt.Level)
+	} else if vt := u.OfHlsH265; vt != nil {
+		return (*int64)(&vt.Level)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetMaxrate() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetMinrate() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.Minrate.Valid() {
+		return &vt.Minrate.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Minrate.Valid() {
+		return &vt.Minrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Minrate.Valid() {
+		return &vt.Minrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Minrate.Valid() {
+		return &vt.Minrate.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Minrate.Valid() {
+		return &vt.Minrate.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Minrate.Valid() {
+		return &vt.Minrate.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Minrate.Valid() {
+		return &vt.Minrate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetMovflags() *string {
+	if vt := u.OfMP4Av1; vt != nil && vt.Movflags.Valid() {
+		return &vt.Movflags.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Movflags.Valid() {
+		return &vt.Movflags.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Movflags.Valid() {
+		return &vt.Movflags.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Movflags.Valid() {
+		return &vt.Movflags.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Movflags.Valid() {
+		return &vt.Movflags.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Movflags.Valid() {
+		return &vt.Movflags.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetPerTitle() *bool {
+	if vt := u.OfMP4Av1; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetPixfmt() *string {
+	if vt := u.OfMP4Av1; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	} else if vt := u.OfMP4H264; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	} else if vt := u.OfWebmVp9; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	} else if vt := u.OfHlsAv1; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	} else if vt := u.OfHlsH264; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	} else if vt := u.OfHlsH265; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetPreset() *string {
+	if vt := u.OfMP4Av1; vt != nil {
+		return (*string)(&vt.Preset)
+	} else if vt := u.OfMP4H264; vt != nil {
+		return (*string)(&vt.Preset)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*string)(&vt.Preset)
+	} else if vt := u.OfHlsAv1; vt != nil {
+		return (*string)(&vt.Preset)
+	} else if vt := u.OfHlsH264; vt != nil {
+		return (*string)(&vt.Preset)
+	} else if vt := u.OfHlsH265; vt != nil {
+		return (*string)(&vt.Preset)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetProfilev() *string {
+	if vt := u.OfMP4Av1; vt != nil {
+		return (*string)(&vt.Profilev)
+	} else if vt := u.OfMP4H264; vt != nil {
+		return (*string)(&vt.Profilev)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*string)(&vt.Profilev)
+	} else if vt := u.OfHlsAv1; vt != nil {
+		return (*string)(&vt.Profilev)
+	} else if vt := u.OfHlsH264; vt != nil {
+		return (*string)(&vt.Profilev)
+	} else if vt := u.OfHlsH265; vt != nil {
+		return (*string)(&vt.Profilev)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetSeek() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfJpg; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetVideoBitrate() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetWidth() *int64 {
+	if vt := u.OfMP4Av1; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfMP4H264; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfHlsAv1; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfJpg; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetX264Keyint() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.X264Keyint.Valid() {
+		return &vt.X264Keyint.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.X264Keyint.Valid() {
+		return &vt.X264Keyint.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetX265Keyint() *int64 {
+	if vt := u.OfMP4H265; vt != nil && vt.X265Keyint.Valid() {
+		return &vt.X265Keyint.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.X265Keyint.Valid() {
+		return &vt.X265Keyint.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetHlsEnc() *bool {
+	if vt := u.OfHlsAv1; vt != nil && vt.HlsEnc.Valid() {
+		return &vt.HlsEnc.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.HlsEnc.Valid() {
+		return &vt.HlsEnc.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.HlsEnc.Valid() {
+		return &vt.HlsEnc.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetHlsEncIv() *string {
+	if vt := u.OfHlsAv1; vt != nil && vt.HlsEncIv.Valid() {
+		return &vt.HlsEncIv.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.HlsEncIv.Valid() {
+		return &vt.HlsEncIv.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.HlsEncIv.Valid() {
+		return &vt.HlsEncIv.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetHlsEncKey() *string {
+	if vt := u.OfHlsAv1; vt != nil && vt.HlsEncKey.Valid() {
+		return &vt.HlsEncKey.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.HlsEncKey.Valid() {
+		return &vt.HlsEncKey.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.HlsEncKey.Valid() {
+		return &vt.HlsEncKey.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetHlsEncKeyURL() *string {
+	if vt := u.OfHlsAv1; vt != nil && vt.HlsEncKeyURL.Valid() {
+		return &vt.HlsEncKeyURL.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.HlsEncKeyURL.Valid() {
+		return &vt.HlsEncKeyURL.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.HlsEncKeyURL.Valid() {
+		return &vt.HlsEncKeyURL.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetHlsSegmentType() *string {
+	if vt := u.OfHlsAv1; vt != nil {
+		return (*string)(&vt.HlsSegmentType)
+	} else if vt := u.OfHlsH264; vt != nil {
+		return (*string)(&vt.HlsSegmentType)
+	} else if vt := u.OfHlsH265; vt != nil {
+		return (*string)(&vt.HlsSegmentType)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetHlsSingleFile() *bool {
+	if vt := u.OfHlsAv1; vt != nil && vt.HlsSingleFile.Valid() {
+		return &vt.HlsSingleFile.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.HlsSingleFile.Valid() {
+		return &vt.HlsSingleFile.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.HlsSingleFile.Valid() {
+		return &vt.HlsSingleFile.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u JobCreateFormatParamsUnion) GetHlsTime() *int64 {
+	if vt := u.OfHlsAv1; vt != nil && vt.HlsTime.Valid() {
+		return &vt.HlsTime.Value
+	} else if vt := u.OfHlsH264; vt != nil && vt.HlsTime.Valid() {
+		return &vt.HlsTime.Value
+	} else if vt := u.OfHlsH265; vt != nil && vt.HlsTime.Valid() {
+		return &vt.HlsTime.Value
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[JobCreateFormatParamsUnion](
+		"id",
+		apijson.Discriminator[MP4Av1Param]("mp4_av1"),
+		apijson.Discriminator[MP4H264Param]("mp4_h264"),
+		apijson.Discriminator[MP4H265Param]("mp4_h265"),
+		apijson.Discriminator[WebmVp9Param]("webm_vp9"),
+		apijson.Discriminator[HlsAv1Param]("hls_av1"),
+		apijson.Discriminator[HlsH264Param]("hls_h264"),
+		apijson.Discriminator[HlsH265Param]("hls_h265"),
+		apijson.Discriminator[JpgParam]("jpg"),
+	)
+}
+
+type JobCreateStorageParams struct {
+	// Storage Id specifies the storage configuration to use from pre-configured
+	// storage options. Must be 4-64 characters long and contain only alphanumeric
+	// characters, underscores and hyphens. Optional if Storage Path is provided.
+	ID param.Opt[string] `json:"id,omitzero"`
+	// Storage Path specifies an object path relative to the selected storage
+	// connection's base_prefix. Do not include the base_prefix. Leading slashes are
+	// accepted for compatibility and removed before the path is stored. The
+	// base_prefix and normalized path may contain at most 1024 bytes combined.
+	// Optional if Storage Id is provided.
+	Path param.Opt[string] `json:"path,omitzero"`
+	paramObj
+}
+
+func (r JobCreateStorageParams) MarshalJSON() (data []byte, err error) {
+	type shadow JobCreateStorageParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *JobCreateStorageParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type JobCreateTranscoderParams struct {
+	// Quantity specifies the number of transcoder instances. Required if Type is set.
+	Quantity param.Opt[int64] `json:"quantity,omitzero"`
+	// Type specifies the CPU configuration for each transcoder instance. Required if
+	// Quantity is set.
+	//
+	// Any of "4vCPU", "8vCPU", "16vCPU".
+	Type shared.InstanceType `json:"type,omitzero"`
+	paramObj
+}
+
+func (r JobCreateTranscoderParams) MarshalJSON() (data []byte, err error) {
+	type shadow JobCreateTranscoderParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *JobCreateTranscoderParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // JobFormatUnion contains all possible properties and values from
 // [JobFormatMP4Av1], [JobFormatMP4H264], [JobFormatMP4H265], [JobFormatWebmVp9],
 // [JobFormatHlsAv1], [JobFormatHlsH264], [JobFormatHlsH265], [JobFormatJpg].
@@ -1575,7 +2300,7 @@ type JobFormatMP4Av1 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id" api:"required"`
+	ID JobFormatID `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1597,7 +2322,7 @@ type JobFormatMP4H264 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id" api:"required"`
+	ID JobFormatID `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1619,7 +2344,7 @@ type JobFormatMP4H265 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id" api:"required"`
+	ID JobFormatID `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1641,7 +2366,7 @@ type JobFormatWebmVp9 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id" api:"required"`
+	ID JobFormatID `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1664,7 +2389,7 @@ type JobFormatHlsAv1 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id" api:"required"`
+	ID JobFormatID `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1687,7 +2412,7 @@ type JobFormatHlsH264 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id" api:"required"`
+	ID JobFormatID `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1710,7 +2435,7 @@ type JobFormatHlsH265 struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id" api:"required"`
+	ID JobFormatID `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1732,7 +2457,7 @@ type JobFormatJpg struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	ID string `json:"id" api:"required"`
+	ID JobFormatID `json:"id" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		ID          respjson.Field
@@ -1748,24 +2473,17 @@ func (r *JobFormatJpg) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Current status of the job.
-type JobStatus string
+type JobFormatID string
 
 const (
-	JobStatusPending     JobStatus = "pending"
-	JobStatusQueued      JobStatus = "queued"
-	JobStatusIngesting   JobStatus = "ingesting"
-	JobStatusTranscoding JobStatus = "transcoding"
-	JobStatusDownloading JobStatus = "downloading"
-	JobStatusMerging     JobStatus = "merging"
-	JobStatusUploading   JobStatus = "uploading"
-	JobStatusFailed      JobStatus = "failed"
-	JobStatusCompleted   JobStatus = "completed"
-	JobStatusCancelled   JobStatus = "cancelled"
-	JobStatusMerged      JobStatus = "merged"
-	JobStatusDownloaded  JobStatus = "downloaded"
-	JobStatusTranscoded  JobStatus = "transcoded"
-	JobStatusWaiting     JobStatus = "waiting"
+	JobFormatIDMP4H264 JobFormatID = "mp4_h264"
+	JobFormatIDMP4H265 JobFormatID = "mp4_h265"
+	JobFormatIDMP4Av1  JobFormatID = "mp4_av1"
+	JobFormatIDWebmVp9 JobFormatID = "webm_vp9"
+	JobFormatIDHlsH264 JobFormatID = "hls_h264"
+	JobFormatIDHlsH265 JobFormatID = "hls_h265"
+	JobFormatIDHlsAv1  JobFormatID = "hls_av1"
+	JobFormatIDJpg     JobFormatID = "jpg"
 )
 
 // Storage settings for where the job output will be saved
@@ -1798,7 +2516,7 @@ type JobTranscoder struct {
 	// Type of transcoder instance
 	//
 	// Any of "4vCPU", "8vCPU", "16vCPU".
-	Type string `json:"type" api:"required"`
+	Type shared.InstanceType `json:"type" api:"required"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		Auto        respjson.Field
@@ -3134,7 +3852,7 @@ type JobNewParams struct {
 	// Required format configuration, one and only one valid format configuration must
 	// be provided. If you want to use a format without specifying any configuration,
 	// use an empty object in the corresponding field.
-	Format JobNewParamsFormatUnion `json:"format,omitzero" api:"required"`
+	Format JobCreateFormatParamsUnion `json:"format,omitzero" api:"required"`
 	// The ID of the source file to transcode
 	SourceID string `json:"source_id" api:"required"`
 	// Optional HLS manifest configuration Use the same hls manifest ID to group
@@ -3144,12 +3862,12 @@ type JobNewParams struct {
 	// Optional metadata to attach to the job, the maximum size allowed is 2048 bytes
 	Metadata map[string]string `json:"metadata,omitzero"`
 	// Optional storage configuration
-	Storage JobNewParamsStorage `json:"storage,omitzero"`
+	Storage JobCreateStorageParams `json:"storage,omitzero"`
 	// Optional transcoder configuration. If not provided, the system will
 	// automatically calculate the optimal quantity and CPU type based on the source
 	// file specifications and output requirements. This auto-scaling ensures efficient
 	// resource utilization.
-	Transcoder JobNewParamsTranscoder `json:"transcoder,omitzero"`
+	Transcoder JobCreateTranscoderParams `json:"transcoder,omitzero"`
 	paramObj
 }
 
@@ -3159,716 +3877,6 @@ func (r JobNewParams) MarshalJSON() (data []byte, err error) {
 }
 func (r *JobNewParams) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type JobNewParamsFormatUnion struct {
-	OfMP4Av1  *MP4Av1Param  `json:",omitzero,inline"`
-	OfMP4H264 *MP4H264Param `json:",omitzero,inline"`
-	OfMP4H265 *MP4H265Param `json:",omitzero,inline"`
-	OfWebmVp9 *WebmVp9Param `json:",omitzero,inline"`
-	OfHlsAv1  *HlsAv1Param  `json:",omitzero,inline"`
-	OfHlsH264 *HlsH264Param `json:",omitzero,inline"`
-	OfHlsH265 *HlsH265Param `json:",omitzero,inline"`
-	OfJpg     *JpgParam     `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u JobNewParamsFormatUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfMP4Av1,
-		u.OfMP4H264,
-		u.OfMP4H265,
-		u.OfWebmVp9,
-		u.OfHlsAv1,
-		u.OfHlsH264,
-		u.OfHlsH265,
-		u.OfJpg)
-}
-func (u *JobNewParamsFormatUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *JobNewParamsFormatUnion) asAny() any {
-	if !param.IsOmitted(u.OfMP4Av1) {
-		return u.OfMP4Av1
-	} else if !param.IsOmitted(u.OfMP4H264) {
-		return u.OfMP4H264
-	} else if !param.IsOmitted(u.OfMP4H265) {
-		return u.OfMP4H265
-	} else if !param.IsOmitted(u.OfWebmVp9) {
-		return u.OfWebmVp9
-	} else if !param.IsOmitted(u.OfHlsAv1) {
-		return u.OfHlsAv1
-	} else if !param.IsOmitted(u.OfHlsH264) {
-		return u.OfHlsH264
-	} else if !param.IsOmitted(u.OfHlsH265) {
-		return u.OfHlsH265
-	} else if !param.IsOmitted(u.OfJpg) {
-		return u.OfJpg
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetCPUUsed() *string {
-	if vt := u.OfWebmVp9; vt != nil {
-		return (*string)(&vt.CPUUsed)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetQuality() *string {
-	if vt := u.OfWebmVp9; vt != nil {
-		return (*string)(&vt.Quality)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetInterval() *int64 {
-	if vt := u.OfJpg; vt != nil {
-		return &vt.Interval
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetChunkDuration() *int64 {
-	if vt := u.OfJpg; vt != nil && vt.ChunkDuration.Valid() {
-		return &vt.ChunkDuration.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetFrames() *int64 {
-	if vt := u.OfJpg; vt != nil && vt.Frames.Valid() {
-		return &vt.Frames.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetSprite() *bool {
-	if vt := u.OfJpg; vt != nil && vt.Sprite.Valid() {
-		return &vt.Sprite.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetID() *string {
-	if vt := u.OfMP4Av1; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfMP4H264; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfWebmVp9; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfHlsAv1; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfHlsH264; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfHlsH265; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfJpg; vt != nil {
-		return (*string)(&vt.ID)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetAudioBitrate() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetBufsize() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetChannels() *int64 {
-	if vt := u.OfMP4Av1; vt != nil {
-		return (*int64)(&vt.Channels)
-	} else if vt := u.OfMP4H264; vt != nil {
-		return (*int64)(&vt.Channels)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*int64)(&vt.Channels)
-	} else if vt := u.OfWebmVp9; vt != nil {
-		return (*int64)(&vt.Channels)
-	} else if vt := u.OfHlsAv1; vt != nil {
-		return (*int64)(&vt.Channels)
-	} else if vt := u.OfHlsH264; vt != nil {
-		return (*int64)(&vt.Channels)
-	} else if vt := u.OfHlsH265; vt != nil {
-		return (*int64)(&vt.Channels)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetCrf() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetDisableAudio() *bool {
-	if vt := u.OfMP4Av1; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetDisableVideo() *bool {
-	if vt := u.OfMP4Av1; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetDuration() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfJpg; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetFramerate() *float64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetGop() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetHeight() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	} else if vt := u.OfJpg; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetLevel() *int64 {
-	if vt := u.OfMP4Av1; vt != nil {
-		return (*int64)(&vt.Level)
-	} else if vt := u.OfMP4H264; vt != nil {
-		return (*int64)(&vt.Level)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*int64)(&vt.Level)
-	} else if vt := u.OfHlsAv1; vt != nil {
-		return (*int64)(&vt.Level)
-	} else if vt := u.OfHlsH264; vt != nil {
-		return (*int64)(&vt.Level)
-	} else if vt := u.OfHlsH265; vt != nil {
-		return (*int64)(&vt.Level)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetMaxrate() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetMinrate() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.Minrate.Valid() {
-		return &vt.Minrate.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Minrate.Valid() {
-		return &vt.Minrate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Minrate.Valid() {
-		return &vt.Minrate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Minrate.Valid() {
-		return &vt.Minrate.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Minrate.Valid() {
-		return &vt.Minrate.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Minrate.Valid() {
-		return &vt.Minrate.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Minrate.Valid() {
-		return &vt.Minrate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetMovflags() *string {
-	if vt := u.OfMP4Av1; vt != nil && vt.Movflags.Valid() {
-		return &vt.Movflags.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Movflags.Valid() {
-		return &vt.Movflags.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Movflags.Valid() {
-		return &vt.Movflags.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Movflags.Valid() {
-		return &vt.Movflags.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Movflags.Valid() {
-		return &vt.Movflags.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Movflags.Valid() {
-		return &vt.Movflags.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetPerTitle() *bool {
-	if vt := u.OfMP4Av1; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetPixfmt() *string {
-	if vt := u.OfMP4Av1; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	} else if vt := u.OfMP4H264; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	} else if vt := u.OfWebmVp9; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	} else if vt := u.OfHlsAv1; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	} else if vt := u.OfHlsH264; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	} else if vt := u.OfHlsH265; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetPreset() *string {
-	if vt := u.OfMP4Av1; vt != nil {
-		return (*string)(&vt.Preset)
-	} else if vt := u.OfMP4H264; vt != nil {
-		return (*string)(&vt.Preset)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*string)(&vt.Preset)
-	} else if vt := u.OfHlsAv1; vt != nil {
-		return (*string)(&vt.Preset)
-	} else if vt := u.OfHlsH264; vt != nil {
-		return (*string)(&vt.Preset)
-	} else if vt := u.OfHlsH265; vt != nil {
-		return (*string)(&vt.Preset)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetProfilev() *string {
-	if vt := u.OfMP4Av1; vt != nil {
-		return (*string)(&vt.Profilev)
-	} else if vt := u.OfMP4H264; vt != nil {
-		return (*string)(&vt.Profilev)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*string)(&vt.Profilev)
-	} else if vt := u.OfHlsAv1; vt != nil {
-		return (*string)(&vt.Profilev)
-	} else if vt := u.OfHlsH264; vt != nil {
-		return (*string)(&vt.Profilev)
-	} else if vt := u.OfHlsH265; vt != nil {
-		return (*string)(&vt.Profilev)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetSeek() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfJpg; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetVideoBitrate() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetWidth() *int64 {
-	if vt := u.OfMP4Av1; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	} else if vt := u.OfMP4H264; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	} else if vt := u.OfHlsAv1; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	} else if vt := u.OfJpg; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetX264Keyint() *int64 {
-	if vt := u.OfMP4H264; vt != nil && vt.X264Keyint.Valid() {
-		return &vt.X264Keyint.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.X264Keyint.Valid() {
-		return &vt.X264Keyint.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetX265Keyint() *int64 {
-	if vt := u.OfMP4H265; vt != nil && vt.X265Keyint.Valid() {
-		return &vt.X265Keyint.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.X265Keyint.Valid() {
-		return &vt.X265Keyint.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetHlsEnc() *bool {
-	if vt := u.OfHlsAv1; vt != nil && vt.HlsEnc.Valid() {
-		return &vt.HlsEnc.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.HlsEnc.Valid() {
-		return &vt.HlsEnc.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.HlsEnc.Valid() {
-		return &vt.HlsEnc.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetHlsEncIv() *string {
-	if vt := u.OfHlsAv1; vt != nil && vt.HlsEncIv.Valid() {
-		return &vt.HlsEncIv.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.HlsEncIv.Valid() {
-		return &vt.HlsEncIv.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.HlsEncIv.Valid() {
-		return &vt.HlsEncIv.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetHlsEncKey() *string {
-	if vt := u.OfHlsAv1; vt != nil && vt.HlsEncKey.Valid() {
-		return &vt.HlsEncKey.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.HlsEncKey.Valid() {
-		return &vt.HlsEncKey.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.HlsEncKey.Valid() {
-		return &vt.HlsEncKey.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetHlsEncKeyURL() *string {
-	if vt := u.OfHlsAv1; vt != nil && vt.HlsEncKeyURL.Valid() {
-		return &vt.HlsEncKeyURL.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.HlsEncKeyURL.Valid() {
-		return &vt.HlsEncKeyURL.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.HlsEncKeyURL.Valid() {
-		return &vt.HlsEncKeyURL.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetHlsSegmentType() *string {
-	if vt := u.OfHlsAv1; vt != nil {
-		return (*string)(&vt.HlsSegmentType)
-	} else if vt := u.OfHlsH264; vt != nil {
-		return (*string)(&vt.HlsSegmentType)
-	} else if vt := u.OfHlsH265; vt != nil {
-		return (*string)(&vt.HlsSegmentType)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetHlsSingleFile() *bool {
-	if vt := u.OfHlsAv1; vt != nil && vt.HlsSingleFile.Valid() {
-		return &vt.HlsSingleFile.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.HlsSingleFile.Valid() {
-		return &vt.HlsSingleFile.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.HlsSingleFile.Valid() {
-		return &vt.HlsSingleFile.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u JobNewParamsFormatUnion) GetHlsTime() *int64 {
-	if vt := u.OfHlsAv1; vt != nil && vt.HlsTime.Valid() {
-		return &vt.HlsTime.Value
-	} else if vt := u.OfHlsH264; vt != nil && vt.HlsTime.Valid() {
-		return &vt.HlsTime.Value
-	} else if vt := u.OfHlsH265; vt != nil && vt.HlsTime.Valid() {
-		return &vt.HlsTime.Value
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[JobNewParamsFormatUnion](
-		"id",
-		apijson.Discriminator[MP4Av1Param]("mp4_av1"),
-		apijson.Discriminator[MP4H264Param]("mp4_h264"),
-		apijson.Discriminator[MP4H265Param]("mp4_h265"),
-		apijson.Discriminator[WebmVp9Param]("webm_vp9"),
-		apijson.Discriminator[HlsAv1Param]("hls_av1"),
-		apijson.Discriminator[HlsH264Param]("hls_h264"),
-		apijson.Discriminator[HlsH265Param]("hls_h265"),
-		apijson.Discriminator[JpgParam]("jpg"),
-	)
-}
-
-// Optional storage configuration
-type JobNewParamsStorage struct {
-	// Storage Id specifies the storage configuration to use from pre-configured
-	// storage options. Must be 4-64 characters long and contain only alphanumeric
-	// characters, underscores and hyphens. Optional if Storage Path is provided.
-	ID param.Opt[string] `json:"id,omitzero"`
-	// Storage Path specifies an object path relative to the selected storage
-	// connection's base_prefix. Do not include the base_prefix. Leading slashes are
-	// accepted for compatibility and removed before the path is stored. The
-	// base_prefix and normalized path may contain at most 1024 bytes combined.
-	// Optional if Storage Id is provided.
-	Path param.Opt[string] `json:"path,omitzero"`
-	paramObj
-}
-
-func (r JobNewParamsStorage) MarshalJSON() (data []byte, err error) {
-	type shadow JobNewParamsStorage
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *JobNewParamsStorage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Optional transcoder configuration. If not provided, the system will
-// automatically calculate the optimal quantity and CPU type based on the source
-// file specifications and output requirements. This auto-scaling ensures efficient
-// resource utilization.
-type JobNewParamsTranscoder struct {
-	// Quantity specifies the number of transcoder instances. Required if Type is set.
-	Quantity param.Opt[int64] `json:"quantity,omitzero"`
-	// Type specifies the CPU configuration for each transcoder instance. Required if
-	// Quantity is set.
-	//
-	// Any of "4vCPU", "8vCPU", "16vCPU".
-	Type string `json:"type,omitzero"`
-	paramObj
-}
-
-func (r JobNewParamsTranscoder) MarshalJSON() (data []byte, err error) {
-	type shadow JobNewParamsTranscoder
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *JobNewParamsTranscoder) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func init() {
-	apijson.RegisterFieldValidator[JobNewParamsTranscoder](
-		"type", "4vCPU", "8vCPU", "16vCPU",
-	)
 }
 
 type JobNewResponseEnvelope struct {
@@ -3927,7 +3935,7 @@ type JobListParams struct {
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "hls_h264", "hls_h265",
 	// "hls_av1", "jpg".
-	FormatID JobListParamsFormatID `query:"format_id,omitzero" json:"-"`
+	FormatID JobFormatID `query:"format_id,omitzero" json:"-"`
 	// Filter by metadata
 	Metadata [][]string `query:"metadata,omitzero" json:"-"`
 	// Filter by job status
@@ -3964,20 +3972,6 @@ func (r JobListParamsCreated) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-// Filter by format id
-type JobListParamsFormatID string
-
-const (
-	JobListParamsFormatIDMP4H264 JobListParamsFormatID = "mp4_h264"
-	JobListParamsFormatIDMP4H265 JobListParamsFormatID = "mp4_h265"
-	JobListParamsFormatIDMP4Av1  JobListParamsFormatID = "mp4_av1"
-	JobListParamsFormatIDWebmVp9 JobListParamsFormatID = "webm_vp9"
-	JobListParamsFormatIDHlsH264 JobListParamsFormatID = "hls_h264"
-	JobListParamsFormatIDHlsH265 JobListParamsFormatID = "hls_h265"
-	JobListParamsFormatIDHlsAv1  JobListParamsFormatID = "hls_av1"
-	JobListParamsFormatIDJpg     JobListParamsFormatID = "jpg"
-)
 
 // Filter by job status
 type JobListParamsStatus string

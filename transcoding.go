@@ -18,6 +18,7 @@ import (
 	"github.com/chunkifydev/chunkify-go/packages/pagination"
 	"github.com/chunkifydev/chunkify-go/packages/param"
 	"github.com/chunkifydev/chunkify-go/packages/respjson"
+	"github.com/chunkifydev/chunkify-go/shared"
 	"github.com/chunkifydev/chunkify-go/shared/constant"
 )
 
@@ -167,7 +168,7 @@ type Transcoding struct {
 	// Workflow actions. Omitted when the creator is unknown.
 	//
 	// Any of "api", "dashboard", "mcp", "workflow".
-	CreatedVia TranscodingCreatedVia `json:"created_via"`
+	CreatedVia shared.CreatedVia `json:"created_via"`
 	// DeleteAt specifies when this record is deleted: three days after its temporary
 	// output expires, otherwise when the team's data retention period ends, counted
 	// from when the request was accepted, and no sooner than three days after it
@@ -224,6 +225,453 @@ func (r *Transcoding) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// Only one field can be non-zero.
+//
+// Use [param.IsOmitted] to confirm if a field is set.
+type TranscodingCreateFormatParamsUnion struct {
+	OfMP4H264 *TranscodingMP4H264Param `json:",omitzero,inline"`
+	OfMP4H265 *TranscodingMP4H265Param `json:",omitzero,inline"`
+	OfMP4Av1  *TranscodingMP4Av1Param  `json:",omitzero,inline"`
+	OfWebmVp9 *TranscodingWebmVp9Param `json:",omitzero,inline"`
+	OfM4aAac  *TranscodingM4aAacParam  `json:",omitzero,inline"`
+	paramUnion
+}
+
+func (u TranscodingCreateFormatParamsUnion) MarshalJSON() ([]byte, error) {
+	return param.MarshalUnion(u, u.OfMP4H264,
+		u.OfMP4H265,
+		u.OfMP4Av1,
+		u.OfWebmVp9,
+		u.OfM4aAac)
+}
+func (u *TranscodingCreateFormatParamsUnion) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, u)
+}
+
+func (u *TranscodingCreateFormatParamsUnion) asAny() any {
+	if !param.IsOmitted(u.OfMP4H264) {
+		return u.OfMP4H264
+	} else if !param.IsOmitted(u.OfMP4H265) {
+		return u.OfMP4H265
+	} else if !param.IsOmitted(u.OfMP4Av1) {
+		return u.OfMP4Av1
+	} else if !param.IsOmitted(u.OfWebmVp9) {
+		return u.OfWebmVp9
+	} else if !param.IsOmitted(u.OfM4aAac) {
+		return u.OfM4aAac
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetX264Keyint() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.X264Keyint.Valid() {
+		return &vt.X264Keyint.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetX265Keyint() *int64 {
+	if vt := u.OfMP4H265; vt != nil && vt.X265Keyint.Valid() {
+		return &vt.X265Keyint.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetCPUUsed() *string {
+	if vt := u.OfWebmVp9; vt != nil {
+		return (*string)(&vt.CPUUsed)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetMinrate() *int64 {
+	if vt := u.OfWebmVp9; vt != nil && vt.Minrate.Valid() {
+		return &vt.Minrate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetQuality() *string {
+	if vt := u.OfWebmVp9; vt != nil {
+		return (*string)(&vt.Quality)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetID() *string {
+	if vt := u.OfMP4H264; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfMP4Av1; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfWebmVp9; vt != nil {
+		return (*string)(&vt.ID)
+	} else if vt := u.OfM4aAac; vt != nil {
+		return (*string)(&vt.ID)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetAudioBitrate() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	} else if vt := u.OfM4aAac; vt != nil && vt.AudioBitrate.Valid() {
+		return &vt.AudioBitrate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetAudioSamplerate() *int64 {
+	if vt := u.OfMP4H264; vt != nil {
+		return (*int64)(&vt.AudioSamplerate)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*int64)(&vt.AudioSamplerate)
+	} else if vt := u.OfMP4Av1; vt != nil {
+		return (*int64)(&vt.AudioSamplerate)
+	} else if vt := u.OfWebmVp9; vt != nil {
+		return (*int64)(&vt.AudioSamplerate)
+	} else if vt := u.OfM4aAac; vt != nil {
+		return (*int64)(&vt.AudioSamplerate)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetBufsize() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Bufsize.Valid() {
+		return &vt.Bufsize.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetChannels() *int64 {
+	if vt := u.OfMP4H264; vt != nil {
+		return (*int64)(&vt.Channels)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*int64)(&vt.Channels)
+	} else if vt := u.OfMP4Av1; vt != nil {
+		return (*int64)(&vt.Channels)
+	} else if vt := u.OfWebmVp9; vt != nil {
+		return (*int64)(&vt.Channels)
+	} else if vt := u.OfM4aAac; vt != nil {
+		return (*int64)(&vt.Channels)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetCrf() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Crf.Valid() {
+		return &vt.Crf.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetDisableAudio() *bool {
+	if vt := u.OfMP4H264; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.DisableAudio.Valid() {
+		return &vt.DisableAudio.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetDisableVideo() *bool {
+	if vt := u.OfMP4H264; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.DisableVideo.Valid() {
+		return &vt.DisableVideo.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetDuration() *float64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	} else if vt := u.OfM4aAac; vt != nil && vt.Duration.Valid() {
+		return &vt.Duration.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetFramerate() *float64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Framerate.Valid() {
+		return &vt.Framerate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetGop() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Gop.Valid() {
+		return &vt.Gop.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetHeight() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Height.Valid() {
+		return &vt.Height.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetLevel() *int64 {
+	if vt := u.OfMP4H264; vt != nil {
+		return (*int64)(&vt.Level)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*int64)(&vt.Level)
+	} else if vt := u.OfMP4Av1; vt != nil {
+		return (*int64)(&vt.Level)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetMaxrate() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Maxrate.Valid() {
+		return &vt.Maxrate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetMovflags() *string {
+	if vt := u.OfMP4H264; vt != nil {
+		return (*string)(&vt.Movflags)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*string)(&vt.Movflags)
+	} else if vt := u.OfMP4Av1; vt != nil {
+		return (*string)(&vt.Movflags)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetPerTitle() *bool {
+	if vt := u.OfMP4H264; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.PerTitle.Valid() {
+		return &vt.PerTitle.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetPixfmt() *string {
+	if vt := u.OfMP4H264; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	} else if vt := u.OfMP4Av1; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	} else if vt := u.OfWebmVp9; vt != nil {
+		return (*string)(&vt.Pixfmt)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetPreset() *string {
+	if vt := u.OfMP4H264; vt != nil {
+		return (*string)(&vt.Preset)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*string)(&vt.Preset)
+	} else if vt := u.OfMP4Av1; vt != nil {
+		return (*string)(&vt.Preset)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetProfilev() *string {
+	if vt := u.OfMP4H264; vt != nil {
+		return (*string)(&vt.Profilev)
+	} else if vt := u.OfMP4H265; vt != nil {
+		return (*string)(&vt.Profilev)
+	} else if vt := u.OfMP4Av1; vt != nil {
+		return (*string)(&vt.Profilev)
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetSeek() *float64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	} else if vt := u.OfM4aAac; vt != nil && vt.Seek.Valid() {
+		return &vt.Seek.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetVideoBitrate() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.VideoBitrate.Valid() {
+		return &vt.VideoBitrate.Value
+	}
+	return nil
+}
+
+// Returns a pointer to the underlying variant's property, if present.
+func (u TranscodingCreateFormatParamsUnion) GetWidth() *int64 {
+	if vt := u.OfMP4H264; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfMP4H265; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfMP4Av1; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	} else if vt := u.OfWebmVp9; vt != nil && vt.Width.Valid() {
+		return &vt.Width.Value
+	}
+	return nil
+}
+
+func init() {
+	apijson.RegisterUnion[TranscodingCreateFormatParamsUnion](
+		"id",
+		apijson.Discriminator[TranscodingMP4H264Param]("mp4_h264"),
+		apijson.Discriminator[TranscodingMP4H265Param]("mp4_h265"),
+		apijson.Discriminator[TranscodingMP4Av1Param]("mp4_av1"),
+		apijson.Discriminator[TranscodingWebmVp9Param]("webm_vp9"),
+		apijson.Discriminator[TranscodingM4aAacParam]("m4a_aac"),
+	)
+}
+
+// Output storage selection, independent of the Source storage.
+type TranscodingCreateStorageParams struct {
+	// Id specifies a Storage in this Project. Defaults to the Project output storage.
+	ID param.Opt[string] `json:"id,omitzero"`
+	// Path specifies the output object path relative to the selected Storage
+	// base_prefix. Required for customer storage; generated for Chunkify temporary
+	// storage. The extension must match the resolved output format. The combined path
+	// may contain at most 1024 bytes.
+	Path param.Opt[string] `json:"path,omitzero"`
+	paramObj
+}
+
+func (r TranscodingCreateStorageParams) MarshalJSON() (data []byte, err error) {
+	type shadow TranscodingCreateStorageParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *TranscodingCreateStorageParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// A customer-facing Transcoding processing failure.
+type TranscodingError struct {
+	// Code identifies the processing failure.
+	Code string `json:"code" api:"required"`
+	// Message describes the failure without internal worker or provider diagnostics.
+	Message string `json:"message" api:"required"`
+	// Stage identifies where processing failed.
+	//
+	// Any of "queued", "starting", "encoding", "finalizing", "uploading".
+	Stage TranscodingProcessingStage `json:"stage" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Code        respjson.Field
+		Message     respjson.Field
+		Stage       respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscodingError) RawJSON() string { return r.JSON.raw }
+func (r *TranscodingError) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // A validated media file published by a Transcoding.
 type TranscodingFile struct {
 	// Id identifies this published Transcoding file.
@@ -267,7 +715,7 @@ type TranscodingFile struct {
 	// affect the media file. Omitted for audio-only files.
 	//
 	// Any of "ready", "failed".
-	ThumbnailStatus string `json:"thumbnail_status"`
+	ThumbnailStatus TranscodingFileThumbnailStatus `json:"thumbnail_status"`
 	// Url provides a signed download valid for at most ten minutes. Omitted when the
 	// file has expired or signing is unavailable.
 	URL string `json:"url"`
@@ -316,12 +764,21 @@ func (r *TranscodingFile) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
+// ThumbnailStatus reports the optional dashboard preview result. Failure does not
+// affect the media file. Omitted for audio-only files.
+type TranscodingFileThumbnailStatus string
+
+const (
+	TranscodingFileThumbnailStatusReady  TranscodingFileThumbnailStatus = "ready"
+	TranscodingFileThumbnailStatusFailed TranscodingFileThumbnailStatus = "failed"
+)
+
 // An optional dashboard preview of the completed output.
 type TranscodingFileThumbnail struct {
 	// Format specifies the image encoding.
 	//
 	// Any of "jpeg", "webp".
-	Format string `json:"format" api:"required"`
+	Format TranscodingFileThumbnailFormat `json:"format" api:"required"`
 	// Height specifies the measured image height in pixels.
 	Height int64 `json:"height" api:"required"`
 	// Size specifies the measured image size in bytes.
@@ -348,15 +805,21 @@ func (r *TranscodingFileThumbnail) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Format contains the resolved encoding settings accepted at creation, including
-// defaults, dimensions, frame rate and normalized seek and duration. Per-title
-// rate control is resolved during processing. Measured media properties are
-// available in Files.
+// Format specifies the image encoding.
+type TranscodingFileThumbnailFormat string
+
+const (
+	TranscodingFileThumbnailFormatJpeg TranscodingFileThumbnailFormat = "jpeg"
+	TranscodingFileThumbnailFormatWebp TranscodingFileThumbnailFormat = "webp"
+)
+
+// Resolved encoding settings accepted at creation. Only settings applicable to the
+// selected streams and codec are included.
 type TranscodingFormat struct {
 	// Id specifies the resolved container and codec selection.
 	//
 	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "m4a_aac".
-	ID string `json:"id" api:"required"`
+	ID TranscodingFormatID `json:"id" api:"required"`
 	// Duration specifies the accepted output duration in seconds, including normalized
 	// trims.
 	Duration float64 `json:"duration" api:"required"`
@@ -458,87 +921,15 @@ func (r *TranscodingFormat) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-// Status reports processing or output expiry.
-type TranscodingStatus string
+// Id specifies the resolved container and codec selection.
+type TranscodingFormatID string
 
 const (
-	TranscodingStatusPreparing TranscodingStatus = "preparing"
-	TranscodingStatusReady     TranscodingStatus = "ready"
-	TranscodingStatusFailed    TranscodingStatus = "failed"
-	TranscodingStatusCancelled TranscodingStatus = "cancelled"
-	TranscodingStatusExpired   TranscodingStatus = "expired"
-)
-
-// Storage contains the resolved output destination.
-type TranscodingStorage struct {
-	// Id identifies the output Storage.
-	ID string `json:"id" api:"required"`
-	// Path specifies the output file path relative to the Storage base_prefix saved at
-	// creation.
-	Path string `json:"path" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		ID          respjson.Field
-		Path        respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TranscodingStorage) RawJSON() string { return r.JSON.raw }
-func (r *TranscodingStorage) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// CreatedVia specifies how the resource was created: api for API requests,
-// dashboard for the Chunkify dashboard, mcp for MCP clients, and workflow for
-// Workflow actions. Omitted when the creator is unknown.
-type TranscodingCreatedVia string
-
-const (
-	TranscodingCreatedViaAPI       TranscodingCreatedVia = "api"
-	TranscodingCreatedViaDashboard TranscodingCreatedVia = "dashboard"
-	TranscodingCreatedViaMcp       TranscodingCreatedVia = "mcp"
-	TranscodingCreatedViaWorkflow  TranscodingCreatedVia = "workflow"
-)
-
-// Error describes why processing failed. Omitted when no processing error exists.
-type TranscodingError struct {
-	// Code identifies the processing failure.
-	Code string `json:"code" api:"required"`
-	// Message describes the failure without internal worker or provider diagnostics.
-	Message string `json:"message" api:"required"`
-	// Stage identifies where processing failed.
-	//
-	// Any of "queued", "starting", "encoding", "finalizing", "uploading".
-	Stage string `json:"stage" api:"required"`
-	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
-	JSON struct {
-		Code        respjson.Field
-		Message     respjson.Field
-		Stage       respjson.Field
-		ExtraFields map[string]respjson.Field
-		raw         string
-	} `json:"-"`
-}
-
-// Returns the unmodified JSON received from the API
-func (r TranscodingError) RawJSON() string { return r.JSON.raw }
-func (r *TranscodingError) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// ProcessingStage specifies the current activity while the status is preparing.
-// Omitted otherwise.
-type TranscodingProcessingStage string
-
-const (
-	TranscodingProcessingStageQueued     TranscodingProcessingStage = "queued"
-	TranscodingProcessingStageStarting   TranscodingProcessingStage = "starting"
-	TranscodingProcessingStageEncoding   TranscodingProcessingStage = "encoding"
-	TranscodingProcessingStageFinalizing TranscodingProcessingStage = "finalizing"
-	TranscodingProcessingStageUploading  TranscodingProcessingStage = "uploading"
+	TranscodingFormatIDMP4H264 TranscodingFormatID = "mp4_h264"
+	TranscodingFormatIDMP4H265 TranscodingFormatID = "mp4_h265"
+	TranscodingFormatIDMP4Av1  TranscodingFormatID = "mp4_av1"
+	TranscodingFormatIDWebmVp9 TranscodingFormatID = "webm_vp9"
+	TranscodingFormatIDM4aAac  TranscodingFormatID = "m4a_aac"
 )
 
 // The property ID is required.
@@ -1146,6 +1537,52 @@ const (
 	TranscodingMP4H265ProfilevMain444_12 TranscodingMP4H265Profilev = "main444-12"
 )
 
+// ProcessingStage specifies the current preparation activity. queued means the
+// request is waiting for processing capacity.
+type TranscodingProcessingStage string
+
+const (
+	TranscodingProcessingStageQueued     TranscodingProcessingStage = "queued"
+	TranscodingProcessingStageStarting   TranscodingProcessingStage = "starting"
+	TranscodingProcessingStageEncoding   TranscodingProcessingStage = "encoding"
+	TranscodingProcessingStageFinalizing TranscodingProcessingStage = "finalizing"
+	TranscodingProcessingStageUploading  TranscodingProcessingStage = "uploading"
+)
+
+// Status is ready only after the output is validated and published. Temporary
+// output becomes expired when its files are no longer available.
+type TranscodingStatus string
+
+const (
+	TranscodingStatusPreparing TranscodingStatus = "preparing"
+	TranscodingStatusReady     TranscodingStatus = "ready"
+	TranscodingStatusFailed    TranscodingStatus = "failed"
+	TranscodingStatusCancelled TranscodingStatus = "cancelled"
+	TranscodingStatusExpired   TranscodingStatus = "expired"
+)
+
+// The resolved output destination for a Transcoding.
+type TranscodingStorage struct {
+	// Id identifies the output Storage.
+	ID string `json:"id" api:"required"`
+	// Path specifies the output file path relative to the Storage base_prefix saved at
+	// creation.
+	Path string `json:"path" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		ID          respjson.Field
+		Path        respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r TranscodingStorage) RawJSON() string { return r.JSON.raw }
+func (r *TranscodingStorage) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
 // The property ID is required.
 type TranscodingWebmVp9Param struct {
 	// AudioBitrate specifies the output audio bitrate in bits per second. Defaults
@@ -1311,7 +1748,7 @@ const (
 
 type TranscodingNewParams struct {
 	// Format specifies the requested encoding settings.
-	Format TranscodingNewParamsFormatUnion `json:"format,omitzero" api:"required"`
+	Format TranscodingCreateFormatParamsUnion `json:"format,omitzero" api:"required"`
 	// SourceId identifies a Source in this Project.
 	SourceID string `json:"source_id" api:"required"`
 	// Metadata attaches string values to the Transcoding. The serialized object may
@@ -1319,7 +1756,7 @@ type TranscodingNewParams struct {
 	Metadata map[string]string `json:"metadata,omitzero"`
 	// Storage overrides the Project output destination. Source storage remains
 	// independent.
-	Storage TranscodingNewParamsStorage `json:"storage,omitzero"`
+	Storage TranscodingCreateStorageParams `json:"storage,omitzero"`
 	paramObj
 }
 
@@ -1328,428 +1765,6 @@ func (r TranscodingNewParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *TranscodingNewParams) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-// Only one field can be non-zero.
-//
-// Use [param.IsOmitted] to confirm if a field is set.
-type TranscodingNewParamsFormatUnion struct {
-	OfMP4H264 *TranscodingMP4H264Param `json:",omitzero,inline"`
-	OfMP4H265 *TranscodingMP4H265Param `json:",omitzero,inline"`
-	OfMP4Av1  *TranscodingMP4Av1Param  `json:",omitzero,inline"`
-	OfWebmVp9 *TranscodingWebmVp9Param `json:",omitzero,inline"`
-	OfM4aAac  *TranscodingM4aAacParam  `json:",omitzero,inline"`
-	paramUnion
-}
-
-func (u TranscodingNewParamsFormatUnion) MarshalJSON() ([]byte, error) {
-	return param.MarshalUnion(u, u.OfMP4H264,
-		u.OfMP4H265,
-		u.OfMP4Av1,
-		u.OfWebmVp9,
-		u.OfM4aAac)
-}
-func (u *TranscodingNewParamsFormatUnion) UnmarshalJSON(data []byte) error {
-	return apijson.UnmarshalRoot(data, u)
-}
-
-func (u *TranscodingNewParamsFormatUnion) asAny() any {
-	if !param.IsOmitted(u.OfMP4H264) {
-		return u.OfMP4H264
-	} else if !param.IsOmitted(u.OfMP4H265) {
-		return u.OfMP4H265
-	} else if !param.IsOmitted(u.OfMP4Av1) {
-		return u.OfMP4Av1
-	} else if !param.IsOmitted(u.OfWebmVp9) {
-		return u.OfWebmVp9
-	} else if !param.IsOmitted(u.OfM4aAac) {
-		return u.OfM4aAac
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetX264Keyint() *int64 {
-	if vt := u.OfMP4H264; vt != nil && vt.X264Keyint.Valid() {
-		return &vt.X264Keyint.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetX265Keyint() *int64 {
-	if vt := u.OfMP4H265; vt != nil && vt.X265Keyint.Valid() {
-		return &vt.X265Keyint.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetCPUUsed() *string {
-	if vt := u.OfWebmVp9; vt != nil {
-		return (*string)(&vt.CPUUsed)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetMinrate() *int64 {
-	if vt := u.OfWebmVp9; vt != nil && vt.Minrate.Valid() {
-		return &vt.Minrate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetQuality() *string {
-	if vt := u.OfWebmVp9; vt != nil {
-		return (*string)(&vt.Quality)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetID() *string {
-	if vt := u.OfMP4H264; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfMP4Av1; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfWebmVp9; vt != nil {
-		return (*string)(&vt.ID)
-	} else if vt := u.OfM4aAac; vt != nil {
-		return (*string)(&vt.ID)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetAudioBitrate() *int64 {
-	if vt := u.OfMP4H264; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	} else if vt := u.OfM4aAac; vt != nil && vt.AudioBitrate.Valid() {
-		return &vt.AudioBitrate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetAudioSamplerate() *int64 {
-	if vt := u.OfMP4H264; vt != nil {
-		return (*int64)(&vt.AudioSamplerate)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*int64)(&vt.AudioSamplerate)
-	} else if vt := u.OfMP4Av1; vt != nil {
-		return (*int64)(&vt.AudioSamplerate)
-	} else if vt := u.OfWebmVp9; vt != nil {
-		return (*int64)(&vt.AudioSamplerate)
-	} else if vt := u.OfM4aAac; vt != nil {
-		return (*int64)(&vt.AudioSamplerate)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetBufsize() *int64 {
-	if vt := u.OfMP4H264; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Bufsize.Valid() {
-		return &vt.Bufsize.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetChannels() *int64 {
-	if vt := u.OfMP4H264; vt != nil {
-		return (*int64)(&vt.Channels)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*int64)(&vt.Channels)
-	} else if vt := u.OfMP4Av1; vt != nil {
-		return (*int64)(&vt.Channels)
-	} else if vt := u.OfWebmVp9; vt != nil {
-		return (*int64)(&vt.Channels)
-	} else if vt := u.OfM4aAac; vt != nil {
-		return (*int64)(&vt.Channels)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetCrf() *int64 {
-	if vt := u.OfMP4H264; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Crf.Valid() {
-		return &vt.Crf.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetDisableAudio() *bool {
-	if vt := u.OfMP4H264; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.DisableAudio.Valid() {
-		return &vt.DisableAudio.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetDisableVideo() *bool {
-	if vt := u.OfMP4H264; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.DisableVideo.Valid() {
-		return &vt.DisableVideo.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetDuration() *float64 {
-	if vt := u.OfMP4H264; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	} else if vt := u.OfM4aAac; vt != nil && vt.Duration.Valid() {
-		return &vt.Duration.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetFramerate() *float64 {
-	if vt := u.OfMP4H264; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Framerate.Valid() {
-		return &vt.Framerate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetGop() *int64 {
-	if vt := u.OfMP4H264; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Gop.Valid() {
-		return &vt.Gop.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetHeight() *int64 {
-	if vt := u.OfMP4H264; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Height.Valid() {
-		return &vt.Height.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetLevel() *int64 {
-	if vt := u.OfMP4H264; vt != nil {
-		return (*int64)(&vt.Level)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*int64)(&vt.Level)
-	} else if vt := u.OfMP4Av1; vt != nil {
-		return (*int64)(&vt.Level)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetMaxrate() *int64 {
-	if vt := u.OfMP4H264; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Maxrate.Valid() {
-		return &vt.Maxrate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetMovflags() *string {
-	if vt := u.OfMP4H264; vt != nil {
-		return (*string)(&vt.Movflags)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*string)(&vt.Movflags)
-	} else if vt := u.OfMP4Av1; vt != nil {
-		return (*string)(&vt.Movflags)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetPerTitle() *bool {
-	if vt := u.OfMP4H264; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.PerTitle.Valid() {
-		return &vt.PerTitle.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetPixfmt() *string {
-	if vt := u.OfMP4H264; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	} else if vt := u.OfMP4Av1; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	} else if vt := u.OfWebmVp9; vt != nil {
-		return (*string)(&vt.Pixfmt)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetPreset() *string {
-	if vt := u.OfMP4H264; vt != nil {
-		return (*string)(&vt.Preset)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*string)(&vt.Preset)
-	} else if vt := u.OfMP4Av1; vt != nil {
-		return (*string)(&vt.Preset)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetProfilev() *string {
-	if vt := u.OfMP4H264; vt != nil {
-		return (*string)(&vt.Profilev)
-	} else if vt := u.OfMP4H265; vt != nil {
-		return (*string)(&vt.Profilev)
-	} else if vt := u.OfMP4Av1; vt != nil {
-		return (*string)(&vt.Profilev)
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetSeek() *float64 {
-	if vt := u.OfMP4H264; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	} else if vt := u.OfM4aAac; vt != nil && vt.Seek.Valid() {
-		return &vt.Seek.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetVideoBitrate() *int64 {
-	if vt := u.OfMP4H264; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.VideoBitrate.Valid() {
-		return &vt.VideoBitrate.Value
-	}
-	return nil
-}
-
-// Returns a pointer to the underlying variant's property, if present.
-func (u TranscodingNewParamsFormatUnion) GetWidth() *int64 {
-	if vt := u.OfMP4H264; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	} else if vt := u.OfMP4H265; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	} else if vt := u.OfMP4Av1; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	} else if vt := u.OfWebmVp9; vt != nil && vt.Width.Valid() {
-		return &vt.Width.Value
-	}
-	return nil
-}
-
-func init() {
-	apijson.RegisterUnion[TranscodingNewParamsFormatUnion](
-		"id",
-		apijson.Discriminator[TranscodingMP4H264Param]("mp4_h264"),
-		apijson.Discriminator[TranscodingMP4H265Param]("mp4_h265"),
-		apijson.Discriminator[TranscodingMP4Av1Param]("mp4_av1"),
-		apijson.Discriminator[TranscodingWebmVp9Param]("webm_vp9"),
-		apijson.Discriminator[TranscodingM4aAacParam]("m4a_aac"),
-	)
-}
-
-// Storage overrides the Project output destination. Source storage remains
-// independent.
-type TranscodingNewParamsStorage struct {
-	// Id specifies a Storage in this Project. Defaults to the Project output storage.
-	ID param.Opt[string] `json:"id,omitzero"`
-	// Path specifies the output object path relative to the selected Storage
-	// base_prefix. Required for customer storage; generated for Chunkify temporary
-	// storage. The extension must match the resolved output format. The combined path
-	// may contain at most 1024 bytes.
-	Path param.Opt[string] `json:"path,omitzero"`
-	paramObj
-}
-
-func (r TranscodingNewParamsStorage) MarshalJSON() (data []byte, err error) {
-	type shadow TranscodingNewParamsStorage
-	return param.MarshalObject(r, (*shadow)(&r))
-}
-func (r *TranscodingNewParamsStorage) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -1811,7 +1826,7 @@ type TranscodingListParams struct {
 	// Filter by Transcoding status.
 	//
 	// Any of "preparing", "ready", "failed", "cancelled", "expired".
-	Status TranscodingListParamsStatus `query:"status,omitzero" json:"-"`
+	Status TranscodingStatus `query:"status,omitzero" json:"-"`
 	paramObj
 }
 
@@ -1843,17 +1858,6 @@ func (r TranscodingListParamsCreated) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
-
-// Filter by Transcoding status.
-type TranscodingListParamsStatus string
-
-const (
-	TranscodingListParamsStatusPreparing TranscodingListParamsStatus = "preparing"
-	TranscodingListParamsStatusReady     TranscodingListParamsStatus = "ready"
-	TranscodingListParamsStatusFailed    TranscodingListParamsStatus = "failed"
-	TranscodingListParamsStatusCancelled TranscodingListParamsStatus = "cancelled"
-	TranscodingListParamsStatusExpired   TranscodingListParamsStatus = "expired"
-)
 
 type TranscodingDeleteParams struct {
 	// DeleteFiles specifies whether to permanently delete this Transcoding's output

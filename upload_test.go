@@ -34,7 +34,7 @@ func TestUploadNewWithOptionalParams(t *testing.T) {
 			"key":  "value",
 			"key2": "value2",
 		},
-		Storage: chunkify.UploadNewParamsStorage{
+		Storage: chunkify.UploadCreateStorageParams{
 			ID:   chunkify.String("x"),
 			Path: chunkify.String("x"),
 		},
@@ -97,7 +97,7 @@ func TestUploadListWithOptionalParams(t *testing.T) {
 			Sort: "asc",
 		},
 		Limit:    chunkify.Int(1),
-		Metadata: [][]string{{"key1:value1"}},
+		Metadata: []string{"key1:value1"},
 		Offset:   chunkify.Int(0),
 		SourceID: chunkify.String("source_id"),
 		Status:   chunkify.UploadListParamsStatusWaiting,
@@ -153,7 +153,7 @@ func TestUploadCompleteWithOptionalParams(t *testing.T) {
 		context.TODO(),
 		"token",
 		chunkify.UploadCompleteParams{
-			Parts: []chunkify.UploadCompleteParamsPart{{
+			Parts: []chunkify.UploadMultipartPartParams{{
 				Etag:       `"abc123"`,
 				PartNumber: 1,
 			}},
