@@ -29,8 +29,8 @@ func TestNotificationNew(t *testing.T) {
 	)
 	_, err := client.Notifications.New(context.TODO(), chunkify.NotificationNewParams{
 		Event:     chunkify.WebhookEventAssetPlaybackReady,
-		ObjectID:  "ast_A1cce6120E56e7Tu9ioP09Nhjk9",
-		WebhookID: "wh_A1cce6120E56e7Tu9ioP09Nhjk9",
+		ObjectID:  "ast_3DyDePsxLWfKa0WCi0mXWeaNWyF",
+		WebhookID: "wh_3FzKFC3SMYiIEIzN1REhY1wpEx0",
 	})
 	if err != nil {
 		var apierr *chunkify.Error
