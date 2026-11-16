@@ -145,6 +145,8 @@ type Upload struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Timestamp when the upload will expire
 	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
+	// Additional metadata for the upload
+	Metadata map[string]string `json:"metadata" api:"required"`
 	// Current status of the upload
 	//
 	// Any of "waiting", "completed", "failed", "expired".
@@ -183,8 +185,6 @@ type Upload struct {
 	Error shared.ChunkifyError `json:"error"`
 	// Declared file size in bytes, when supplied at creation.
 	FileSizeBytes int64 `json:"file_size_bytes"`
-	// Additional metadata for the upload
-	Metadata map[string]string `json:"metadata"`
 	// Multipart transfer details, returned only on creation for multipart Uploads.
 	Multipart UploadMultipartSession `json:"multipart"`
 	// SourceId is the id of the source that was created from the upload
@@ -201,6 +201,7 @@ type Upload struct {
 		CreateAsset      respjson.Field
 		CreatedAt        respjson.Field
 		ExpiresAt        respjson.Field
+		Metadata         respjson.Field
 		Status           respjson.Field
 		UpdatedAt        respjson.Field
 		UploadMode       respjson.Field
@@ -213,7 +214,6 @@ type Upload struct {
 		CreatedVia       respjson.Field
 		Error            respjson.Field
 		FileSizeBytes    respjson.Field
-		Metadata         respjson.Field
 		Multipart        respjson.Field
 		SourceID         respjson.Field
 		StorageID        respjson.Field
