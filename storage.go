@@ -107,8 +107,9 @@ func (r *StorageService) List(ctx context.Context, opts ...option.RequestOption)
 	return res, err
 }
 
-// Delete a storage configuration. The storage must not be currently attached to
-// the project.
+// Delete a storage configuration. The storage must not be attached to the project
+// or used by an upload, source, asset, transcoding or thumbnail; otherwise the
+// request returns 403.
 func (r *StorageService) Delete(ctx context.Context, storageID string, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
