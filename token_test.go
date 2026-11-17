@@ -30,7 +30,7 @@ func TestTokenNewWithOptionalParams(t *testing.T) {
 	_, err := client.Tokens.New(context.TODO(), chunkify.TokenNewParams{
 		Scope:     chunkify.TokenScopeProject,
 		Name:      chunkify.String("My Token"),
-		ProjectID: chunkify.String("proj_A1cce6120E56e7Tu9ioP09Nhjk1"),
+		ProjectID: chunkify.String("proj_3MldVj0UeQPlZ06hDcDi6CWrKJZ"),
 	})
 	if err != nil {
 		var apierr *chunkify.Error
