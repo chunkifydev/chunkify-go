@@ -28,7 +28,7 @@ func TestThumbnailNewWithOptionalParams(t *testing.T) {
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Thumbnails.New(context.TODO(), chunkify.ThumbnailNewParams{
-		SourceID: "src_example",
+		SourceID: "src_3A0yDPVjACk8FkYZFnP7Ab5DSDV",
 		Count:    chunkify.Int(10),
 		Format:   chunkify.ThumbnailFormatJpeg,
 		Metadata: map[string]string{
