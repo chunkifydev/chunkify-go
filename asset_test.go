@@ -28,7 +28,7 @@ func TestAssetNewWithOptionalParams(t *testing.T) {
 		option.WithTeamAccessToken("My Team Access Token"),
 	)
 	_, err := client.Assets.New(context.TODO(), chunkify.AssetNewParams{
-		SourceID:      "src_example",
+		SourceID:      "src_3A0yDPVjACk8FkYZFnP7Ab5DSDV",
 		MaxResolution: chunkify.AssetNewParamsMaxResolution1080p,
 		Metadata: map[string]string{
 			"key":  "value",
@@ -38,7 +38,7 @@ func TestAssetNewWithOptionalParams(t *testing.T) {
 		PathTemplate:   chunkify.String("videos/{metadata.VideoID}"),
 		PreviewEnabled: chunkify.Bool(true),
 		Storage: chunkify.AssetCreateStorageParams{
-			ID: chunkify.String("stor_example"),
+			ID: chunkify.String("stor_3GldXEVxF304PlE1B1cFKKiykDN"),
 		},
 		Title:      chunkify.String("Launch video"),
 		WorkflowID: chunkify.String("x"),

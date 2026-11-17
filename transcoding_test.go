@@ -54,12 +54,12 @@ func TestTranscodingNewWithOptionalParams(t *testing.T) {
 				X264Keyint:      chunkify.Int(60),
 			},
 		},
-		SourceID: "src_example",
+		SourceID: "src_3A0yDPVjACk8FkYZFnP7Ab5DSDV",
 		Metadata: map[string]string{
 			"foo": "string",
 		},
 		Storage: chunkify.TranscodingCreateStorageParams{
-			ID:   chunkify.String("stor_example"),
+			ID:   chunkify.String("stor_3GldXEVxF304PlE1B1cFKKiykDN"),
 			Path: chunkify.String("exports/video.mp4"),
 		},
 	})
