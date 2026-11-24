@@ -266,6 +266,8 @@ type SourceListParams struct {
 	Limit param.Opt[int64] `query:"limit,omitzero" json:"-"`
 	// Pagination offset
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
+	// Filter by input Storage ID.
+	StorageID param.Opt[string] `query:"storage_id,omitzero" json:"-"`
 	// Filter by video codec
 	VideoCodec param.Opt[string]       `query:"video_codec,omitzero" json:"-"`
 	Created    SourceListParamsCreated `query:"created,omitzero" json:"-"`
