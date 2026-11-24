@@ -437,8 +437,10 @@ type UploadListParams struct {
 	// Pagination offset
 	Offset param.Opt[int64] `query:"offset,omitzero" json:"-"`
 	// Filter by source ID
-	SourceID param.Opt[string]       `query:"source_id,omitzero" json:"-"`
-	Created  UploadListParamsCreated `query:"created,omitzero" json:"-"`
+	SourceID param.Opt[string] `query:"source_id,omitzero" json:"-"`
+	// Filter by input Storage ID.
+	StorageID param.Opt[string]       `query:"storage_id,omitzero" json:"-"`
+	Created   UploadListParamsCreated `query:"created,omitzero" json:"-"`
 	// Filter by metadata. Repeat key:value pairs to match all supplied metadata
 	// conditions.
 	Metadata []string `query:"metadata,omitzero" json:"-"`
