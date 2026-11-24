@@ -1823,6 +1823,13 @@ type TranscodingListParams struct {
 	// Filter by output Storage ID.
 	StorageID param.Opt[string]            `query:"storage_id,omitzero" json:"-"`
 	Created   TranscodingListParamsCreated `query:"created,omitzero" json:"-"`
+	// Filter by Transcoding format ID.
+	//
+	// Any of "mp4_h264", "mp4_h265", "mp4_av1", "webm_vp9", "m4a_aac".
+	Format TranscodingListParamsFormat `query:"format,omitzero" json:"-"`
+	// Filter by metadata. Repeat key:value pairs to match all supplied metadata
+	// conditions.
+	Metadata []string `query:"metadata,omitzero" json:"-"`
 	// Filter by Transcoding status.
 	//
 	// Any of "preparing", "ready", "failed", "cancelled", "expired".
@@ -1858,6 +1865,17 @@ func (r TranscodingListParamsCreated) URLQuery() (v url.Values, err error) {
 		NestedFormat: apiquery.NestedQueryFormatBrackets,
 	})
 }
+
+// Filter by Transcoding format ID.
+type TranscodingListParamsFormat string
+
+const (
+	TranscodingListParamsFormatMP4H264 TranscodingListParamsFormat = "mp4_h264"
+	TranscodingListParamsFormatMP4H265 TranscodingListParamsFormat = "mp4_h265"
+	TranscodingListParamsFormatMP4Av1  TranscodingListParamsFormat = "mp4_av1"
+	TranscodingListParamsFormatWebmVp9 TranscodingListParamsFormat = "webm_vp9"
+	TranscodingListParamsFormatM4aAac  TranscodingListParamsFormat = "m4a_aac"
+)
 
 type TranscodingDeleteParams struct {
 	// DeleteFiles specifies whether to permanently delete this Transcoding's output
