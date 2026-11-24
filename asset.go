@@ -1561,7 +1561,8 @@ type AssetListParams struct {
 	// Filter by output Storage ID.
 	StorageID param.Opt[string]      `query:"storage_id,omitzero" json:"-"`
 	Created   AssetListParamsCreated `query:"created,omitzero" json:"-"`
-	// Repeat key:value pairs to match all supplied metadata conditions.
+	// Filter by metadata. Repeat key:value pairs to match all supplied metadata
+	// conditions.
 	Metadata []string `query:"metadata,omitzero" json:"-"`
 	// Filter by Asset status.
 	//

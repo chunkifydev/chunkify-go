@@ -101,6 +101,7 @@ func TestThumbnailListWithOptionalParams(t *testing.T) {
 			Sort: "asc",
 		},
 		Limit:     chunkify.Int(1),
+		Metadata:  []string{"key1:value1"},
 		Offset:    chunkify.Int(0),
 		SourceID:  chunkify.String("x"),
 		Status:    chunkify.ThumbnailStatusPreparing,

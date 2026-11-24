@@ -566,6 +566,9 @@ type ThumbnailListParams struct {
 	// Filter by output Storage ID.
 	StorageID param.Opt[string]          `query:"storage_id,omitzero" json:"-"`
 	Created   ThumbnailListParamsCreated `query:"created,omitzero" json:"-"`
+	// Filter by metadata. Repeat key:value pairs to match all supplied metadata
+	// conditions.
+	Metadata []string `query:"metadata,omitzero" json:"-"`
 	// Filter by Thumbnail status.
 	//
 	// Any of "preparing", "ready", "failed", "expired".
