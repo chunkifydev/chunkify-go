@@ -118,6 +118,7 @@ func TestSourceListWithOptionalParams(t *testing.T) {
 			Lt:  chunkify.Int(0),
 			Lte: chunkify.Int(0),
 		},
+		StorageID:  chunkify.String("x"),
 		VideoCodec: chunkify.String("video_codec"),
 		Width: chunkify.SourceListParamsWidth{
 			Eq:  chunkify.Int(0),

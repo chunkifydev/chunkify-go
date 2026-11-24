@@ -132,7 +132,7 @@ func TestAssetListWithOptionalParams(t *testing.T) {
 			Sort: "asc",
 		},
 		Limit:     chunkify.Int(1),
-		Metadata:  []string{"J!Q0Ok0bzJb7:pro"},
+		Metadata:  []string{"key1:value1"},
 		Offset:    chunkify.Int(0),
 		Search:    chunkify.String("search"),
 		SourceID:  chunkify.String("x"),
