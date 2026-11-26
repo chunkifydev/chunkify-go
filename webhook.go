@@ -39,8 +39,8 @@ func NewWebhookService(opts ...option.RequestOption) (r WebhookService) {
 	return
 }
 
-// Create a new webhook for a project. The webhook will receive notifications for
-// specified events.
+// Create a webhook for the Project. Chunkify sends a notification to its URL for
+// each subscribed event, and you can create it enabled or disabled.
 func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ...option.RequestOption) (res *Webhook, err error) {
 	var env WebhookNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -54,8 +54,8 @@ func (r *WebhookService) New(ctx context.Context, body WebhookNewParams, opts ..
 	return res, nil
 }
 
-// Retrieve details of a specific webhook configuration by its ID. The webhook must
-// belong to the current project.
+// Retrieve a webhook in the current Project by its ID, including its endpoint URL,
+// subscribed events, and whether deliveries are enabled.
 func (r *WebhookService) Get(ctx context.Context, webhookID string, opts ...option.RequestOption) (res *Webhook, err error) {
 	var env WebhookGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -73,8 +73,8 @@ func (r *WebhookService) Get(ctx context.Context, webhookID string, opts ...opti
 	return res, nil
 }
 
-// Update the enabled status of a webhook. The webhook must belong to the current
-// project.
+// Update a webhook's subscribed events or enable and disable its deliveries. The
+// webhook must belong to the current Project.
 func (r *WebhookService) Update(ctx context.Context, webhookID string, body WebhookUpdateParams, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)

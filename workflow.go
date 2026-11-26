@@ -60,7 +60,8 @@ func (r *WorkflowService) New(ctx context.Context, body WorkflowNewParams, opts 
 	return res, nil
 }
 
-// Retrieve a Workflow and its current definition, including archived Workflows.
+// Retrieve a Workflow with its name, current revision, and rules. Archived
+// Workflows can still be retrieved and include the date they were archived.
 func (r *WorkflowService) Get(ctx context.Context, workflowID string, opts ...option.RequestOption) (res *Workflow, err error) {
 	var env WorkflowGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -96,8 +97,8 @@ func (r *WorkflowService) Update(ctx context.Context, workflowID string, body Wo
 	return err
 }
 
-// List Workflows in the Project, newest first. Archived Workflows are excluded
-// unless archived is true.
+// List the Workflows in the Project, newest first, with their current revision and
+// rules. Archived Workflows are included only when archived is true.
 func (r *WorkflowService) List(ctx context.Context, query WorkflowListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Workflow], err error) {
 	var raw *http.Response
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -116,8 +117,8 @@ func (r *WorkflowService) List(ctx context.Context, query WorkflowListParams, op
 	return res, nil
 }
 
-// List Workflows in the Project, newest first. Archived Workflows are excluded
-// unless archived is true.
+// List the Workflows in the Project, newest first, with their current revision and
+// rules. Archived Workflows are included only when archived is true.
 func (r *WorkflowService) ListAutoPaging(ctx context.Context, query WorkflowListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Workflow] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }

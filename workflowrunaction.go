@@ -39,8 +39,8 @@ func NewWorkflowRunActionService(opts ...option.RequestOption) (r WorkflowRunAct
 	return
 }
 
-// Retrieve one action execution in a retained Workflow run, including its resolved
-// inputs, status, and result.
+// Retrieve one action execution in a retained Workflow run, including the Asset it
+// ran on, its resolved inputs, status, result, and error.
 func (r *WorkflowRunActionService) Get(ctx context.Context, actionRunID string, query WorkflowRunActionGetParams, opts ...option.RequestOption) (res *AssetActionRun, err error) {
 	var env WorkflowRunActionGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}

@@ -41,7 +41,8 @@ func NewTranscodingService(opts ...option.RequestOption) (r TranscodingService) 
 	return
 }
 
-// Create a standalone file export with resolved encoding settings.
+// Create a standalone Transcoding that exports a Source as an MP4, WebM, or M4A
+// file. Encoding settings are resolved and processing starts asynchronously.
 func (r *TranscodingService) New(ctx context.Context, body TranscodingNewParams, opts ...option.RequestOption) (res *Transcoding, err error) {
 	var env TranscodingNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -55,8 +56,8 @@ func (r *TranscodingService) New(ctx context.Context, body TranscodingNewParams,
 	return res, nil
 }
 
-// Retrieve the accepted settings, published files and current state of one
-// Transcoding.
+// Retrieve one Transcoding with its accepted encoding settings, current status and
+// progress, and published files with their delivery URLs.
 func (r *TranscodingService) Get(ctx context.Context, transcodingID string, opts ...option.RequestOption) (res *Transcoding, err error) {
 	var env TranscodingGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -74,7 +75,8 @@ func (r *TranscodingService) Get(ctx context.Context, transcodingID string, opts
 	return res, nil
 }
 
-// List Transcodings in the authenticated Project, newest first by default.
+// List Transcodings in the authenticated Project, newest first by default. Filter
+// by status, format, Source, Storage, metadata, or creation date.
 func (r *TranscodingService) List(ctx context.Context, query TranscodingListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Transcoding], err error) {
 	var raw *http.Response
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -93,7 +95,8 @@ func (r *TranscodingService) List(ctx context.Context, query TranscodingListPara
 	return res, nil
 }
 
-// List Transcodings in the authenticated Project, newest first by default.
+// List Transcodings in the authenticated Project, newest first by default. Filter
+// by status, format, Source, Storage, metadata, or creation date.
 func (r *TranscodingService) ListAutoPaging(ctx context.Context, query TranscodingListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Transcoding] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
@@ -115,8 +118,8 @@ func (r *TranscodingService) Delete(ctx context.Context, transcodingID string, b
 	return err
 }
 
-// Cancel a preparing Transcoding and release its unpaid reservation. Repeating an
-// accepted cancellation succeeds.
+// Cancel a Transcoding that is still preparing and release its unpaid reservation.
+// Repeating an accepted cancellation succeeds without changes.
 func (r *TranscodingService) Cancel(ctx context.Context, transcodingID string, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
