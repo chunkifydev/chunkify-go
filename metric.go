@@ -35,8 +35,8 @@ func NewMetricService(opts ...option.RequestOption) (r MetricService) {
 	return
 }
 
-// Retrieve Asset outcomes, timings, output sizes and source profiles by UTC
-// creation date.
+// Retrieve Asset outcomes, processing timings, output sizes, and source profiles
+// by UTC creation date, as JSON or CSV, for the past 7 days by default.
 func (r *MetricService) Assets(ctx context.Context, query MetricAssetsParams, opts ...option.RequestOption) (res *MetricsAssets, err error) {
 	var env MetricAssetsResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -65,7 +65,8 @@ func (r *MetricService) Storage(ctx context.Context, query MetricStorageParams, 
 	return res, nil
 }
 
-// Retrieve project usage totals and daily values for a UTC date range.
+// Retrieve the Project's usage totals and daily values for a UTC date range, as
+// JSON or CSV. Without dates, it covers the past 7 UTC calendar days.
 func (r *MetricService) Usage(ctx context.Context, query MetricUsageParams, opts ...option.RequestOption) (res *MetricsUsage, err error) {
 	var env MetricUsageResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}

@@ -40,8 +40,8 @@ func NewNotificationService(opts ...option.RequestOption) (r NotificationService
 	return
 }
 
-// Send an event notification to a webhook endpoint. Recorded events replay their
-// original payload.
+// Send an event notification to one of the Project's webhook endpoints. Recorded
+// events are replayed with their original payload.
 func (r *NotificationService) New(ctx context.Context, body NotificationNewParams, opts ...option.RequestOption) (res *Notification, err error) {
 	var env NotificationNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -55,7 +55,8 @@ func (r *NotificationService) New(ctx context.Context, body NotificationNewParam
 	return res, nil
 }
 
-// Retrieve details of a specific notification
+// Retrieve a notification delivery, including its event, payload, target webhook,
+// and the response status code returned by your endpoint.
 func (r *NotificationService) Get(ctx context.Context, notificationID string, opts ...option.RequestOption) (res *Notification, err error) {
 	var env NotificationGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -73,7 +74,8 @@ func (r *NotificationService) Get(ctx context.Context, notificationID string, op
 	return res, nil
 }
 
-// Retrieve a list of notifications with optional filtering and pagination
+// List webhook notification deliveries in the Project. Filter by event, object,
+// webhook, response status code, or creation date, with pagination.
 func (r *NotificationService) List(ctx context.Context, query NotificationListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Notification], err error) {
 	var raw *http.Response
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -92,12 +94,14 @@ func (r *NotificationService) List(ctx context.Context, query NotificationListPa
 	return res, nil
 }
 
-// Retrieve a list of notifications with optional filtering and pagination
+// List webhook notification deliveries in the Project. Filter by event, object,
+// webhook, response status code, or creation date, with pagination.
 func (r *NotificationService) ListAutoPaging(ctx context.Context, query NotificationListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Notification] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a notification.
+// Delete a delivered notification from the Project's history. Notifications still
+// being processed cannot be deleted, and the webhook is unchanged.
 func (r *NotificationService) Delete(ctx context.Context, notificationID string, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)

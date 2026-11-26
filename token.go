@@ -64,8 +64,8 @@ func (r *TokenService) List(ctx context.Context, opts ...option.RequestOption) (
 	return res, err
 }
 
-// Revoke an access token by its ID. This action is irreversible and will
-// immediately invalidate the token.
+// Revoke an access token by its ID. Revocation is immediate and irreversible, so
+// requests that still use the token are rejected right away.
 func (r *TokenService) Revoke(ctx context.Context, tokenID string, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)

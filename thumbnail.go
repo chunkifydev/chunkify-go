@@ -56,8 +56,8 @@ func (r *ThumbnailService) New(ctx context.Context, body ThumbnailNewParams, opt
 	return res, nil
 }
 
-// Retrieve the accepted settings, published files and current state of one
-// Thumbnail.
+// Retrieve one Thumbnail request with its accepted settings, current status,
+// sampled frames, and published image files with their delivery URLs.
 func (r *ThumbnailService) Get(ctx context.Context, thumbnailID string, opts ...option.RequestOption) (res *Thumbnail, err error) {
 	var env ThumbnailGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -75,7 +75,8 @@ func (r *ThumbnailService) Get(ctx context.Context, thumbnailID string, opts ...
 	return res, nil
 }
 
-// List Thumbnails in the authenticated Project, newest first by default.
+// List Thumbnails in the authenticated Project, newest first by default. Filter by
+// status, Source, Storage, metadata, or creation date.
 func (r *ThumbnailService) List(ctx context.Context, query ThumbnailListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Thumbnail], err error) {
 	var raw *http.Response
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -94,7 +95,8 @@ func (r *ThumbnailService) List(ctx context.Context, query ThumbnailListParams, 
 	return res, nil
 }
 
-// List Thumbnails in the authenticated Project, newest first by default.
+// List Thumbnails in the authenticated Project, newest first by default. Filter by
+// status, Source, Storage, metadata, or creation date.
 func (r *ThumbnailService) ListAutoPaging(ctx context.Context, query ThumbnailListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Thumbnail] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
@@ -566,6 +568,9 @@ type ThumbnailListParams struct {
 	// Filter by output Storage ID.
 	StorageID param.Opt[string]          `query:"storage_id,omitzero" json:"-"`
 	Created   ThumbnailListParamsCreated `query:"created,omitzero" json:"-"`
+	// Filter by metadata. Repeat key:value pairs to match all supplied metadata
+	// conditions.
+	Metadata []string `query:"metadata,omitzero" json:"-"`
 	// Filter by Thumbnail status.
 	//
 	// Any of "preparing", "ready", "failed", "expired".

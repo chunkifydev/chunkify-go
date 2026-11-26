@@ -42,7 +42,8 @@ func NewWorkflowRunService(opts ...option.RequestOption) (r WorkflowRunService) 
 	return
 }
 
-// Retrieve a retained run with its triggering event, status, and action counts.
+// Retrieve a retained Workflow run with its triggering event, Asset, revision,
+// status, and action counts, plus any error the run reported.
 func (r *WorkflowRunService) Get(ctx context.Context, runID string, query WorkflowRunGetParams, opts ...option.RequestOption) (res *WorkflowRun, err error) {
 	var env WorkflowRunGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -64,8 +65,8 @@ func (r *WorkflowRunService) Get(ctx context.Context, runID string, query Workfl
 	return res, nil
 }
 
-// List retained runs for this Workflow, newest first. Each run corresponds to one
-// matching Asset event.
+// List retained runs for a Workflow, newest first. Each run corresponds to one
+// matching Asset event; filter by Asset, status, event, or date.
 func (r *WorkflowRunService) List(ctx context.Context, workflowID string, query WorkflowRunListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[WorkflowRun], err error) {
 	var raw *http.Response
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -88,8 +89,8 @@ func (r *WorkflowRunService) List(ctx context.Context, workflowID string, query 
 	return res, nil
 }
 
-// List retained runs for this Workflow, newest first. Each run corresponds to one
-// matching Asset event.
+// List retained runs for a Workflow, newest first. Each run corresponds to one
+// matching Asset event; filter by Asset, status, event, or date.
 func (r *WorkflowRunService) ListAutoPaging(ctx context.Context, workflowID string, query WorkflowRunListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[WorkflowRun] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, workflowID, query, opts...))
 }

@@ -53,7 +53,8 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 	return res, nil
 }
 
-// Retrieve details of a specific storage configuration by its id.
+// Retrieve a Storage in the current Project by its ID, with its provider and
+// region, and for connected buckets, the bucket, base prefix, and CDN base URL.
 func (r *StorageService) Get(ctx context.Context, storageID string, opts ...option.RequestOption) (res *StorageUnion, err error) {
 	var env StorageGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -98,7 +99,8 @@ func (r *StorageService) Update(ctx context.Context, storageID string, body Stor
 	return err
 }
 
-// Retrieve a list of all storage configurations for the current project.
+// List the Storage configurations in the current Project, with each one's provider
+// and region, and the bucket and CDN base URL for connected buckets.
 func (r *StorageService) List(ctx context.Context, opts ...option.RequestOption) (res *StorageListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
@@ -284,7 +286,7 @@ type StorageAws struct {
 	Region AwsRegion `json:"region" api:"required"`
 	// Unique identifier of the storage configuration
 	Slug string `json:"slug" api:"required"`
-	// Optional customer-managed HTTPS delivery origin used to build stable CDN URLs
+	// Optional customer-managed HTTPS delivery base URL used to build stable CDN URLs
 	// for objects in this storage.
 	CdnBaseURL string `json:"cdn_base_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -329,8 +331,9 @@ type StorageAwsCreateParams struct {
 	// SecretAccessKey is the secret key for the storage provider. Required if not
 	// using Chunkify storage.
 	SecretAccessKey string `json:"secret_access_key" api:"required"`
-	// Optional customer-managed HTTPS delivery origin. It must not contain
-	// credentials, a path, query string, or fragment.
+	// Optional customer-managed HTTPS delivery base URL. Object keys are appended to
+	// it. It may include a path prefix, but must not contain credentials, a query
+	// string, or a fragment.
 	CdnBaseURL param.Opt[string] `json:"cdn_base_url,omitzero" format:"uri"`
 	// Object-key prefix for final job outputs. The API normalizes it without a leading
 	// slash and with one trailing slash. Omit it or send an empty string to use the
@@ -436,7 +439,7 @@ type StorageCloudflare struct {
 	Region constant.Auto `json:"region" default:"auto"`
 	// Unique identifier of the storage configuration
 	Slug string `json:"slug" api:"required"`
-	// Optional customer-managed HTTPS delivery origin used to build stable CDN URLs
+	// Optional customer-managed HTTPS delivery base URL used to build stable CDN URLs
 	// for objects in this storage.
 	CdnBaseURL string `json:"cdn_base_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -480,8 +483,9 @@ type StorageCloudflareCreateParams struct {
 	Location StorageCloudflareCreateParamsLocation `json:"location,omitzero" api:"required"`
 	// SecretAccessKey is the secret key for the storage provider.
 	SecretAccessKey string `json:"secret_access_key" api:"required"`
-	// Optional customer-managed HTTPS delivery origin. It must not contain
-	// credentials, a path, query string, or fragment.
+	// Optional customer-managed HTTPS delivery base URL. Object keys are appended to
+	// it. It may include a path prefix, but must not contain credentials, a query
+	// string, or a fragment.
 	CdnBaseURL param.Opt[string] `json:"cdn_base_url,omitzero" format:"uri"`
 	// Object-key prefix for final job outputs. The API normalizes it without a leading
 	// slash and with one trailing slash. Omit it or send an empty string to use the
@@ -542,8 +546,9 @@ type StorageS3Compatible struct {
 	Bucket string `json:"bucket" api:"required"`
 	// Created at timestamp
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
-	// Public HTTPS origin for the S3-compatible service. Credentials, paths, queries,
-	// fragments, and non-public destinations are rejected.
+	// Public HTTPS URL of the S3-compatible service, including any fixed path prefix
+	// the service requires. Credentials, queries, fragments, and non-public
+	// destinations are rejected.
 	Endpoint string `json:"endpoint" api:"required" format:"uri"`
 	// Chunkify workload location. This is independent from the provider signing
 	// region.
@@ -559,7 +564,7 @@ type StorageS3Compatible struct {
 	Region string `json:"region" api:"required"`
 	// Unique identifier of the storage configuration
 	Slug string `json:"slug" api:"required"`
-	// Optional customer-managed HTTPS delivery origin used to build stable CDN URLs
+	// Optional customer-managed HTTPS delivery base URL used to build stable CDN URLs
 	// for objects in this storage.
 	CdnBaseURL string `json:"cdn_base_url" api:"nullable" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
@@ -606,8 +611,9 @@ type StorageS3CompatibleCreateParams struct {
 	AccessKeyID string `json:"access_key_id" api:"required"`
 	// Bucket is the name of the storage bucket.
 	Bucket string `json:"bucket" api:"required"`
-	// Public HTTPS origin for the S3-compatible service. Credentials, paths, queries,
-	// fragments, and non-public destinations are rejected.
+	// Public HTTPS URL of the S3-compatible service, including any fixed path prefix
+	// the service requires. Credentials, queries, fragments, and non-public
+	// destinations are rejected.
 	Endpoint string `json:"endpoint" api:"required" format:"uri"`
 	// Chunkify workload location. It controls where Chunkify processes the workload
 	// and is independent from the provider region.
@@ -619,8 +625,9 @@ type StorageS3CompatibleCreateParams struct {
 	Region string `json:"region" api:"required"`
 	// Secret key for the storage provider.
 	SecretAccessKey string `json:"secret_access_key" api:"required"`
-	// Optional customer-managed HTTPS delivery origin. It must not contain
-	// credentials, a path, query string, or fragment.
+	// Optional customer-managed HTTPS delivery base URL. Object keys are appended to
+	// it. It may include a path prefix, but must not contain credentials, a query
+	// string, or a fragment.
 	CdnBaseURL param.Opt[string] `json:"cdn_base_url,omitzero" format:"uri"`
 	// Object-key prefix for final job outputs. The API normalizes it without a leading
 	// slash and with one trailing slash. Omit it or send an empty string to use the
@@ -735,7 +742,7 @@ func (r *StorageGetResponseEnvelope) UnmarshalJSON(data []byte) error {
 }
 
 type StorageUpdateParams struct {
-	// Customer-managed HTTPS delivery origin, or null to remove the current value.
+	// Customer-managed HTTPS delivery base URL, or null to remove the current value.
 	CdnBaseURL param.Opt[string] `json:"cdn_base_url,omitzero" format:"uri"`
 	// Replacement access key ID for customer-managed storage. Send with a non-empty
 	// secret_access_key. Omit both credential fields to keep the saved pair. Null and
