@@ -41,8 +41,8 @@ func NewAssetWorkflowActionService(opts ...option.RequestOption) (r AssetWorkflo
 	return
 }
 
-// List retained Workflow actions for an Asset, newest first. Direct output
-// requests are excluded.
+// List the retained Workflow actions for an Asset, newest first, with status,
+// type, and date filters. Direct output requests are excluded.
 func (r *AssetWorkflowActionService) List(ctx context.Context, assetID string, query AssetWorkflowActionListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[AssetActionRun], err error) {
 	var raw *http.Response
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -65,8 +65,8 @@ func (r *AssetWorkflowActionService) List(ctx context.Context, assetID string, q
 	return res, nil
 }
 
-// List retained Workflow actions for an Asset, newest first. Direct output
-// requests are excluded.
+// List the retained Workflow actions for an Asset, newest first, with status,
+// type, and date filters. Direct output requests are excluded.
 func (r *AssetWorkflowActionService) ListAutoPaging(ctx context.Context, assetID string, query AssetWorkflowActionListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[AssetActionRun] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, assetID, query, opts...))
 }

@@ -55,7 +55,8 @@ func (r *ProjectAnalyticsConnectionService) New(ctx context.Context, projectID s
 	return res, err
 }
 
-// Retrieve non-secret connection metadata within its owning project.
+// Retrieve one analytics connection in its owning Project, including its type,
+// endpoint, status, and allowed origins. Secret keys are not returned.
 func (r *ProjectAnalyticsConnectionService) Get(ctx context.Context, connectionID string, query ProjectAnalyticsConnectionGetParams, opts ...option.RequestOption) (res *AnalyticsConnection, err error) {
 	var env ProjectAnalyticsConnectionGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
@@ -100,8 +101,8 @@ func (r *ProjectAnalyticsConnectionService) Update(ctx context.Context, connecti
 	return res, nil
 }
 
-// List the saved connections for this project. No connection is activated by this
-// request.
+// List the analytics connections saved for a Project, with their type, endpoint,
+// and status. Listing connections does not activate any of them.
 func (r *ProjectAnalyticsConnectionService) List(ctx context.Context, projectID string, opts ...option.RequestOption) (res *ProjectAnalyticsConnectionListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
