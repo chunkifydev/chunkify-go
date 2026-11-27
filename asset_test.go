@@ -36,7 +36,7 @@ func TestAssetNewWithOptionalParams(t *testing.T) {
 		},
 		MinResolution:  chunkify.AssetNewParamsMinResolutionAuto,
 		PathTemplate:   chunkify.String("videos/{metadata.VideoID}"),
-		PreviewEnabled: chunkify.Bool(true),
+		PublicPlayback: chunkify.Bool(true),
 		Storage: chunkify.AssetCreateStorageParams{
 			ID: chunkify.String("stor_3GldXEVxF304PlE1B1cFKKiykDN"),
 		},
@@ -98,7 +98,7 @@ func TestAssetUpdateWithOptionalParams(t *testing.T) {
 				"key":  "value",
 				"key2": "value2",
 			},
-			PreviewEnabled: chunkify.Bool(false),
+			PublicPlayback: chunkify.Bool(false),
 			Title:          chunkify.String("Launch video"),
 		},
 	)
