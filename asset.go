@@ -161,9 +161,10 @@ type Asset struct {
 	MinResolution AssetMinResolution `json:"min_resolution" api:"required"`
 	// Whether HLS playback is available, including while the Asset is preparing.
 	PlaybackReady bool `json:"playback_ready" api:"required"`
-	// Allow public preview access without an API token. Does not control CDN or static
-	// download access. Disabling it does not revoke signed URLs already issued.
-	PreviewEnabled bool `json:"preview_enabled" api:"required"`
+	// Allow public playback without an API token, through the public preview page and
+	// embeds. Does not control CDN or static download access. Disabling it does not
+	// revoke signed URLs already issued.
+	PublicPlayback bool `json:"public_playback" api:"required"`
 	// Original media metadata saved at Asset creation and preserved after Source
 	// deletion.
 	SourceMetadata AssetSourceMetadata `json:"source_metadata" api:"required"`
@@ -210,7 +211,7 @@ type Asset struct {
 	PlaybackReadyAt time.Time `json:"playback_ready_at" format:"date-time"`
 	// Poster image, available once generated.
 	Poster AssetPoster `json:"poster"`
-	// Public HLS preview URL. Available when playback_ready and preview_enabled are
+	// Public HLS preview URL. Available when playback_ready and public_playback are
 	// true. No API token is required.
 	PreviewURL string `json:"preview_url" format:"uri"`
 	// When all required Asset outputs finished processing.
@@ -233,7 +234,7 @@ type Asset struct {
 		Metadata               respjson.Field
 		MinResolution          respjson.Field
 		PlaybackReady          respjson.Field
-		PreviewEnabled         respjson.Field
+		PublicPlayback         respjson.Field
 		SourceMetadata         respjson.Field
 		Status                 respjson.Field
 		StorageID              respjson.Field
@@ -638,16 +639,16 @@ type AssetDefaults struct {
 	// Defaults to {assetID}. Maximum template size: 1024 UTF-8 bytes. Expanded prefix:
 	// 768 bytes including base_prefix and trailing slash.
 	PathTemplate string `json:"path_template"`
-	// Allow public preview access for new Assets without an API token. Defaults to
-	// true. Existing Assets are unchanged.
-	PreviewEnabled bool `json:"preview_enabled"`
+	// Allow public playback of new Assets without an API token, through the public
+	// preview page and embeds. Defaults to true. Existing Assets are unchanged.
+	PublicPlayback bool `json:"public_playback"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
 		DeleteFilesOnFailure respjson.Field
 		MaxResolution        respjson.Field
 		MinResolution        respjson.Field
 		PathTemplate         respjson.Field
-		PreviewEnabled       respjson.Field
+		PublicPlayback       respjson.Field
 		ExtraFields          map[string]respjson.Field
 		raw                  string
 	} `json:"-"`
@@ -691,9 +692,9 @@ type AssetDefaultsParams struct {
 	// Defaults to {assetID}. Maximum template size: 1024 UTF-8 bytes. Expanded prefix:
 	// 768 bytes including base_prefix and trailing slash.
 	PathTemplate param.Opt[string] `json:"path_template,omitzero"`
-	// Allow public preview access for new Assets without an API token. Defaults to
-	// true. Existing Assets are unchanged.
-	PreviewEnabled param.Opt[bool] `json:"preview_enabled,omitzero"`
+	// Allow public playback of new Assets without an API token, through the public
+	// preview page and embeds. Defaults to true. Existing Assets are unchanged.
+	PublicPlayback param.Opt[bool] `json:"public_playback,omitzero"`
 	// Maximum streaming resolution. Defaults to 1080p on Hobby and 2160p on other
 	// plans. 2160p requires Starter or above. Smaller sources are not upscaled. Does
 	// not affect static renditions.
@@ -777,7 +778,7 @@ type AssetPoster struct {
 	// Unsigned image CDN URL. Available once the poster exists and Storage has a CDN
 	// URL.
 	CdnURL string `json:"cdn_url" format:"uri"`
-	// Public poster preview URL. Available when the Asset is ready and preview_enabled
+	// Public poster preview URL. Available when the Asset is ready and public_playback
 	// is true.
 	PreviewURL string `json:"preview_url" format:"uri"`
 	// Image size in bytes.
@@ -785,7 +786,7 @@ type AssetPoster struct {
 	// Position of the selected frame in seconds.
 	TimeSeconds float64 `json:"time_seconds"`
 	// Signed image URL, valid for up to ten minutes. Available once the poster exists,
-	// regardless of preview_enabled.
+	// regardless of public_playback.
 	URL string `json:"url" format:"uri"`
 	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
 	JSON struct {
@@ -951,7 +952,7 @@ type AssetStaticRendition struct {
 	// File size in bytes. Omitted until ready.
 	Size int64 `json:"size"`
 	// Signed MP4 download URL, available when ready and unexpired. Valid for up to ten
-	// minutes. Retrieve the output to refresh it. Independent of preview_enabled.
+	// minutes. Retrieve the output to refresh it. Independent of public_playback.
 	URL string `json:"url" format:"uri"`
 	// Measured video bitrate in bits per second. Omitted until ready.
 	VideoBitrate int64 `json:"video_bitrate"`
@@ -1234,7 +1235,7 @@ type AssetTimelinePreviews struct {
 	// cue timestamps.
 	IntervalSeconds float64 `json:"interval_seconds"`
 	// Public WebVTT preview URL with signed image references. Available when the Asset
-	// is ready and preview_enabled is true.
+	// is ready and public_playback is true.
 	PreviewURL string `json:"preview_url" format:"uri"`
 	// Combined WebVTT and sprite image size in bytes.
 	Size int64 `json:"size"`
@@ -1436,9 +1437,10 @@ type AssetNewParams struct {
 	// Maximum template size: 1024 UTF-8 bytes. Expanded prefix: 768 bytes including
 	// base_prefix and trailing slash.
 	PathTemplate param.Opt[string] `json:"path_template,omitzero"`
-	// Allow public preview access without an API token. Omit to use the Project
-	// default. Does not control CDN or static download access.
-	PreviewEnabled param.Opt[bool] `json:"preview_enabled,omitzero"`
+	// Allow public playback without an API token, through the public preview page and
+	// embeds. Omit to use the Project default. Does not control CDN or static download
+	// access.
+	PublicPlayback param.Opt[bool] `json:"public_playback,omitzero"`
 	// Asset title, up to 256 characters. Defaults to an empty string.
 	Title param.Opt[string] `json:"title,omitzero"`
 	// Maximum streaming resolution. Omit to use the Project default, or the plan
@@ -1532,9 +1534,10 @@ func (r *AssetGetResponseEnvelope) UnmarshalJSON(data []byte) error {
 }
 
 type AssetUpdateParams struct {
-	// Allow public preview access without an API token. Does not control CDN or static
-	// download access. Disabling it does not revoke signed URLs already issued.
-	PreviewEnabled param.Opt[bool] `json:"preview_enabled,omitzero"`
+	// Allow public playback without an API token, through the public preview page and
+	// embeds. Does not control CDN or static download access. Disabling it does not
+	// revoke signed URLs already issued.
+	PublicPlayback param.Opt[bool] `json:"public_playback,omitzero"`
 	// Asset title, up to 256 characters. Send an empty string to clear it; omit to
 	// leave unchanged.
 	Title param.Opt[string] `json:"title,omitzero"`

@@ -114,6 +114,125 @@ func (r *ProjectService) Delete(ctx context.Context, projectID string, opts ...o
 	return err
 }
 
+type PlayerAppearance struct {
+	// Dark specifies the player colours in dark mode.
+	Dark PlayerPalette `json:"dark" api:"required"`
+	// HiddenControls lists the player buttons to hide. Other buttons appear when the
+	// browser and video support them.
+	HiddenControls []PlayerControl `json:"hidden_controls" api:"required"`
+	// Light specifies the player colours in light mode.
+	Light PlayerPalette `json:"light" api:"required"`
+	// Mode specifies which palette the player uses. auto follows the viewer's system
+	// setting.
+	//
+	// Any of "auto", "light", "dark".
+	Mode PlayerThemeMode `json:"mode" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Dark           respjson.Field
+		HiddenControls respjson.Field
+		Light          respjson.Field
+		Mode           respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PlayerAppearance) RawJSON() string { return r.JSON.raw }
+func (r *PlayerAppearance) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PlayerAppearanceParams struct {
+	// Dark specifies the player colours in dark mode. Omit to use the default dark
+	// colours.
+	Dark PlayerPaletteParams `json:"dark,omitzero"`
+	// HiddenControls lists the player buttons to hide. Defaults to an empty list.
+	// Other buttons appear when the browser and video support them.
+	HiddenControls []PlayerControl `json:"hidden_controls,omitzero"`
+	// Light specifies the player colours in light mode. Omit to use the default light
+	// colours.
+	Light PlayerPaletteParams `json:"light,omitzero"`
+	// Mode specifies which palette the player uses. auto follows the viewer's system
+	// setting. An embed can override it with its theme URL parameter. Defaults to
+	// auto.
+	//
+	// Any of "auto", "light", "dark".
+	Mode PlayerThemeMode `json:"mode,omitzero"`
+	paramObj
+}
+
+func (r PlayerAppearanceParams) MarshalJSON() (data []byte, err error) {
+	type shadow PlayerAppearanceParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PlayerAppearanceParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PlayerControl string
+
+const (
+	PlayerControlCaptions   PlayerControl = "captions"
+	PlayerControlSettings   PlayerControl = "settings"
+	PlayerControlPip        PlayerControl = "pip"
+	PlayerControlFullscreen PlayerControl = "fullscreen"
+	PlayerControlCast       PlayerControl = "cast"
+	PlayerControlAirplay    PlayerControl = "airplay"
+	PlayerControlMute       PlayerControl = "mute"
+)
+
+type PlayerPalette struct {
+	// Accent specifies the colour of progress and active controls.
+	Accent string `json:"accent" api:"required"`
+	// Primary specifies the colour of text and control icons.
+	Primary string `json:"primary" api:"required"`
+	// Secondary specifies the colour of player buttons.
+	Secondary string `json:"secondary" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Accent      respjson.Field
+		Primary     respjson.Field
+		Secondary   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r PlayerPalette) RawJSON() string { return r.JSON.raw }
+func (r *PlayerPalette) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// The properties Accent, Primary, Secondary are required.
+type PlayerPaletteParams struct {
+	// Accent specifies the colour of progress and active controls, as #rrggbb.
+	Accent string `json:"accent" api:"required"`
+	// Primary specifies the colour of text and control icons, as #rrggbb.
+	Primary string `json:"primary" api:"required"`
+	// Secondary specifies the colour of player buttons, as #rrggbb.
+	Secondary string `json:"secondary" api:"required"`
+	paramObj
+}
+
+func (r PlayerPaletteParams) MarshalJSON() (data []byte, err error) {
+	type shadow PlayerPaletteParams
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *PlayerPaletteParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+type PlayerThemeMode string
+
+const (
+	PlayerThemeModeAuto  PlayerThemeMode = "auto"
+	PlayerThemeModeLight PlayerThemeMode = "light"
+	PlayerThemeModeDark  PlayerThemeMode = "dark"
+)
+
 type Project struct {
 	// Id is the unique identifier for the project.
 	ID string `json:"id" api:"required"`
@@ -123,6 +242,9 @@ type Project struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Name of the project
 	Name string `json:"name" api:"required"`
+	// Player colours and controls used by Chunkify-hosted playback pages, such as
+	// embeds.
+	PlayerAppearance PlayerAppearance `json:"player_appearance" api:"required"`
 	// Slug is the slug for the project.
 	Slug string `json:"slug" api:"required"`
 	// StorageId identifier where project files are stored
@@ -136,6 +258,7 @@ type Project struct {
 		AssetDefaults     respjson.Field
 		CreatedAt         respjson.Field
 		Name              respjson.Field
+		PlayerAppearance  respjson.Field
 		Slug              respjson.Field
 		StorageID         respjson.Field
 		DefaultWorkflowID respjson.Field
@@ -236,6 +359,10 @@ type ProjectUpdateParams struct {
 	// Defaults for new Assets and automatic Uploads. Replaces the whole object.
 	// Omitted fields reset to their defaults. Existing Assets are unchanged.
 	AssetDefaults AssetDefaultsParams `json:"asset_defaults,omitzero"`
+	// Player colours and controls for Chunkify-hosted playback pages, such as embeds.
+	// Replaces the whole object. Omitted fields reset to their defaults. Existing
+	// embeds use the new values.
+	PlayerAppearance PlayerAppearanceParams `json:"player_appearance,omitzero"`
 	paramObj
 }
 
