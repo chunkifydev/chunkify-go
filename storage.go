@@ -53,7 +53,8 @@ func (r *StorageService) New(ctx context.Context, body StorageNewParams, opts ..
 	return res, nil
 }
 
-// Retrieve details of a specific storage configuration by its id.
+// Retrieve a Storage in the current Project by its ID, with its provider and
+// region, and for connected buckets, the bucket, base prefix, and CDN base URL.
 func (r *StorageService) Get(ctx context.Context, storageID string, opts ...option.RequestOption) (res *StorageUnion, err error) {
 	var env StorageGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -98,7 +99,8 @@ func (r *StorageService) Update(ctx context.Context, storageID string, body Stor
 	return err
 }
 
-// Retrieve a list of all storage configurations for the current project.
+// List the Storage configurations in the current Project, with each one's provider
+// and region, and the bucket and CDN base URL for connected buckets.
 func (r *StorageService) List(ctx context.Context, opts ...option.RequestOption) (res *StorageListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
