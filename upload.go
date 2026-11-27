@@ -59,8 +59,8 @@ func (r *UploadService) New(ctx context.Context, body UploadNewParams, opts ...o
 	return res, nil
 }
 
-// Retrieve details of a specific upload by its ID, including metadata, status, and
-// associated source.
+// Retrieve an Upload session by its ID, including its status, file size, expiry,
+// error details, and the Source or Asset created from it.
 func (r *UploadService) Get(ctx context.Context, uploadID string, opts ...option.RequestOption) (res *Upload, err error) {
 	var env UploadGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -78,7 +78,8 @@ func (r *UploadService) Get(ctx context.Context, uploadID string, opts ...option
 	return res, nil
 }
 
-// Retrieve a list of all uploads with optional filtering and pagination.
+// List Upload sessions in the Project, newest first by default. Filter by ID,
+// status, Source, Storage, metadata, or creation date, with pagination.
 func (r *UploadService) List(ctx context.Context, query UploadListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Upload], err error) {
 	var raw *http.Response
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -97,12 +98,14 @@ func (r *UploadService) List(ctx context.Context, query UploadListParams, opts .
 	return res, nil
 }
 
-// Retrieve a list of all uploads with optional filtering and pagination.
+// List Upload sessions in the Project, newest first by default. Filter by ID,
+// status, Source, Storage, metadata, or creation date, with pagination.
 func (r *UploadService) ListAutoPaging(ctx context.Context, query UploadListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Upload] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete an upload.
+// Delete an Upload session record from the Project. A Source already created from
+// a completed Upload is not deleted and can still be processed.
 func (r *UploadService) Delete(ctx context.Context, uploadID string, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)

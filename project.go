@@ -39,8 +39,8 @@ func NewProjectService(opts ...option.RequestOption) (r ProjectService) {
 	return
 }
 
-// Create a new project with the specified name. The project will be created with
-// default Chunkify storage settings.
+// Create a Project in your team with a name of 4 to 32 characters. New Projects
+// start with Chunkify storage until you connect your own Storage.
 func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ...option.RequestOption) (res *Project, err error) {
 	var env ProjectNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
@@ -54,7 +54,8 @@ func (r *ProjectService) New(ctx context.Context, body ProjectNewParams, opts ..
 	return res, nil
 }
 
-// Retrieve details of a specific project by its slug
+// Retrieve a Project in your team by its ID, including its name, slug, default
+// Storage, Asset defaults, and default Workflow.
 func (r *ProjectService) Get(ctx context.Context, projectID string, opts ...option.RequestOption) (res *Project, err error) {
 	var env ProjectGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
@@ -72,8 +73,8 @@ func (r *ProjectService) Get(ctx context.Context, projectID string, opts ...opti
 	return res, nil
 }
 
-// Update a project's name or storage settings. Only team owners can update
-// projects.
+// Update a Project's name, default Storage, Asset defaults, or default Workflow.
+// Only team owners can update Projects, and project names must be unique.
 func (r *ProjectService) Update(ctx context.Context, projectID string, body ProjectUpdateParams, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
@@ -87,7 +88,8 @@ func (r *ProjectService) Update(ctx context.Context, projectID string, body Proj
 	return err
 }
 
-// Retrieve a list of all projects for a team
+// List the Projects in the team that owns the access token, with each Project's
+// name, slug, default Storage, and Asset defaults.
 func (r *ProjectService) List(ctx context.Context, opts ...option.RequestOption) (res *ProjectListResponse, err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithTeamAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)

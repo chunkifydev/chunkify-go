@@ -36,8 +36,8 @@ func NewWorkflowRevisionService(opts ...option.RequestOption) (r WorkflowRevisio
 	return
 }
 
-// Retrieve an immutable definition revision, including revisions of archived
-// Workflows.
+// Retrieve an immutable Workflow definition revision and its rules, including
+// revisions of archived Workflows, to see what a past run executed.
 func (r *WorkflowRevisionService) Get(ctx context.Context, revision int64, query WorkflowRevisionGetParams, opts ...option.RequestOption) (res *WorkflowRevision, err error) {
 	var env WorkflowRevisionGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}

@@ -56,8 +56,8 @@ func (r *SourceService) New(ctx context.Context, body SourceNewParams, opts ...o
 	return res, nil
 }
 
-// Retrieve details of a specific source by its ID, including metadata, media
-// properties, and associated jobs.
+// Retrieve a Source by its ID, including its Storage location, file size,
+// duration, dimensions, codecs, bitrates, frame rate, and metadata.
 func (r *SourceService) Get(ctx context.Context, sourceID string, opts ...option.RequestOption) (res *Source, err error) {
 	var env SourceGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -101,7 +101,8 @@ func (r *SourceService) ListAutoPaging(ctx context.Context, query SourceListPara
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete a source. It will fail if there are processing jobs using this source.
+// Delete a Source that no processing still needs and record a source.deleted
+// event. Assets and other outputs created from the Source are preserved.
 func (r *SourceService) Delete(ctx context.Context, sourceID string, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)

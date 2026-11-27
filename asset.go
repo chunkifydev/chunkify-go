@@ -49,7 +49,8 @@ func NewAssetService(opts ...option.RequestOption) (r AssetService) {
 	return
 }
 
-// Create an Asset from a video Source. Processing starts asynchronously.
+// Create an Asset from a video Source to prepare it for streaming. Processing
+// starts asynchronously, and the Asset is returned while it is preparing.
 func (r *AssetService) New(ctx context.Context, body AssetNewParams, opts ...option.RequestOption) (res *Asset, err error) {
 	var env AssetNewResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -63,7 +64,8 @@ func (r *AssetService) New(ctx context.Context, body AssetNewParams, opts ...opt
 	return res, nil
 }
 
-// Retrieve an Asset and its streaming, static, poster, and timeline outputs.
+// Retrieve an Asset with its status, source metadata, and its streaming, static,
+// poster, and timeline outputs, including their delivery URLs.
 func (r *AssetService) Get(ctx context.Context, assetID string, opts ...option.RequestOption) (res *Asset, err error) {
 	var env AssetGetResponseEnvelope
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -81,8 +83,8 @@ func (r *AssetService) Get(ctx context.Context, assetID string, opts ...option.R
 	return res, nil
 }
 
-// Update the title, metadata, or public preview access. Omitted fields remain
-// unchanged.
+// Update an Asset's title, metadata, or whether its preview can be watched without
+// an API token. Omitted fields remain unchanged.
 func (r *AssetService) Update(ctx context.Context, assetID string, body AssetUpdateParams, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
@@ -96,7 +98,8 @@ func (r *AssetService) Update(ctx context.Context, assetID string, body AssetUpd
 	return err
 }
 
-// List Assets in the Project, with filtering and pagination.
+// List Assets in the Project, newest first by default. Filter by status, Source,
+// Storage, metadata, or creation date, and search by ID or title.
 func (r *AssetService) List(ctx context.Context, query AssetListParams, opts ...option.RequestOption) (res *pagination.PaginatedResults[Asset], err error) {
 	var raw *http.Response
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
@@ -115,13 +118,14 @@ func (r *AssetService) List(ctx context.Context, query AssetListParams, opts ...
 	return res, nil
 }
 
-// List Assets in the Project, with filtering and pagination.
+// List Assets in the Project, newest first by default. Filter by status, Source,
+// Storage, metadata, or creation date, and search by ID or title.
 func (r *AssetService) ListAutoPaging(ctx context.Context, query AssetListParams, opts ...option.RequestOption) *pagination.PaginatedResultsAutoPager[Asset] {
 	return pagination.NewPaginatedResultsAutoPager(r.List(ctx, query, opts...))
 }
 
-// Delete an Asset after all processing finishes. Files remain in Storage unless
-// delete_files is true.
+// Delete an Asset after all processing finishes. Its streaming and static files
+// remain in your Storage unless delete_files is true.
 func (r *AssetService) Delete(ctx context.Context, assetID string, body AssetDeleteParams, opts ...option.RequestOption) (err error) {
 	var preClientOpts = []option.RequestOption{requestconfig.WithProjectAccessTokenSecurity()}
 	opts = slices.Concat(preClientOpts, r.Options, opts)
