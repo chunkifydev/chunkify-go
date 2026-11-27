@@ -123,6 +123,9 @@ type Project struct {
 	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// Name of the project
 	Name string `json:"name" api:"required"`
+	// Player colours and controls used by Chunkify-hosted playback pages, such as
+	// embeds.
+	PlayerAppearance ProjectPlayerAppearance `json:"player_appearance" api:"required"`
 	// Slug is the slug for the project.
 	Slug string `json:"slug" api:"required"`
 	// StorageId identifier where project files are stored
@@ -136,6 +139,7 @@ type Project struct {
 		AssetDefaults     respjson.Field
 		CreatedAt         respjson.Field
 		Name              respjson.Field
+		PlayerAppearance  respjson.Field
 		Slug              respjson.Field
 		StorageID         respjson.Field
 		DefaultWorkflowID respjson.Field
@@ -147,6 +151,88 @@ type Project struct {
 // Returns the unmodified JSON received from the API
 func (r Project) RawJSON() string { return r.JSON.raw }
 func (r *Project) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Player colours and controls used by Chunkify-hosted playback pages, such as
+// embeds.
+type ProjectPlayerAppearance struct {
+	// Dark specifies the player colours in dark mode.
+	Dark ProjectPlayerAppearanceDark `json:"dark" api:"required"`
+	// HiddenControls lists the player buttons to hide. Other buttons appear when the
+	// browser and video support them.
+	//
+	// Any of "captions", "settings", "pip", "fullscreen", "cast", "airplay", "mute".
+	HiddenControls []string `json:"hidden_controls" api:"required"`
+	// Light specifies the player colours in light mode.
+	Light ProjectPlayerAppearanceLight `json:"light" api:"required"`
+	// Mode specifies which palette the player uses. auto follows the viewer's system
+	// setting.
+	//
+	// Any of "auto", "light", "dark".
+	Mode string `json:"mode" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Dark           respjson.Field
+		HiddenControls respjson.Field
+		Light          respjson.Field
+		Mode           respjson.Field
+		ExtraFields    map[string]respjson.Field
+		raw            string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ProjectPlayerAppearance) RawJSON() string { return r.JSON.raw }
+func (r *ProjectPlayerAppearance) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Dark specifies the player colours in dark mode.
+type ProjectPlayerAppearanceDark struct {
+	// Accent specifies the colour of progress and active controls.
+	Accent string `json:"accent" api:"required"`
+	// Primary specifies the colour of text and control icons.
+	Primary string `json:"primary" api:"required"`
+	// Secondary specifies the colour of player buttons.
+	Secondary string `json:"secondary" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Accent      respjson.Field
+		Primary     respjson.Field
+		Secondary   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ProjectPlayerAppearanceDark) RawJSON() string { return r.JSON.raw }
+func (r *ProjectPlayerAppearanceDark) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Light specifies the player colours in light mode.
+type ProjectPlayerAppearanceLight struct {
+	// Accent specifies the colour of progress and active controls.
+	Accent string `json:"accent" api:"required"`
+	// Primary specifies the colour of text and control icons.
+	Primary string `json:"primary" api:"required"`
+	// Secondary specifies the colour of player buttons.
+	Secondary string `json:"secondary" api:"required"`
+	// JSON contains metadata for fields, check presence with [respjson.Field.Valid].
+	JSON struct {
+		Accent      respjson.Field
+		Primary     respjson.Field
+		Secondary   respjson.Field
+		ExtraFields map[string]respjson.Field
+		raw         string
+	} `json:"-"`
+}
+
+// Returns the unmodified JSON received from the API
+func (r ProjectPlayerAppearanceLight) RawJSON() string { return r.JSON.raw }
+func (r *ProjectPlayerAppearanceLight) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
 
@@ -236,6 +322,10 @@ type ProjectUpdateParams struct {
 	// Defaults for new Assets and automatic Uploads. Replaces the whole object.
 	// Omitted fields reset to their defaults. Existing Assets are unchanged.
 	AssetDefaults AssetDefaultsParams `json:"asset_defaults,omitzero"`
+	// Player colours and controls for Chunkify-hosted playback pages, such as embeds.
+	// Replaces the whole object. Omitted fields reset to their defaults. Existing
+	// embeds use the new values.
+	PlayerAppearance ProjectUpdateParamsPlayerAppearance `json:"player_appearance,omitzero"`
 	paramObj
 }
 
@@ -244,5 +334,87 @@ func (r ProjectUpdateParams) MarshalJSON() (data []byte, err error) {
 	return param.MarshalObject(r, (*shadow)(&r))
 }
 func (r *ProjectUpdateParams) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Player colours and controls for Chunkify-hosted playback pages, such as embeds.
+// Replaces the whole object. Omitted fields reset to their defaults. Existing
+// embeds use the new values.
+type ProjectUpdateParamsPlayerAppearance struct {
+	// Dark specifies the player colours in dark mode. Omit to use the default dark
+	// colours.
+	Dark ProjectUpdateParamsPlayerAppearanceDark `json:"dark,omitzero"`
+	// HiddenControls lists the player buttons to hide. Defaults to an empty list.
+	// Other buttons appear when the browser and video support them.
+	//
+	// Any of "captions", "settings", "pip", "fullscreen", "cast", "airplay", "mute".
+	HiddenControls []string `json:"hidden_controls,omitzero"`
+	// Light specifies the player colours in light mode. Omit to use the default light
+	// colours.
+	Light ProjectUpdateParamsPlayerAppearanceLight `json:"light,omitzero"`
+	// Mode specifies which palette the player uses. auto follows the viewer's system
+	// setting. An embed can override it with its theme URL parameter. Defaults to
+	// auto.
+	//
+	// Any of "auto", "light", "dark".
+	Mode string `json:"mode,omitzero"`
+	paramObj
+}
+
+func (r ProjectUpdateParamsPlayerAppearance) MarshalJSON() (data []byte, err error) {
+	type shadow ProjectUpdateParamsPlayerAppearance
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ProjectUpdateParamsPlayerAppearance) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func init() {
+	apijson.RegisterFieldValidator[ProjectUpdateParamsPlayerAppearance](
+		"mode", "auto", "light", "dark",
+	)
+}
+
+// Dark specifies the player colours in dark mode. Omit to use the default dark
+// colours.
+//
+// The properties Accent, Primary, Secondary are required.
+type ProjectUpdateParamsPlayerAppearanceDark struct {
+	// Accent specifies the colour of progress and active controls, as #rrggbb.
+	Accent string `json:"accent" api:"required"`
+	// Primary specifies the colour of text and control icons, as #rrggbb.
+	Primary string `json:"primary" api:"required"`
+	// Secondary specifies the colour of player buttons, as #rrggbb.
+	Secondary string `json:"secondary" api:"required"`
+	paramObj
+}
+
+func (r ProjectUpdateParamsPlayerAppearanceDark) MarshalJSON() (data []byte, err error) {
+	type shadow ProjectUpdateParamsPlayerAppearanceDark
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ProjectUpdateParamsPlayerAppearanceDark) UnmarshalJSON(data []byte) error {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+// Light specifies the player colours in light mode. Omit to use the default light
+// colours.
+//
+// The properties Accent, Primary, Secondary are required.
+type ProjectUpdateParamsPlayerAppearanceLight struct {
+	// Accent specifies the colour of progress and active controls, as #rrggbb.
+	Accent string `json:"accent" api:"required"`
+	// Primary specifies the colour of text and control icons, as #rrggbb.
+	Primary string `json:"primary" api:"required"`
+	// Secondary specifies the colour of player buttons, as #rrggbb.
+	Secondary string `json:"secondary" api:"required"`
+	paramObj
+}
+
+func (r ProjectUpdateParamsPlayerAppearanceLight) MarshalJSON() (data []byte, err error) {
+	type shadow ProjectUpdateParamsPlayerAppearanceLight
+	return param.MarshalObject(r, (*shadow)(&r))
+}
+func (r *ProjectUpdateParamsPlayerAppearanceLight) UnmarshalJSON(data []byte) error {
 	return apijson.UnmarshalRoot(data, r)
 }
