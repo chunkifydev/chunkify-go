@@ -239,8 +239,19 @@ Methods:
 
 # Projects
 
+Params Types:
+
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#PlayerAppearanceParams">PlayerAppearanceParams</a>
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#PlayerControl">PlayerControl</a>
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#PlayerPaletteParams">PlayerPaletteParams</a>
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#PlayerThemeMode">PlayerThemeMode</a>
+
 Response Types:
 
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#PlayerAppearance">PlayerAppearance</a>
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#PlayerControl">PlayerControl</a>
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#PlayerPalette">PlayerPalette</a>
+- <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#PlayerThemeMode">PlayerThemeMode</a>
 - <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#Project">Project</a>
 - <a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go">chunkify</a>.<a href="https://pkg.go.dev/github.com/chunkifydev/chunkify-go#ProjectListResponse">ProjectListResponse</a>
 

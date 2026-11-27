@@ -86,11 +86,25 @@ func TestProjectUpdateWithOptionalParams(t *testing.T) {
 				MaxResolution:        chunkify.AssetDefaultsMaxResolution1080p,
 				MinResolution:        chunkify.AssetDefaultsMinResolutionAuto,
 				PathTemplate:         chunkify.String("videos/{metadata.VideoID}"),
-				PreviewEnabled:       chunkify.Bool(true),
+				PublicPlayback:       chunkify.Bool(true),
 			},
 			DefaultWorkflowID: chunkify.String("x"),
 			Name:              chunkify.String("name"),
-			StorageID:         chunkify.String("xxxx"),
+			PlayerAppearance: chunkify.PlayerAppearanceParams{
+				Dark: chunkify.PlayerPaletteParams{
+					Accent:    "#16a34a",
+					Primary:   "#18181b",
+					Secondary: "#ffffff",
+				},
+				HiddenControls: []chunkify.PlayerControl{chunkify.PlayerControlCaptions},
+				Light: chunkify.PlayerPaletteParams{
+					Accent:    "#16a34a",
+					Primary:   "#18181b",
+					Secondary: "#ffffff",
+				},
+				Mode: chunkify.PlayerThemeModeAuto,
+			},
+			StorageID: chunkify.String("xxxx"),
 		},
 	)
 	if err != nil {
