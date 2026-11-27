@@ -90,19 +90,19 @@ func TestProjectUpdateWithOptionalParams(t *testing.T) {
 			},
 			DefaultWorkflowID: chunkify.String("x"),
 			Name:              chunkify.String("name"),
-			PlayerAppearance: chunkify.ProjectUpdateParamsPlayerAppearance{
-				Dark: chunkify.ProjectUpdateParamsPlayerAppearanceDark{
+			PlayerAppearance: chunkify.PlayerAppearanceParams{
+				Dark: chunkify.PlayerPaletteParams{
 					Accent:    "#16a34a",
 					Primary:   "#18181b",
 					Secondary: "#ffffff",
 				},
-				HiddenControls: []string{"captions"},
-				Light: chunkify.ProjectUpdateParamsPlayerAppearanceLight{
+				HiddenControls: []chunkify.PlayerControl{chunkify.PlayerControlCaptions},
+				Light: chunkify.PlayerPaletteParams{
 					Accent:    "#16a34a",
 					Primary:   "#18181b",
 					Secondary: "#ffffff",
 				},
-				Mode: "auto",
+				Mode: chunkify.PlayerThemeModeAuto,
 			},
 			StorageID: chunkify.String("xxxx"),
 		},
